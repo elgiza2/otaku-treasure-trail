@@ -10,33 +10,208 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as R101RouteImport } from './routes/101'
+import { Route as BattleRouteImport } from './routes/battle'
+import { Route as HeroesRouteImport } from './routes/heroes'
+import { Route as NftRouteImport } from './routes/nft'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as RaidRouteImport } from './routes/raid'
+import { Route as TasksRouteImport } from './routes/tasks'
+import { Route as WalletRouteImport } from './routes/wallet'
+import { Route as ApiPublicTonconnectManifestRouteImport } from './routes/api/public/tonconnect-manifest'
+import { Route as ApiPublicWalletIconRouteImport } from './routes/api/public/wallet-icon'
+import { Route as ApiPublicTelegramCoverRouteImport } from './routes/api/public/telegram/cover'
+import { Route as ApiPublicTelegramDailyRouteImport } from './routes/api/public/telegram/daily'
+import { Route as ApiPublicTelegramWebhookRouteImport } from './routes/api/public/telegram/webhook'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const R101Route = R101RouteImport.update({
+  id: '/101',
+  path: '/101',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BattleRoute = BattleRouteImport.update({
+  id: '/battle',
+  path: '/battle',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HeroesRoute = HeroesRouteImport.update({
+  id: '/heroes',
+  path: '/heroes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NftRoute = NftRouteImport.update({
+  id: '/nft',
+  path: '/nft',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RaidRoute = RaidRouteImport.update({
+  id: '/raid',
+  path: '/raid',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TasksRoute = TasksRouteImport.update({
+  id: '/tasks',
+  path: '/tasks',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WalletRoute = WalletRouteImport.update({
+  id: '/wallet',
+  path: '/wallet',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicTonconnectManifestRoute =
+  ApiPublicTonconnectManifestRouteImport.update({
+    id: '/api/public/tonconnect-manifest',
+    path: '/api/public/tonconnect-manifest',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicWalletIconRoute = ApiPublicWalletIconRouteImport.update({
+  id: '/api/public/wallet-icon',
+  path: '/api/public/wallet-icon',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicTelegramCoverRoute = ApiPublicTelegramCoverRouteImport.update({
+  id: '/api/public/telegram/cover',
+  path: '/api/public/telegram/cover',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicTelegramDailyRoute = ApiPublicTelegramDailyRouteImport.update({
+  id: '/api/public/telegram/daily',
+  path: '/api/public/telegram/daily',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicTelegramWebhookRoute =
+  ApiPublicTelegramWebhookRouteImport.update({
+    id: '/api/public/telegram/webhook',
+    path: '/api/public/telegram/webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/101': typeof R101Route
+  '/battle': typeof BattleRoute
+  '/heroes': typeof HeroesRoute
+  '/nft': typeof NftRoute
+  '/profile': typeof ProfileRoute
+  '/raid': typeof RaidRoute
+  '/tasks': typeof TasksRoute
+  '/wallet': typeof WalletRoute
+  '/api/public/tonconnect-manifest': typeof ApiPublicTonconnectManifestRoute
+  '/api/public/wallet-icon': typeof ApiPublicWalletIconRoute
+  '/api/public/telegram/cover': typeof ApiPublicTelegramCoverRoute
+  '/api/public/telegram/daily': typeof ApiPublicTelegramDailyRoute
+  '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/101': typeof R101Route
+  '/battle': typeof BattleRoute
+  '/heroes': typeof HeroesRoute
+  '/nft': typeof NftRoute
+  '/profile': typeof ProfileRoute
+  '/raid': typeof RaidRoute
+  '/tasks': typeof TasksRoute
+  '/wallet': typeof WalletRoute
+  '/api/public/tonconnect-manifest': typeof ApiPublicTonconnectManifestRoute
+  '/api/public/wallet-icon': typeof ApiPublicWalletIconRoute
+  '/api/public/telegram/cover': typeof ApiPublicTelegramCoverRoute
+  '/api/public/telegram/daily': typeof ApiPublicTelegramDailyRoute
+  '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/101': typeof R101Route
+  '/battle': typeof BattleRoute
+  '/heroes': typeof HeroesRoute
+  '/nft': typeof NftRoute
+  '/profile': typeof ProfileRoute
+  '/raid': typeof RaidRoute
+  '/tasks': typeof TasksRoute
+  '/wallet': typeof WalletRoute
+  '/api/public/tonconnect-manifest': typeof ApiPublicTonconnectManifestRoute
+  '/api/public/wallet-icon': typeof ApiPublicWalletIconRoute
+  '/api/public/telegram/cover': typeof ApiPublicTelegramCoverRoute
+  '/api/public/telegram/daily': typeof ApiPublicTelegramDailyRoute
+  '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/101'
+    | '/battle'
+    | '/heroes'
+    | '/nft'
+    | '/profile'
+    | '/raid'
+    | '/tasks'
+    | '/wallet'
+    | '/api/public/tonconnect-manifest'
+    | '/api/public/wallet-icon'
+    | '/api/public/telegram/cover'
+    | '/api/public/telegram/daily'
+    | '/api/public/telegram/webhook'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/101'
+    | '/battle'
+    | '/heroes'
+    | '/nft'
+    | '/profile'
+    | '/raid'
+    | '/tasks'
+    | '/wallet'
+    | '/api/public/tonconnect-manifest'
+    | '/api/public/wallet-icon'
+    | '/api/public/telegram/cover'
+    | '/api/public/telegram/daily'
+    | '/api/public/telegram/webhook'
+  id:
+    | '__root__'
+    | '/'
+    | '/101'
+    | '/battle'
+    | '/heroes'
+    | '/nft'
+    | '/profile'
+    | '/raid'
+    | '/tasks'
+    | '/wallet'
+    | '/api/public/tonconnect-manifest'
+    | '/api/public/wallet-icon'
+    | '/api/public/telegram/cover'
+    | '/api/public/telegram/daily'
+    | '/api/public/telegram/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  R101Route: typeof R101Route
+  BattleRoute: typeof BattleRoute
+  HeroesRoute: typeof HeroesRoute
+  NftRoute: typeof NftRoute
+  ProfileRoute: typeof ProfileRoute
+  RaidRoute: typeof RaidRoute
+  TasksRoute: typeof TasksRoute
+  WalletRoute: typeof WalletRoute
+  ApiPublicTonconnectManifestRoute: typeof ApiPublicTonconnectManifestRoute
+  ApiPublicWalletIconRoute: typeof ApiPublicWalletIconRoute
+  ApiPublicTelegramCoverRoute: typeof ApiPublicTelegramCoverRoute
+  ApiPublicTelegramDailyRoute: typeof ApiPublicTelegramDailyRoute
+  ApiPublicTelegramWebhookRoute: typeof ApiPublicTelegramWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +223,115 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/101': {
+      id: '/101'
+      path: '/101'
+      fullPath: '/101'
+      preLoaderRoute: typeof R101RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/battle': {
+      id: '/battle'
+      path: '/battle'
+      fullPath: '/battle'
+      preLoaderRoute: typeof BattleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/heroes': {
+      id: '/heroes'
+      path: '/heroes'
+      fullPath: '/heroes'
+      preLoaderRoute: typeof HeroesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/nft': {
+      id: '/nft'
+      path: '/nft'
+      fullPath: '/nft'
+      preLoaderRoute: typeof NftRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/raid': {
+      id: '/raid'
+      path: '/raid'
+      fullPath: '/raid'
+      preLoaderRoute: typeof RaidRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tasks': {
+      id: '/tasks'
+      path: '/tasks'
+      fullPath: '/tasks'
+      preLoaderRoute: typeof TasksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/wallet': {
+      id: '/wallet'
+      path: '/wallet'
+      fullPath: '/wallet'
+      preLoaderRoute: typeof WalletRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/tonconnect-manifest': {
+      id: '/api/public/tonconnect-manifest'
+      path: '/api/public/tonconnect-manifest'
+      fullPath: '/api/public/tonconnect-manifest'
+      preLoaderRoute: typeof ApiPublicTonconnectManifestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/wallet-icon': {
+      id: '/api/public/wallet-icon'
+      path: '/api/public/wallet-icon'
+      fullPath: '/api/public/wallet-icon'
+      preLoaderRoute: typeof ApiPublicWalletIconRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/telegram/cover': {
+      id: '/api/public/telegram/cover'
+      path: '/api/public/telegram/cover'
+      fullPath: '/api/public/telegram/cover'
+      preLoaderRoute: typeof ApiPublicTelegramCoverRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/telegram/daily': {
+      id: '/api/public/telegram/daily'
+      path: '/api/public/telegram/daily'
+      fullPath: '/api/public/telegram/daily'
+      preLoaderRoute: typeof ApiPublicTelegramDailyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/telegram/webhook': {
+      id: '/api/public/telegram/webhook'
+      path: '/api/public/telegram/webhook'
+      fullPath: '/api/public/telegram/webhook'
+      preLoaderRoute: typeof ApiPublicTelegramWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  R101Route: R101Route,
+  BattleRoute: BattleRoute,
+  HeroesRoute: HeroesRoute,
+  NftRoute: NftRoute,
+  ProfileRoute: ProfileRoute,
+  RaidRoute: RaidRoute,
+  TasksRoute: TasksRoute,
+  WalletRoute: WalletRoute,
+  ApiPublicTonconnectManifestRoute: ApiPublicTonconnectManifestRoute,
+  ApiPublicWalletIconRoute: ApiPublicWalletIconRoute,
+  ApiPublicTelegramCoverRoute: ApiPublicTelegramCoverRoute,
+  ApiPublicTelegramDailyRoute: ApiPublicTelegramDailyRoute,
+  ApiPublicTelegramWebhookRoute: ApiPublicTelegramWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,0 +1,1 @@
+UPDATE public.wall_tasks SET active = false WHERE url ILIKE '%holoiobot%' OR url ILIKE '%Starstrbot%' OR url ILIKE '%Clautsbot%' OR url ILIKE '%web3isc%' OR url ILIKE '%elgizach%' OR url ILIKE '%ZoomexOfficial%' OR url ILIKE '%t.me/toncoin%';

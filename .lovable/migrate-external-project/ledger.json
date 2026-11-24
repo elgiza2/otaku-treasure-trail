@@ -1,0 +1,97 @@
+{
+  "source": "github",
+  "repository": "https://github.com/elgiza2/anime-coin-adventure.git",
+  "capabilities": [
+    {
+      "capability": "code",
+      "source": "github (TanStack Start + React 19 + Tailwind v4)",
+      "outcome": "migrate",
+      "status": "verified",
+      "next_action": "All source files, routes, components, styles, and tests imported; build OK and 17/17 test files (136 tests) passed"
+    },
+    {
+      "capability": "schema",
+      "source": "supabase/migrations (24 wall_* tables)",
+      "outcome": "preserve",
+      "status": "verified",
+      "next_action": "Connected Supabase database already contains all wall_* tables and identical generated types"
+    },
+    {
+      "capability": "records",
+      "source": "connected Supabase database",
+      "outcome": "preserve",
+      "status": "verified",
+      "next_action": "Live database is already connected; keep existing rows untouched"
+    },
+    {
+      "capability": "auth_identities",
+      "source": "Telegram WebApp initData (HMAC verification via TELEGRAM_BOT_TOKEN) + wall_users",
+      "outcome": "preserve",
+      "status": "pending",
+      "next_action": "Telegram WebApp auth code preserved; add TELEGRAM_BOT_TOKEN secret to verify live Telegram sign-in"
+    },
+    {
+      "capability": "authorization",
+      "source": "wall_admins + server-side Telegram auth verification",
+      "outcome": "preserve",
+      "status": "pending",
+      "next_action": "Server-side admin checks preserved; verify after TELEGRAM_BOT_TOKEN is added"
+    },
+    {
+      "capability": "uploaded_file_bytes",
+      "source": "src/assets/* (images + .asset.json video/Lottie pointers) + public/*",
+      "outcome": "migrate",
+      "status": "pending",
+      "next_action": "All committed images load cleanly; .asset.json pointers reference the original Lovable project's R2 assets (videos and Lottie icons) and returned 404 locally — re-upload or copy those media files if they do not resolve on preview"
+    },
+    {
+      "capability": "external_providers",
+      "source": "Telegram Bot API, TON Connect (@tonconnect/ui, @ton/core), Monetag ads",
+      "outcome": "preserve",
+      "status": "verified",
+      "next_action": "TON Connect, Monetag, and Telegram Bot integrations preserved"
+    },
+    {
+      "capability": "public_endpoints",
+      "source": "/api/public/tonconnect-manifest, /api/public/wallet-icon, /api/public/telegram/cover, /api/public/telegram/webhook, /api/public/telegram/daily",
+      "outcome": "migrate",
+      "status": "verified",
+      "next_action": "tonconnect-manifest, wallet-icon, and telegram/cover returned HTTP 200; webhook and daily require TELEGRAM_BOT_TOKEN / TELEGRAM_CHANNEL_ID"
+    },
+    {
+      "capability": "callbacks_webhooks",
+      "source": "/api/public/telegram/webhook",
+      "outcome": "migrate",
+      "status": "pending",
+      "next_action": "After publishing, update Telegram Bot webhook URL to new published domain and add TELEGRAM_BOT_TOKEN secret"
+    },
+    {
+      "capability": "schedules",
+      "source": "/api/public/telegram/daily",
+      "outcome": "migrate",
+      "status": "pending",
+      "next_action": "Verify cron/daily trigger setup after adding TELEGRAM_BOT_TOKEN and TELEGRAM_CHANNEL_ID secrets"
+    },
+    {
+      "capability": "secrets",
+      "source": "TELEGRAM_BOT_TOKEN, TELEGRAM_CHANNEL_ID",
+      "outcome": "migrate",
+      "status": "pending",
+      "next_action": "Request TELEGRAM_BOT_TOKEN and TELEGRAM_CHANNEL_ID via Lovable secure secrets form before live Telegram verification"
+    },
+    {
+      "capability": "cutover",
+      "source": "Telegram Bot webhook & Mini App URL",
+      "outcome": "pending",
+      "status": "pending",
+      "next_action": "Update BotFather Mini App URL and webhook endpoint after publishing"
+    },
+    {
+      "capability": "verification",
+      "source": "build, vitest unit tests, and Playwright preview check",
+      "outcome": "pending",
+      "status": "in_progress",
+      "next_action": "Build OK, 136/136 unit tests passed, and 5 main routes + 3 public APIs verified in Playwright; live Telegram auth/bot flow pending secrets"
+    }
+  ]
+}

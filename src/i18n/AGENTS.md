@@ -1,0 +1,1 @@
+- Arabic source text is translated in the browser by DomTranslator using locales/*.json (keys = normalized Arabic, numbers as {n}); bot texts use src/lib/bot-i18n.ts + bot-locales.json by Telegram language_code. New Arabic text or admin-added tasks need new locale entries. Why: 16 languages without rewriting every screen.

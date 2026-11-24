@@ -9,6 +9,11 @@ import {
   type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
+import { preloadVideos } from "@/lib/video-preload";
+import { Toaster } from "@/components/ui/sonner";
+import { DomTranslator } from "@/i18n/DomTranslator";
+import { rememberPage } from "@/lib/last-page";
+import { requestBotWriteAccess, useTelegramInitData } from "@/lib/telegram";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -81,21 +86,30 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "منجم الأسوار — لعبة تعدين أنمي" },
+      { name: "description", content: "لعبة تعدين عملة رقمية بأسلوب الأنمي داخل تيليجرام." },
+      { property: "og:title", content: "منجم الأسوار — لعبة تعدين أنمي" },
+      { property: "og:description", content: "لعبة تعدين عملة رقمية بأسلوب الأنمي داخل تيليجرام." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "/favicon.png", type: "image/png" },
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Noto+Kufi+Arabic:wght@600;800&display=swap",
+      },
+    ],
+    scripts: [
+      { src: "https://telegram.org/js/telegram-web-app.js" },
+      // Monetag rewarded ads; exposes window.show_12281067()
+      { src: "https://libtl.com/sdk.js", "data-zone": "12281067", "data-sdk": "show_12281067" },
     ],
   }),
   shellComponent: RootShell,
@@ -106,7 +120,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="ar" dir="rtl" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
@@ -118,13 +132,76 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+type TgFull = {
+  ready?: () => void; expand?: () => void; requestFullscreen?: () => void; disableVerticalSwipes?: () => void;
+  safeAreaInset?: { top?: number }; contentSafeAreaInset?: { top?: number };
+  onEvent?: (e: string, cb: () => void) => void;
+  offEvent?: (e: string, cb: () => void) => void;
+  BackButton?: { show: () => void; hide: () => void; onClick: (cb: () => void) => void; offClick: (cb: () => void) => void };
+};
+// Main tabs hide Telegram's back button; every other page shows it.
+const TAB_PAGES = ["/", "/tasks", "/battle", "/heroes", "/raid", "/wallet", "/profile"];
+
 function RootComponent() {
+  const initData = useTelegramInitData();
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+  useEffect(() => { preloadVideos(); }, []);
+  useEffect(() => {
+    rememberPage(router.state.location.pathname);
+    return router.subscribe("onResolved", (e) => rememberPage(e.toLocation.pathname));
+  }, [router]);
+  useEffect(() => {
+    // Telegram's native back button: goes to the previous page, or to the battle tab if there is none.
+    let dispose: (() => void) | undefined;
+    const setup = () => {
+      const bb = (window as unknown as { Telegram?: { WebApp?: TgFull } }).Telegram?.WebApp?.BackButton;
+      if (!bb || dispose) return;
+      const back = () => { if (window.history.length > 1) router.history.back(); else router.navigate({ to: "/battle" }); };
+      const sync = (path: string) => (TAB_PAGES.includes(path) ? bb.hide() : bb.show());
+      bb.onClick(back);
+      sync(router.state.location.pathname);
+      const off = router.subscribe("onResolved", (e) => sync(e.toLocation.pathname));
+      dispose = () => { off(); bb.offClick(back); };
+    };
+    setup();
+    const timer = window.setInterval(setup, 250);
+    const stop = window.setTimeout(() => window.clearInterval(timer), 30_000);
+    return () => { window.clearInterval(timer); window.clearTimeout(stop); dispose?.(); };
+  }, [router]);
+  useEffect(() => {
+    // Open as a full-screen Telegram app and keep content below Telegram's own buttons.
+    let dispose: (() => void) | undefined;
+    const setup = () => {
+      const tg = (window as unknown as { Telegram?: { WebApp?: TgFull } }).Telegram?.WebApp;
+      if (!tg || dispose) return;
+      tg.ready?.();
+      tg.expand?.();
+      try { tg.requestFullscreen?.(); } catch { /* older clients */ }
+      tg.disableVerticalSwipes?.();
+      requestBotWriteAccess();
+      const apply = () => {
+        const a = tg.safeAreaInset?.top ?? 0;
+        const b = tg.contentSafeAreaInset?.top ?? 0;
+        document.documentElement.style.setProperty("--tg-safe-top", `${a + b}px`);
+      };
+      apply();
+      const events = ["safeAreaChanged", "contentSafeAreaChanged", "fullscreenChanged"];
+      events.forEach((e) => tg.onEvent?.(e, apply));
+      dispose = () => events.forEach((e) => tg.offEvent?.(e, apply));
+    };
+    setup();
+    const timer = window.setInterval(setup, 250);
+    const stop = window.setTimeout(() => window.clearInterval(timer), 30_000);
+    return () => { window.clearInterval(timer); window.clearTimeout(stop); dispose?.(); };
+  }, [initData]);
 
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
+      <DomTranslator />
+      <Toaster position="top-center" theme="dark" offset={14} gap={8} />
     </QueryClientProvider>
   );
 }

@@ -1,0 +1,1 @@
+ALTER TABLE public.wall_users ADD COLUMN IF NOT EXISTS language_code text;

@@ -70,77 +70,61 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --font-display: "Noto Kufi Arabic", "IBM Plex Sans Arabic", sans-serif;
+  --font-sans: "IBM Plex Sans Arabic", system-ui, sans-serif;
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.984 0.003 247.858);
-  --sidebar-foreground: oklch(0.129 0.042 264.695);
-  --sidebar-primary: oklch(0.208 0.042 265.755);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.968 0.007 247.896);
-  --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
-  --sidebar-border: oklch(0.929 0.013 255.508);
-  --sidebar-ring: oklch(0.704 0.04 256.788);
-}
-
-.dark {
-  --background: oklch(0.129 0.042 264.695);
-  --foreground: oklch(0.984 0.003 247.858);
-  --card: oklch(0.208 0.042 265.755);
-  --card-foreground: oklch(0.984 0.003 247.858);
-  --popover: oklch(0.208 0.042 265.755);
-  --popover-foreground: oklch(0.984 0.003 247.858);
-  --primary: oklch(0.929 0.013 255.508);
-  --primary-foreground: oklch(0.208 0.042 265.755);
-  --secondary: oklch(0.279 0.041 260.031);
-  --secondary-foreground: oklch(0.984 0.003 247.858);
-  --muted: oklch(0.279 0.041 260.031);
-  --muted-foreground: oklch(0.704 0.04 256.788);
-  --accent: oklch(0.279 0.041 260.031);
-  --accent-foreground: oklch(0.984 0.003 247.858);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(1 0 0 / 10%);
+  --radius: 1.25rem;
+  /* Attack-on-Titan mood: ash charcoal, stone, leather, olive cloak, ember gold */
+  --background: oklch(0.14 0.006 70);
+  --foreground: oklch(0.95 0.012 85);
+  --card: oklch(0.2 0.01 70);
+  --card-foreground: oklch(0.95 0.012 85);
+  --popover: oklch(0.2 0.01 70);
+  --popover-foreground: oklch(0.95 0.012 85);
+  --primary: oklch(0.93 0.03 85);
+  --primary-foreground: oklch(0.18 0.01 70);
+  --secondary: oklch(0.36 0.05 125);
+  --secondary-foreground: oklch(0.95 0.012 85);
+  --muted: oklch(0.26 0.01 70);
+  --muted-foreground: oklch(0.78 0.02 80);
+  --accent: oklch(0.78 0.13 75);
+  --accent-foreground: oklch(0.18 0.01 70);
+  --destructive: oklch(0.55 0.17 28);
+  --destructive-foreground: oklch(0.97 0.01 85);
+  --border: oklch(1 0 0 / 12%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.551 0.027 264.364);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.208 0.042 265.755);
-  --sidebar-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.279 0.041 260.031);
-  --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
+  --ring: oklch(0.78 0.13 75);
+  --chart-1: oklch(0.78 0.13 75);
+  --chart-2: oklch(0.45 0.06 125);
+  --chart-3: oklch(0.5 0.07 55);
+  --chart-4: oklch(0.6 0.01 70);
+  --chart-5: oklch(0.55 0.17 28);
+  --sidebar: oklch(0.18 0.008 70);
+  --sidebar-foreground: oklch(0.95 0.012 85);
+  --sidebar-primary: oklch(0.78 0.13 75);
+  --sidebar-primary-foreground: oklch(0.18 0.01 70);
+  --sidebar-accent: oklch(0.26 0.01 70);
+  --sidebar-accent-foreground: oklch(0.95 0.012 85);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.551 0.027 264.364);
+  --sidebar-ring: oklch(0.78 0.13 75);
+
+  /* Glass + story tokens */
+  --glass-bg: oklch(0.22 0.01 70 / 0.42);
+  --glass-border: oklch(1 0 0 / 0.16);
+  --glass-highlight: oklch(1 0 0 / 0.22);
+  --story-fade: linear-gradient(
+    to bottom,
+    oklch(0.14 0.006 70 / 0.55) 0%,
+    transparent 16%,
+    transparent 50%,
+    oklch(0.14 0.006 70 / 0.9) 72%,
+    var(--background) 100%
+  );
+  --gradient-cta: linear-gradient(180deg, oklch(0.97 0.02 85), oklch(0.86 0.05 80));
+  --shadow-cta: 0 12px 32px -8px oklch(0.78 0.13 75 / 0.45), inset 0 1px 0 oklch(1 0 0 / 0.9);
+  --shadow-glass: 0 20px 50px -20px oklch(0 0 0 / 0.7), inset 0 1px 0 var(--glass-highlight);
 }
 
 @layer base {
@@ -148,8 +132,345 @@
     border-color: var(--color-border);
   }
 
+  html {
+    background-color: var(--color-background);
+  }
+
+  /* Each page paints its own background under Telegram's top buttons,
+     so the safe area matches the page and full-height pages never scroll. */
+  main {
+    padding-top: calc(var(--tg-safe-top, 0px) + var(--main-pt, 0px));
+  }
+
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
   }
+}
+
+@utility glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-glass);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+}
+
+@utility story-fade {
+  background: var(--story-fade);
+}
+
+@utility btn-cta {
+  background: var(--gradient-cta);
+  box-shadow: var(--shadow-cta);
+  color: var(--primary-foreground);
+}
+
+@keyframes story-progress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+@keyframes story-kenburns {
+  from { transform: scale(1.08); }
+  to { transform: scale(1); }
+}
+@keyframes story-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@utility animate-story-progress {
+  animation: story-progress var(--story-duration, 6s) linear forwards;
+}
+@utility animate-kenburns {
+  animation: story-kenburns 7s ease-out forwards;
+}
+@utility animate-rise {
+  animation: story-rise 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+/* TON Connect wallet window is English: keep it left-to-right inside the RTL app */
+#tc-widget-root {
+  direction: ltr;
+}
+
+/* Story hype: titles slam in; the danger beat shakes and glows red */
+@keyframes story-slam {
+  0% { opacity: 0; transform: scale(1.35); filter: blur(6px); letter-spacing: 0.08em; }
+  60% { opacity: 1; transform: scale(0.97); filter: blur(0); }
+  100% { opacity: 1; transform: scale(1); letter-spacing: normal; }
+}
+@keyframes story-quake {
+  0%, 100% { transform: translate(0, 0); }
+  15% { transform: translate(-3px, 1px) rotate(-0.6deg); }
+  30% { transform: translate(3px, -1px) rotate(0.6deg); }
+  45% { transform: translate(-2px, 0); }
+  60% { transform: translate(2px, 1px); }
+  75% { transform: translate(-1px, 0); }
+}
+@keyframes story-alarm-pulse {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 0.6; }
+}
+@utility animate-slam {
+  animation: story-slam 0.7s cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+@utility animate-quake {
+  animation: story-slam 0.7s cubic-bezier(0.2, 0.9, 0.2, 1) both, story-quake 0.45s ease-in-out 0.7s 2;
+}
+@utility text-alarm {
+  color: var(--destructive-foreground);
+  text-shadow: 0 0 18px color-mix(in oklab, var(--destructive) 85%, transparent), 0 2px 0 color-mix(in oklab, var(--destructive) 60%, black);
+}
+@utility story-alarm-vignette {
+  background: radial-gradient(ellipse at center, transparent 45%, color-mix(in oklab, var(--destructive) 55%, transparent) 100%);
+  animation: story-alarm-pulse 1.6s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-slam, .animate-quake, .story-alarm-vignette { animation: none; }
+}
+
+/* ---------- Tasks page ---------- */
+:root {
+  --gradient-gold: linear-gradient(180deg, oklch(0.95 0.08 90), oklch(0.76 0.14 72));
+  --gradient-bar: linear-gradient(270deg, oklch(0.86 0.13 85), oklch(0.72 0.15 62));
+  --card-surface: linear-gradient(180deg, oklch(0.25 0.012 70 / 0.78), oklch(0.18 0.008 70 / 0.86));
+  --tile-onchain: linear-gradient(160deg, oklch(0.52 0.09 240), oklch(0.32 0.06 245));
+  --tile-game: linear-gradient(160deg, oklch(0.5 0.07 125), oklch(0.3 0.05 130));
+  --tile-social: linear-gradient(160deg, oklch(0.56 0.08 55), oklch(0.34 0.06 45));
+  --tile-partners: linear-gradient(160deg, oklch(0.55 0.13 32), oklch(0.33 0.09 28));
+  --tile-gold: linear-gradient(160deg, oklch(0.8 0.13 80), oklch(0.58 0.12 62));
+  --success: oklch(0.72 0.14 150);
+  --hero-fade: linear-gradient(to bottom, oklch(0.14 0.006 70 / 0.2) 0%, oklch(0.14 0.006 70 / 0.35) 45%, var(--background) 100%);
+}
+@theme inline {
+  --color-success: var(--success);
+}
+@utility text-gold {
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+@utility bg-gold-bar {
+  background: var(--gradient-bar);
+}
+@utility glass-card {
+  background: var(--card-surface);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-glass);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+}
+@utility hero-fade {
+  background: var(--hero-fade);
+}
+@utility emoji-tile {
+  box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.25), 0 8px 18px -8px oklch(0 0 0 / 0.7);
+}
+@utility tile-onchain { background: var(--tile-onchain); }
+@utility tile-game { background: var(--tile-game); }
+@utility tile-social { background: var(--tile-social); }
+@utility tile-partners { background: var(--tile-partners); }
+@utility tile-gold { background: var(--tile-gold); }
+
+@keyframes lantern-flicker {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  40% { opacity: 0.8; transform: scale(1.06); }
+  60% { opacity: 0.6; transform: scale(0.98); }
+}
+@utility animate-lantern {
+  animation: lantern-flicker 3.2s ease-in-out infinite;
+}
+@utility lantern-glow {
+  background: radial-gradient(circle, oklch(0.82 0.14 75 / 0.55), transparent 65%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-lantern { animation: none; }
+}
+
+@keyframes hero-breathe {
+  0%, 100% { transform: scale(1.02) translateY(0); }
+  50% { transform: scale(1.07) translateY(-1.5%); }
+}
+@utility animate-breathe {
+  animation: hero-breathe 9s ease-in-out infinite;
+}
+
+@utility battle-shade {
+  background: linear-gradient(to bottom, oklch(0.1 0.01 60 / 0.55) 0%, transparent 30%, transparent 60%, oklch(0.1 0.01 60 / 0.75) 100%);
+}
+@keyframes coin-pop {
+  0% { opacity: 0; transform: translateY(10px) scale(0.6); }
+  20% { opacity: 1; transform: translateY(0) scale(1.15); }
+  100% { opacity: 0; transform: translateY(-60px) scale(1); }
+}
+@utility animate-coin-pop { animation: coin-pop 1.6s ease-out forwards; }
+
+.segment-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 420ms ease-in-out; }
+.segment-video.segment-visible { opacity: 1; }
+.segment-mirrored { transform: scaleX(-1); }
+@media (prefers-reduced-motion: reduce) { .segment-video { transition: none; } }
+
+:root {
+  --wallet-surface: linear-gradient(135deg, oklch(0.38 0.07 160 / 0.92), oklch(0.23 0.025 200 / 0.95));
+  --wallet-shade: linear-gradient(to bottom, oklch(0.14 0.006 70 / 0.15), var(--background) 95%);
+}
+@utility wallet-surface { background: var(--wallet-surface); border: 1px solid var(--glass-highlight); box-shadow: var(--shadow-glass); }
+@utility wallet-shade { background: var(--wallet-shade); }
+
+:root {
+  --profile-shade: linear-gradient(to bottom, oklch(0.14 0.006 70 / 0.12), oklch(0.14 0.006 70 / 0.35) 30%, var(--background) 100%);
+  --profile-recruit: linear-gradient(135deg, oklch(0.31 0.04 160 / 0.9), oklch(0.22 0.022 200 / 0.94));
+}
+@utility profile-shade { background: var(--profile-shade); }
+@utility profile-recruit { background: var(--profile-recruit); border: 1px solid var(--glass-highlight); box-shadow: var(--shadow-glass); }
+
+/* ---------- Mine Pass collectible card ---------- */
+:root {
+  --pass-frame: linear-gradient(150deg, oklch(0.93 0.09 88), oklch(0.62 0.12 62) 35%, oklch(0.88 0.11 82) 60%, oklch(0.52 0.1 55));
+  --pass-shade: linear-gradient(to bottom, oklch(0.12 0.006 70 / 0) 40%, oklch(0.12 0.006 70 / 0.75) 72%, oklch(0.1 0.006 70 / 0.96) 100%);
+  --pass-shine: linear-gradient(115deg, transparent 30%, oklch(0.98 0.05 90 / 0.35) 45%, oklch(0.85 0.1 180 / 0.18) 52%, transparent 65%);
+  --pass-glow: 0 18px 50px -12px oklch(0.78 0.13 75 / 0.45), 0 0 0 1px oklch(0.9 0.08 85 / 0.25);
+  --pass-number: linear-gradient(180deg, oklch(0.98 0.06 92), oklch(0.8 0.14 74) 70%, oklch(0.66 0.13 62));
+}
+@utility pass-frame { background: var(--pass-frame); box-shadow: var(--pass-glow); }
+@utility pass-shade { background: var(--pass-shade); }
+@utility pass-number { background: var(--pass-number); -webkit-background-clip: text; background-clip: text; color: transparent; }
+@utility pass-shine {
+  background: var(--pass-shine);
+  background-size: 250% 100%;
+  animation: pass-shine 4.5s ease-in-out infinite;
+  mix-blend-mode: screen;
+}
+@utility pass-locked { filter: grayscale(0.85) brightness(0.55); }
+@keyframes pass-shine {
+  0%, 15% { background-position: 120% 0; }
+  70%, 100% { background-position: -120% 0; }
+}
+@media (prefers-reduced-motion: reduce) { .pass-shine { animation: none; } }
+
+/* ---------- NFT page ---------- */
+:root {
+  --nft-night: radial-gradient(120% 80% at 50% 0%, oklch(0.26 0.06 270) 0%, oklch(0.14 0.03 265) 55%, oklch(0.09 0.01 260) 100%);
+  --nft-dusk: linear-gradient(to bottom, oklch(0.2 0.05 265 / 0) 0%, oklch(0.55 0.13 55 / 0.55) 70%, oklch(0.7 0.15 60 / 0.8) 100%);
+  --nft-speed: repeating-linear-gradient(90deg, transparent 0 18px, oklch(0.98 0.03 85 / 0.22) 18px 19px, transparent 19px 41px);
+  --nft-back: radial-gradient(90% 70% at 50% 35%, oklch(0.32 0.06 75) 0%, oklch(0.16 0.02 70) 70%);
+  --rarity-common: oklch(0.78 0.03 85);
+  --rarity-rare: oklch(0.72 0.12 230);
+  --rarity-epic: oklch(0.66 0.2 25);
+  --rarity-legendary: oklch(0.84 0.15 82);
+}
+@theme inline {
+  --color-rarity-common: var(--rarity-common);
+  --color-rarity-rare: var(--rarity-rare);
+  --color-rarity-epic: var(--rarity-epic);
+  --color-rarity-legendary: var(--rarity-legendary);
+}
+@utility nft-night { background: var(--nft-night); }
+@utility nft-back { background: var(--nft-back); }
+@utility nft-intro-hero { animation: nft-intro-hero 8s cubic-bezier(0.55, 0, 0.3, 1) forwards; transform-origin: 50% 70%; }
+@utility nft-intro-dusk { background: var(--nft-dusk); animation: nft-intro-dusk 8s linear forwards; }
+@utility nft-intro-speed { background: var(--nft-speed); animation: nft-intro-speed 8s linear forwards; opacity: 0; }
+@utility nft-intro-stars { animation: nft-intro-stars 8s cubic-bezier(0.2, 0.7, 0.2, 1) forwards; }
+@utility nft-star { position: absolute; border-radius: 9999px; background: var(--foreground); animation: nft-twinkle 2.6s ease-in-out infinite; }
+@utility nft-card-in { animation: nft-card-in 0.9s cubic-bezier(0.2, 0.9, 0.25, 1.15) both; }
+@utility nft-float { animation: nft-float 3.6s ease-in-out infinite; }
+@utility nft-flip { animation: nft-flip 0.9s cubic-bezier(0.3, 0.8, 0.3, 1) both; }
+
+@keyframes nft-intro-hero {
+  0% { transform: scale(1.02) translateY(0); filter: blur(0); opacity: 1; }
+  42% { transform: scale(1.1) translateY(0); filter: blur(0); opacity: 1; }
+  62% { transform: scale(1.25) translateY(115%); filter: blur(6px); opacity: 0.4; }
+  70%, 100% { transform: scale(1.25) translateY(140%); filter: blur(8px); opacity: 0; }
+}
+@keyframes nft-intro-dusk {
+  0%, 40% { opacity: 0; transform: translateY(0); }
+  52% { opacity: 1; }
+  70% { opacity: 0.6; transform: translateY(60%); }
+  80%, 100% { opacity: 0; transform: translateY(100%); }
+}
+@keyframes nft-intro-speed {
+  0%, 42% { opacity: 0; transform: scaleY(1); }
+  50%, 66% { opacity: 1; transform: scaleY(1.4); }
+  78%, 100% { opacity: 0; transform: scaleY(1); }
+}
+@keyframes nft-intro-stars {
+  0%, 44% { opacity: 0; transform: translateY(-60%); }
+  58% { opacity: 0.7; }
+  92%, 100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes nft-twinkle { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+@keyframes nft-card-in { from { opacity: 0; transform: translateY(40px) scale(0.85); } to { opacity: 1; transform: none; } }
+@keyframes nft-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes nft-flip { from { transform: perspective(900px) rotateY(90deg) scale(0.9); } to { transform: perspective(900px) rotateY(0) scale(1); } }
+@media (prefers-reduced-motion: reduce) {
+  .nft-intro-hero, .nft-intro-dusk, .nft-intro-speed, .nft-intro-stars, .nft-star, .nft-float { animation-duration: 0.01ms; }
+}
+
+/* Vault Raid game */
+.raid-wheel {
+  background: repeating-conic-gradient(from -22.5deg, color-mix(in oklab, var(--accent) 85%, var(--background)) 0 45deg, color-mix(in oklab, var(--secondary) 90%, var(--background)) 45deg 90deg);
+  box-shadow: 0 0 0 6px color-mix(in oklab, var(--accent) 55%, transparent), 0 0 40px color-mix(in oklab, var(--accent) 45%, transparent);
+  transition: transform 3.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.raid-vault-glow { box-shadow: 0 0 30px color-mix(in oklab, var(--accent) 40%, transparent); }
+.raid-pop { animation: raid-pop 0.5s cubic-bezier(0.2, 1.4, 0.4, 1) both; }
+@keyframes raid-pop { from { transform: scale(0.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .raid-wheel { transition-duration: 0.3s; } .raid-pop { animation: none; } }
+
+/* Illustrated story chapter */
+.story-panel { background: color-mix(in oklab, var(--card) 88%, transparent); border: 1px solid color-mix(in oklab, var(--accent) 35%, transparent); box-shadow: 0 10px 40px oklch(0 0 0 / 0.45); }
+.story-riddle { background: color-mix(in oklab, var(--accent) 10%, transparent); border: 1px dashed color-mix(in oklab, var(--accent) 55%, transparent); }
+
+/* Anime novel full-screen game */
+.vn-bg { animation: vn-pan 14s ease-in-out infinite alternate; }
+.vn-enter { animation: vn-enter 0.7s cubic-bezier(.2,.8,.2,1) both; }
+.vn-flash { animation: vn-flash 0.6s ease-out both; pointer-events: none; background: var(--foreground); }
+.vn-rise { animation: story-rise 0.45s ease-out both; }
+.vn-pop { animation: vn-pop 0.5s cubic-bezier(.3,1.6,.5,1) both; }
+.vn-tab-in { animation: vn-tab 0.4s ease-out both; }
+.vn-caret::after { content: "▍"; margin-inline-start: 2px; animation: vn-blink 0.8s steps(1) infinite; color: var(--accent); }
+.vn-ember { position: absolute; bottom: -10px; width: 4px; height: 4px; border-radius: 9999px; background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: vn-ember linear infinite; opacity: 0; }
+.vn-shade { background: linear-gradient(to top, var(--background) 8%, color-mix(in oklab, var(--background) 55%, transparent) 45%, transparent 70%), linear-gradient(to bottom, color-mix(in oklab, var(--background) 70%, transparent), transparent 22%); }
+@keyframes vn-pan { from { transform: scale(1.12) translateX(2%); } to { transform: scale(1.18) translateX(-3%); } }
+@keyframes vn-enter { from { opacity: 0; transform: scale(1.3); filter: blur(8px); } to { opacity: 1; transform: scale(1.12); filter: blur(0); } }
+@keyframes vn-flash { from { opacity: 0.55; } to { opacity: 0; } }
+@keyframes vn-pop { from { opacity: 0; transform: scale(0.6); } to { opacity: 1; transform: scale(1); } }
+@keyframes vn-tab { from { opacity: 0; transform: translateX(-16px); } to { opacity: 1; transform: none; } }
+@keyframes vn-blink { 50% { opacity: 0; } }
+@keyframes vn-ember { 0% { opacity: 0; transform: translateY(0); } 15% { opacity: 0.9; } 100% { opacity: 0; transform: translateY(-90vh) translateX(30px); } }
+@media (prefers-reduced-motion: reduce) {
+  .vn-bg, .vn-enter, .vn-flash, .vn-rise, .vn-pop, .vn-tab-in, .vn-ember { animation: none; }
+}
+
+/* Frosted bottom nav: content stays visible behind it. */
+.nav-blur {
+  background: color-mix(in oklab, var(--background) 35%, transparent);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid color-mix(in oklab, var(--foreground) 12%, transparent);
+}
+
+/* Notifications: frosted pill with a coloured accent edge */
+.app-toast {
+  background: color-mix(in oklab, var(--card) 72%, transparent);
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  border: 1px solid var(--border);
+  box-shadow: 0 12px 32px -12px oklch(0 0 0 / 0.7);
+  --toast-accent: var(--accent);
+}
+.app-toast-success { --toast-accent: var(--success); }
+.app-toast-error { --toast-accent: var(--destructive); }
+.app-toast { border-inline-start: 3px solid var(--toast-accent); }
+.app-toast-icon { color: var(--toast-accent); background: color-mix(in oklab, var(--toast-accent) 16%, transparent); }
+.app-toast-icon svg { width: 1.1rem; height: 1.1rem; }
+
+/* Screens are designed right-to-left; in left-to-right languages, mirror direction arrows so "next" still points forward. */
+[dir="ltr"] :is(.lucide-chevron-left, .lucide-chevron-right, .lucide-arrow-left, .lucide-arrow-right):not(.rdp *) {
+  transform: scaleX(-1);
 }
