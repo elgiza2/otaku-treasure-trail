@@ -1,17 +1,19 @@
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient, useSuspenseQuery, queryOptions } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 
 import hallImage from "@/assets/tasks/garrison-hall.jpg";
 import { AnimatedEmoji } from "@/components/emoji/AnimatedEmoji";
 import type { EmojiName } from "@/components/emoji/emoji-registry";
+import { showAdsgramAd } from "@/lib/adsgram";
 import { COIN, formatAmount, referralLink } from "@/lib/coin";
 import { useTelegramInitData, haptic, openExternal, shareLink } from "@/lib/telegram";
 import { showRewardedAd } from "@/lib/monetag";
 import { claimAdReward } from "@/lib/shop.functions";
 import { shopErrorMessage } from "@/lib/shop-model";
+import { TOURNAMENT_AD_POINTS, TOURNAMENT_PRIZE_POOL, type AdProvider } from "@/lib/tournament-model";
 import { claimCheckin, claimTask, getMyBoard, listTasks, saveWallet, startTask } from "@/lib/tasks.functions";
 import { claimErrorMessage, isAvailable, taskState, type TaskCategory, type TaskDTO } from "@/lib/tasks-model";
 import { cn } from "@/lib/utils";
@@ -99,16 +101,33 @@ export function TasksPage({ category }: { category: CategoryFilter }) {
     onSettled: () => setBusyTask(null),
   });
 
-  // Ads task: open-ended, one reward per finished ad.
+  // Dual ads task (Adsgram + Monetag): unlimited, pays ANIME + tournament points.
   const adFn = useServerFn(claimAdReward);
   const [adsWatched, setAdsWatched] = useState(0);
+  const [busyAd, setBusyAd] = useState<AdProvider | null>(null);
   const ad = useMutation({
-    mutationFn: async () => { await showRewardedAd(); return adFn({ data: { initData } }); },
-    onSuccess: (r) => { reward(r.amount); setAdsWatched((n) => n + 1); void refresh(); },
+    mutationFn: async (provider: AdProvider) => {
+      setBusyAd(provider);
+      if (provider === "adsgram") await showAdsgramAd();
+      else await showRewardedAd();
+      return adFn({ data: { initData, provider } });
+    },
+    onSuccess: (r) => {
+      haptic("success");
+      toast.success(`+${formatAmount(r.amount)} ${COIN.symbol}`, { description: `و +${TOURNAMENT_AD_POINTS} نقاط مسابقة` });
+      setAdsWatched((n) => n + 1);
+      void refresh();
+      void qc.invalidateQueries({ queryKey: ["wall-tournament"] });
+      void qc.invalidateQueries({ queryKey: ["wall-tournament-me"] });
+    },
     onError: (e) => {
       haptic("error");
-      toast.error(e instanceof Error && e.message === "ad_unavailable" ? "مفيش إعلان متاح دلوقتي، جرب كمان شوية" : shopErrorMessage(e));
+      const msg = e instanceof Error ? e.message : "";
+      if (msg === "ad_unavailable") toast.error("مفيش إعلان متاح على الشبكة دي دلوقتي، جرّب الشبكة التانية");
+      else if (msg === "ad_skipped") toast.error("لازم تكمل مشاهدة الإعلان عشان تاخد المكافأة");
+      else toast.error(shopErrorMessage(e));
     },
+    onSettled: () => setBusyAd(null),
   });
 
   // Save the TON wallet once the player connects it, so the wallet task unlocks.
@@ -209,7 +228,24 @@ export function TasksPage({ category }: { category: CategoryFilter }) {
         </div>
 
         <div className="mt-3">
-          <AdTaskCard busy={ad.isPending} watched={adsWatched} onWatch={() => (initData ? ad.mutate() : toast(GUEST_MSG))} />
+          <Link to="/tournament" className="glass-card flex items-center gap-3 rounded-[1.5rem] p-3.5">
+            <span className="grid size-[3.25rem] shrink-0 place-items-center rounded-2xl">
+              <AnimatedEmoji name="sparkle" className="size-8 text-accent" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block truncate font-display text-base font-extrabold text-gold">مسابقة {TOURNAMENT_PRIZE_POOL} GRAM</span>
+              <span className="block text-xs text-muted-foreground">دورة كل 3 أيام · إعلانات وإحالات موثقة</span>
+            </span>
+            <span className="btn-cta shrink-0 rounded-full px-4 py-2 font-display text-xs font-extrabold">شارك</span>
+          </Link>
+        </div>
+
+        <div className="mt-3">
+          <AdTaskCard
+            busyProvider={busyAd}
+            watched={adsWatched}
+            onWatch={(provider) => (initData ? ad.mutate(provider) : toast(GUEST_MSG))}
+          />
         </div>
 
         <nav aria-label="أقسام المهام" className="-mx-4 mt-5 overflow-x-auto px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">

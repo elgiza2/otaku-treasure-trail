@@ -1,6 +1,6 @@
 import { beginCell } from "@ton/core";
 import { describe, expect, it } from "vitest";
-import { adReward, commentPayload, findPack, toNano } from "@/lib/shop-model";
+import { AD_GAP_SECONDS, AD_MIN_REWARD, adReward, commentPayload, findPack, toNano } from "@/lib/shop-model";
 
 describe("TON shop", () => {
   it("comment payload matches the official TON encoder", () => {
@@ -13,6 +13,10 @@ describe("TON shop", () => {
 });
 
 describe("rewarded ads", () => {
-  it("pays at least 100", () => expect(adReward(10)).toBe(100));
-  it("pays one hour of mining", () => expect(adReward(640)).toBe(640));
+  it("pays a small fixed coin reward (15 ANIME) with no cooldown limit", () => {
+    expect(AD_MIN_REWARD).toBe(15);
+    expect(AD_GAP_SECONDS).toBe(0);
+    expect(adReward(10)).toBe(15);
+    expect(adReward(640)).toBe(15);
+  });
 });

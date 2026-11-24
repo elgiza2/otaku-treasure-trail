@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { BottomNav } from "@/components/BottomNav";
@@ -11,6 +12,7 @@ import { COIN, formatAmount } from "@/lib/coin";
 import { getHeroBoard } from "@/lib/heroes.functions";
 import { pendingCoins, totalRate, TOTAL_MAX } from "@/lib/heroes-model";
 import { getMyBoard, saveWallet } from "@/lib/tasks.functions";
+import { getMyTournamentStatus } from "@/lib/tournament.functions";
 import { useTelegramInitData } from "@/lib/telegram";
 import { getTonConnect, shortTonAddress } from "@/lib/ton-connect";
 import vaultImage from "@/assets/onboarding/v3-2-mine.jpg";
@@ -28,8 +30,10 @@ export function WalletPage() {
   const heroFn = useServerFn(getHeroBoard);
   const playerFn = useServerFn(getMyBoard);
   const saveFn = useServerFn(saveWallet);
+  const tournamentFn = useServerFn(getMyTournamentStatus);
   const board = useQuery({ queryKey: ["wall-heroes", initData], queryFn: () => heroFn({ data: { initData } }), enabled: !!initData });
   const player = useQuery({ queryKey: ["wall-board", initData], queryFn: () => playerFn({ data: { initData } }), enabled: !!initData });
+  const tournamentMe = useQuery({ queryKey: ["wall-tournament-me", initData], queryFn: () => tournamentFn({ data: { initData } }), enabled: !!initData });
   const refresh = () => {
     void qc.invalidateQueries({ queryKey: ["wall-heroes"] });
     void qc.invalidateQueries({ queryKey: ["wall-board"] });
@@ -108,6 +112,19 @@ export function WalletPage() {
       {!initData && <p className="mt-3 text-center text-xs text-muted-foreground">افتح اللعبة من تيليجرام لعرض رصيدك</p>}
       {loading && <p role="status" className="mt-3 text-xs text-muted-foreground">جارٍ تحديث الرصيد…</p>}
       {(board.isError || player.isError) && <div role="alert" className="mt-3 flex items-center justify-between text-sm"><span>تعذّر تحميل الرصيد</span><Button variant="outline" onClick={refresh}>إعادة المحاولة</Button></div>}
+
+      <section className="mt-6">
+        <h2 className="mb-3 text-xl font-extrabold">مكافآت مسابقة GRAM</h2>
+        <Link to="/tournament" className="glass-card flex items-center justify-between gap-3 rounded-3xl p-4">
+          <div>
+            <p className="text-xs text-muted-foreground">رصيدك من جوائز المسابقة</p>
+            <p className="mt-1 font-display text-2xl font-extrabold tabular-nums text-gold" dir="ltr">
+              {tournamentMe.data ? formatAmount(tournamentMe.data.gramBalance) : "—"} <span className="text-xs">GRAM</span>
+            </p>
+          </div>
+          <span className="btn-cta shrink-0 rounded-xl px-4 py-2 text-xs font-extrabold">المسابقة</span>
+        </Link>
+      </section>
 
       <section className="mt-6">
         <h2 className="mb-3 text-xl font-extrabold">محفظة TON</h2>

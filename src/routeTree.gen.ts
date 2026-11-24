@@ -17,6 +17,7 @@ import { Route as NftRouteImport } from './routes/nft'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as RaidRouteImport } from './routes/raid'
 import { Route as TasksRouteImport } from './routes/tasks'
+import { Route as TournamentRouteImport } from './routes/tournament'
 import { Route as WalletRouteImport } from './routes/wallet'
 import { Route as ApiPublicTonconnectManifestRouteImport } from './routes/api/public/tonconnect-manifest'
 import { Route as ApiPublicWalletIconRouteImport } from './routes/api/public/wallet-icon'
@@ -63,6 +64,11 @@ const RaidRoute = RaidRouteImport.update({
 const TasksRoute = TasksRouteImport.update({
   id: '/tasks',
   path: '/tasks',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TournamentRoute = TournamentRouteImport.update({
+  id: '/tournament',
+  path: '/tournament',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WalletRoute = WalletRouteImport.update({
@@ -112,6 +118,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProfileRoute
   '/raid': typeof RaidRoute
   '/tasks': typeof TasksRoute
+  '/tournament': typeof TournamentRoute
   '/wallet': typeof WalletRoute
   '/api/public/tonconnect-manifest': typeof ApiPublicTonconnectManifestRoute
   '/api/public/wallet-icon': typeof ApiPublicWalletIconRoute
@@ -129,6 +136,7 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileRoute
   '/raid': typeof RaidRoute
   '/tasks': typeof TasksRoute
+  '/tournament': typeof TournamentRoute
   '/wallet': typeof WalletRoute
   '/api/public/tonconnect-manifest': typeof ApiPublicTonconnectManifestRoute
   '/api/public/wallet-icon': typeof ApiPublicWalletIconRoute
@@ -147,6 +155,7 @@ export interface FileRoutesById {
   '/profile': typeof ProfileRoute
   '/raid': typeof RaidRoute
   '/tasks': typeof TasksRoute
+  '/tournament': typeof TournamentRoute
   '/wallet': typeof WalletRoute
   '/api/public/tonconnect-manifest': typeof ApiPublicTonconnectManifestRoute
   '/api/public/wallet-icon': typeof ApiPublicWalletIconRoute
@@ -166,6 +175,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/raid'
     | '/tasks'
+    | '/tournament'
     | '/wallet'
     | '/api/public/tonconnect-manifest'
     | '/api/public/wallet-icon'
@@ -183,6 +193,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/raid'
     | '/tasks'
+    | '/tournament'
     | '/wallet'
     | '/api/public/tonconnect-manifest'
     | '/api/public/wallet-icon'
@@ -200,6 +211,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/raid'
     | '/tasks'
+    | '/tournament'
     | '/wallet'
     | '/api/public/tonconnect-manifest'
     | '/api/public/wallet-icon'
@@ -218,6 +230,7 @@ export interface RootRouteChildren {
   ProfileRoute: typeof ProfileRoute
   RaidRoute: typeof RaidRoute
   TasksRoute: typeof TasksRoute
+  TournamentRoute: typeof TournamentRoute
   WalletRoute: typeof WalletRoute
   ApiPublicTonconnectManifestRoute: typeof ApiPublicTonconnectManifestRoute
   ApiPublicWalletIconRoute: typeof ApiPublicWalletIconRoute
@@ -285,6 +298,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TasksRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tournament': {
+      id: '/tournament'
+      path: '/tournament'
+      fullPath: '/tournament'
+      preLoaderRoute: typeof TournamentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/wallet': {
       id: '/wallet'
       path: '/wallet'
@@ -346,6 +366,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileRoute: ProfileRoute,
   RaidRoute: RaidRoute,
   TasksRoute: TasksRoute,
+  TournamentRoute: TournamentRoute,
   WalletRoute: WalletRoute,
   ApiPublicTonconnectManifestRoute: ApiPublicTonconnectManifestRoute,
   ApiPublicWalletIconRoute: ApiPublicWalletIconRoute,
