@@ -4786,18 +4786,21 @@ export type Database = {
         Row: {
           created_at: string
           id: number
+          provider: string
           reward: number
           tg_id: number
         }
         Insert: {
           created_at?: string
           id?: number
+          provider?: string
           reward: number
           tg_id: number
         }
         Update: {
           created_at?: string
           id?: number
+          provider?: string
           reward?: number
           tg_id?: number
         }
@@ -5461,6 +5464,87 @@ export type Database = {
         }
         Relationships: []
       }
+      wall_tournament_entries: {
+        Row: {
+          ads_count: number
+          final_rank: number | null
+          points: number
+          prize_gram: number
+          referrals_count: number
+          tg_id: number
+          tournament_id: string
+          updated_at: string
+        }
+        Insert: {
+          ads_count?: number
+          final_rank?: number | null
+          points?: number
+          prize_gram?: number
+          referrals_count?: number
+          tg_id: number
+          tournament_id: string
+          updated_at?: string
+        }
+        Update: {
+          ads_count?: number
+          final_rank?: number | null
+          points?: number
+          prize_gram?: number
+          referrals_count?: number
+          tg_id?: number
+          tournament_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wall_tournament_entries_tg_id_fkey"
+            columns: ["tg_id"]
+            isOneToOne: false
+            referencedRelation: "wall_users"
+            referencedColumns: ["tg_id"]
+          },
+          {
+            foreignKeyName: "wall_tournament_entries_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "wall_tournaments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wall_tournaments: {
+        Row: {
+          created_at: string
+          ends_at: string
+          id: string
+          prize_pool: number
+          round_number: number
+          settled_at: string | null
+          starts_at: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          ends_at?: string
+          id?: string
+          prize_pool?: number
+          round_number: number
+          settled_at?: string | null
+          starts_at?: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          ends_at?: string
+          id?: string
+          prize_pool?: number
+          round_number?: number
+          settled_at?: string | null
+          starts_at?: string
+          status?: string
+        }
+        Relationships: []
+      }
       wall_users: {
         Row: {
           balance: number
@@ -5468,6 +5552,7 @@ export type Database = {
           checkin_streak: number
           created_at: string
           first_name: string
+          gram_balance: number
           language_code: string | null
           last_checkin_at: string | null
           last_seen_at: string
@@ -5475,6 +5560,7 @@ export type Database = {
           notified_slot: string | null
           photo_url: string | null
           ref_rewarded_at: string | null
+          ref_tournament_rewarded_at: string | null
           referrer_id: number | null
           tg_id: number
           total_level: number
@@ -5487,6 +5573,7 @@ export type Database = {
           checkin_streak?: number
           created_at?: string
           first_name?: string
+          gram_balance?: number
           language_code?: string | null
           last_checkin_at?: string | null
           last_seen_at?: string
@@ -5494,6 +5581,7 @@ export type Database = {
           notified_slot?: string | null
           photo_url?: string | null
           ref_rewarded_at?: string | null
+          ref_tournament_rewarded_at?: string | null
           referrer_id?: number | null
           tg_id: number
           total_level?: number
@@ -5506,6 +5594,7 @@ export type Database = {
           checkin_streak?: number
           created_at?: string
           first_name?: string
+          gram_balance?: number
           language_code?: string | null
           last_checkin_at?: string | null
           last_seen_at?: string
@@ -5513,6 +5602,7 @@ export type Database = {
           notified_slot?: string | null
           photo_url?: string | null
           ref_rewarded_at?: string | null
+          ref_tournament_rewarded_at?: string | null
           referrer_id?: number | null
           tg_id?: number
           total_level?: number
@@ -6346,6 +6436,19 @@ export type Database = {
         Returns: undefined
       }
       wall_ad_reward: { Args: { _tg: number }; Returns: number }
+      wall_ad_reward_v2: {
+        Args: { _provider?: string; _tg: number }
+        Returns: number
+      }
+      wall_add_tournament_points: {
+        Args: {
+          _is_ad?: boolean
+          _is_ref?: boolean
+          _points: number
+          _tg: number
+        }
+        Returns: string
+      }
       wall_anime_claim: { Args: { _tg: number }; Returns: number }
       wall_anime_withdraw: {
         Args: { _address: string; _amount: number; _tg: number }
@@ -6361,6 +6464,7 @@ export type Database = {
         Returns: number
       }
       wall_daily_checkin: { Args: { _tg: number }; Returns: Json }
+      wall_ensure_active_tournament: { Args: never; Returns: string }
       wall_ensure_heroes: { Args: { _tg: number }; Returns: undefined }
       wall_hero_cost: {
         Args: { _hero: number; _level: number }
@@ -6448,6 +6552,7 @@ export type Database = {
       wall_story_today: { Args: never; Returns: number }
       wall_story_use: { Args: { _item: string; _tg: number }; Returns: Json }
       wall_today_gift: { Args: { _amount: number }; Returns: string }
+      wall_tournament_prize: { Args: { _rank: number }; Returns: number }
       wall_upgrade_hero: {
         Args: { _hero: number; _tg: number }
         Returns: number
