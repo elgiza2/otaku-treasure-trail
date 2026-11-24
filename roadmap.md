@@ -7,3 +7,8 @@
 - [x] Add tournament model, server functions, `/tournament` route & UI, and unit tests
 - [x] Wire dual Adsgram + Monetag cards on `/tasks`, tournament entry on `/tasks` & `/battle`, and GRAM balance on `/wallet`
 - [x] Verify build, tests, and browser render, then commit
+- [ ] Add unlimited ad wheel spins and rare GRAM prizes
+- [ ] Add optional 2x battle collection through either ad network
+- [ ] Add regenerating battle/raid energy and ad refills
+- [ ] Add squads, invite links, weekly scoring and collective rewards
+- [ ] Test and verify the requested updates
