@@ -14,11 +14,11 @@ export function findPack(id: string) {
   return PACKS.find((p) => p.id === id);
 }
 
-export const AD_MIN_REWARD = 100;
-export const AD_GAP_SECONDS = 15;
-/** One ad pays one hour of current mining, never less than AD_MIN_REWARD. */
-export function adReward(ratePerHour: number): number {
-  return Math.max(AD_MIN_REWARD, Math.round(ratePerHour));
+export const AD_MIN_REWARD = 15;
+export const AD_GAP_SECONDS = 0;
+/** One ad pays a small fixed coin reward (unlimited ads, no cooldown). */
+export function adReward(_ratePerHour?: number): number {
+  return AD_MIN_REWARD;
 }
 
 export function toNano(ton: number): bigint {

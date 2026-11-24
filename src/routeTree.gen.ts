@@ -20,6 +20,7 @@ import { Route as TasksRouteImport } from './routes/tasks'
 import { Route as WalletRouteImport } from './routes/wallet'
 import { Route as ApiPublicTonconnectManifestRouteImport } from './routes/api/public/tonconnect-manifest'
 import { Route as ApiPublicWalletIconRouteImport } from './routes/api/public/wallet-icon'
+import { Route as ApiPublicAdsgramRewardRouteImport } from './routes/api/public/adsgram/reward'
 import { Route as ApiPublicTelegramCoverRouteImport } from './routes/api/public/telegram/cover'
 import { Route as ApiPublicTelegramDailyRouteImport } from './routes/api/public/telegram/daily'
 import { Route as ApiPublicTelegramWebhookRouteImport } from './routes/api/public/telegram/webhook'
@@ -80,6 +81,11 @@ const ApiPublicWalletIconRoute = ApiPublicWalletIconRouteImport.update({
   path: '/api/public/wallet-icon',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicAdsgramRewardRoute = ApiPublicAdsgramRewardRouteImport.update({
+  id: '/api/public/adsgram/reward',
+  path: '/api/public/adsgram/reward',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicTelegramCoverRoute = ApiPublicTelegramCoverRouteImport.update({
   id: '/api/public/telegram/cover',
   path: '/api/public/telegram/cover',
@@ -109,6 +115,7 @@ export interface FileRoutesByFullPath {
   '/wallet': typeof WalletRoute
   '/api/public/tonconnect-manifest': typeof ApiPublicTonconnectManifestRoute
   '/api/public/wallet-icon': typeof ApiPublicWalletIconRoute
+  '/api/public/adsgram/reward': typeof ApiPublicAdsgramRewardRoute
   '/api/public/telegram/cover': typeof ApiPublicTelegramCoverRoute
   '/api/public/telegram/daily': typeof ApiPublicTelegramDailyRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
@@ -125,6 +132,7 @@ export interface FileRoutesByTo {
   '/wallet': typeof WalletRoute
   '/api/public/tonconnect-manifest': typeof ApiPublicTonconnectManifestRoute
   '/api/public/wallet-icon': typeof ApiPublicWalletIconRoute
+  '/api/public/adsgram/reward': typeof ApiPublicAdsgramRewardRoute
   '/api/public/telegram/cover': typeof ApiPublicTelegramCoverRoute
   '/api/public/telegram/daily': typeof ApiPublicTelegramDailyRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
@@ -142,6 +150,7 @@ export interface FileRoutesById {
   '/wallet': typeof WalletRoute
   '/api/public/tonconnect-manifest': typeof ApiPublicTonconnectManifestRoute
   '/api/public/wallet-icon': typeof ApiPublicWalletIconRoute
+  '/api/public/adsgram/reward': typeof ApiPublicAdsgramRewardRoute
   '/api/public/telegram/cover': typeof ApiPublicTelegramCoverRoute
   '/api/public/telegram/daily': typeof ApiPublicTelegramDailyRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
@@ -160,6 +169,7 @@ export interface FileRouteTypes {
     | '/wallet'
     | '/api/public/tonconnect-manifest'
     | '/api/public/wallet-icon'
+    | '/api/public/adsgram/reward'
     | '/api/public/telegram/cover'
     | '/api/public/telegram/daily'
     | '/api/public/telegram/webhook'
@@ -176,6 +186,7 @@ export interface FileRouteTypes {
     | '/wallet'
     | '/api/public/tonconnect-manifest'
     | '/api/public/wallet-icon'
+    | '/api/public/adsgram/reward'
     | '/api/public/telegram/cover'
     | '/api/public/telegram/daily'
     | '/api/public/telegram/webhook'
@@ -192,6 +203,7 @@ export interface FileRouteTypes {
     | '/wallet'
     | '/api/public/tonconnect-manifest'
     | '/api/public/wallet-icon'
+    | '/api/public/adsgram/reward'
     | '/api/public/telegram/cover'
     | '/api/public/telegram/daily'
     | '/api/public/telegram/webhook'
@@ -209,6 +221,7 @@ export interface RootRouteChildren {
   WalletRoute: typeof WalletRoute
   ApiPublicTonconnectManifestRoute: typeof ApiPublicTonconnectManifestRoute
   ApiPublicWalletIconRoute: typeof ApiPublicWalletIconRoute
+  ApiPublicAdsgramRewardRoute: typeof ApiPublicAdsgramRewardRoute
   ApiPublicTelegramCoverRoute: typeof ApiPublicTelegramCoverRoute
   ApiPublicTelegramDailyRoute: typeof ApiPublicTelegramDailyRoute
   ApiPublicTelegramWebhookRoute: typeof ApiPublicTelegramWebhookRoute
@@ -293,6 +306,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicWalletIconRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/adsgram/reward': {
+      id: '/api/public/adsgram/reward'
+      path: '/api/public/adsgram/reward'
+      fullPath: '/api/public/adsgram/reward'
+      preLoaderRoute: typeof ApiPublicAdsgramRewardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/telegram/cover': {
       id: '/api/public/telegram/cover'
       path: '/api/public/telegram/cover'
@@ -329,6 +349,7 @@ const rootRouteChildren: RootRouteChildren = {
   WalletRoute: WalletRoute,
   ApiPublicTonconnectManifestRoute: ApiPublicTonconnectManifestRoute,
   ApiPublicWalletIconRoute: ApiPublicWalletIconRoute,
+  ApiPublicAdsgramRewardRoute: ApiPublicAdsgramRewardRoute,
   ApiPublicTelegramCoverRoute: ApiPublicTelegramCoverRoute,
   ApiPublicTelegramDailyRoute: ApiPublicTelegramDailyRoute,
   ApiPublicTelegramWebhookRoute: ApiPublicTelegramWebhookRoute,

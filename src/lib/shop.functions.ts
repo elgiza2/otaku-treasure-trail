@@ -97,10 +97,15 @@ export const checkTonPayment = createServerFn({ method: "POST" })
   });
 
 export const claimAdReward = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => authInput.parse(d))
+  .inputValidator((d: unknown) =>
+    authInput.extend({ provider: z.enum(["adsgram", "monetag"]).optional() }).parse(d),
+  )
   .handler(async ({ data }) => {
     const { user, db } = await authPlayer(data.initData);
-    const { data: amt, error } = await db.rpc("wall_ad_reward", { _tg: user.id } as never);
+    const { data: amt, error } = await db.rpc("wall_ad_reward_v2" as never, {
+      _tg: user.id,
+      _provider: data.provider ?? "monetag",
+    } as never);
     if (error) throw new Error(error.message);
     return { amount: Number(amt) };
   });

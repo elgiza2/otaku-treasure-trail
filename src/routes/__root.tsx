@@ -110,6 +110,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { src: "https://telegram.org/js/telegram-web-app.js" },
       // Monetag rewarded ads; exposes window.show_12281067()
       { src: "https://libtl.com/sdk.js", "data-zone": "12281067", "data-sdk": "show_12281067" },
+      // Adsgram rewarded ads; exposes window.Adsgram.init({ blockId: "61733" })
+      { src: "https://sad.adsgram.ai/js/sad.min.js" },
     ],
   }),
   shellComponent: RootShell,
