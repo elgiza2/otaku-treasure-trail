@@ -12,7 +12,7 @@ function StorePage() {
   const ready=useTranslationReady();
   return <main data-translation-pending={ready?undefined:''} className="relative mx-auto min-h-dvh max-w-md overflow-x-hidden bg-background pb-28">
     <div className="pointer-events-none absolute inset-x-0 top-0 h-72 overflow-hidden" aria-hidden="true">
-      <img src={vaultImage} alt="" className="size-full object-cover object-center" />
+      <img src={vaultImage} alt="" className="size-full object-cover object-[center_20%]" />
       <div className="wallet-shade absolute inset-0" />
     </div>
     <div className="relative px-4 pt-6">

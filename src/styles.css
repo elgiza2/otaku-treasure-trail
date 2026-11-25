@@ -501,3 +501,15 @@
 }
 .clean-player [role="tabpanel"] { animation: story-rise 0.25s ease-out; }
 @media (prefers-reduced-motion:reduce) { .clean-player [role="tabpanel"] { animation: none; } }
+
+/* Docked bottom bar + guaranteed safe space so nothing hides under it */
+.app-bottom-nav {
+  background: color-mix(in oklab, var(--background) 88%, transparent);
+  border: 0;
+  border-top: 1px solid oklch(1 0 0 / 0.1);
+  border-radius: 0;
+  box-shadow: 0 -12px 32px -16px oklch(0 0 0 / 0.7);
+  backdrop-filter: blur(20px) saturate(160%);
+}
+.clean-player main:not([class*="h-dvh"]):not([class*="h-[calc"]) { padding-bottom: calc(6.5rem + env(safe-area-inset-bottom)); }
+.app-toolbar { min-height: calc(3.5rem + var(--tg-safe-top, 0px)); }

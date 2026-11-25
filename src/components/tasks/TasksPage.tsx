@@ -22,7 +22,6 @@ export type CategoryFilter = 'all' | TaskCategory;
 export function TasksPage({ category }: { category: CategoryFilter }) {
   const translationReady=useTranslationReady();
   const initData=useTelegramInitData(); const now=useNow(1000); const qc=useQueryClient();
-  const [tab,setTab]=useState<'daily'|'ads'|'friends'>(category==='game'?'friends':'daily');
   const [busyTask,setBusyTask]=useState<string|null>(null);
   const [busyAd,setBusyAd]=useState(false); const [watched,setWatched]=useState(0);
   const {data:tasks}=useSuspenseQuery(tasksQuery);
@@ -58,22 +57,16 @@ export function TasksPage({ category }: { category: CategoryFilter }) {
     <div className="relative px-4 pt-6">
       <header className="mb-5 text-center">
         <h1 className="font-display text-3xl font-extrabold text-gold drop-shadow-sm">المهام والمكافآت</h1>
+        <p className="mt-1 text-xs font-semibold text-muted-foreground">بلا حدود · 15 ANIME + 10 نقاط لكل إعلان</p>
       </header>
-      <div role="tablist" aria-label="أقسام المكافآت" className="glass mb-5 grid grid-cols-3 gap-1 rounded-2xl p-1">
-        {([{id:'daily',label:'اليومية'},{id:'ads',label:'الإعلانات'},{id:'friends',label:'الأصدقاء'}] as const).map(t=>(
-          <button key={t.id} type="button" role="tab" aria-selected={tab===t.id} onClick={()=>setTab(t.id)} className={`rounded-xl py-2.5 text-xs font-extrabold transition-all ${tab===t.id ? 'btn-cta' : 'text-muted-foreground hover:text-foreground'}`}>{t.label}</button>
-        ))}
-      </div>
-      <div role="tabpanel">
-        {tab==='daily'&&<>
-          <GrowthPanel mode="daily"/>
-          <details className="glass-card mt-5 rounded-3xl p-4">
-            <summary className="flex cursor-pointer list-none items-center justify-between font-display text-sm font-extrabold"><span>مهام الحامية · {rows.length}</span><span className="text-xs font-semibold text-accent">عرض</span></summary>
-            <div className="mt-4 space-y-3">{rows.map((task,i)=><TaskCard key={task.id} task={task} state={taskState(task,progress.get(task.id),player,now)} now={now} index={i} busy={busyTask===task.id} onAction={()=>void act(task)}/>)}</div>
-          </details>
-        </>}
-        {tab==='ads'&&<><AdTaskCard busy={busyAd} watched={watched} onWatch={()=>void watch()}/><p className="mt-4 text-center text-xs text-muted-foreground">بلا حدود · 15 ANIME + 10 نقاط لكل إعلان</p></>}
-        {tab==='friends'&&<GrowthPanel mode="referrals"/>}
+      <div className="space-y-6">
+        <section aria-label="الإعلانات"><AdTaskCard busy={busyAd} watched={watched} onWatch={()=>void watch()}/></section>
+        <section aria-labelledby="tasks-heading">
+          <h2 id="tasks-heading" className="mb-3 flex items-center justify-between px-1 font-display text-base font-extrabold"><span>مهام الحامية</span><span className="text-xs font-semibold text-muted-foreground tabular-nums">{rows.length}</span></h2>
+          <div className="space-y-3">{rows.map((task,i)=><TaskCard key={task.id} task={task} state={taskState(task,progress.get(task.id),player,now)} now={now} index={i} busy={busyTask===task.id} onAction={()=>void act(task)}/>)}</div>
+        </section>
+        <section aria-label="المكافأة اليومية"><GrowthPanel mode="daily"/></section>
+        <section aria-label="الأصدقاء"><GrowthPanel mode="referrals"/></section>
       </div>
     </div>
     <BottomNav/>

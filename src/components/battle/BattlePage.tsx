@@ -72,24 +72,24 @@ export function BattlePage() {
   const collect = useMutation({ mutationFn: () => collectFn({ data: { initData } }), onSuccess: (r) => { ok(r.amount); setCollectOpen(false); void qc.invalidateQueries({ queryKey: ["wall-energy"] }); }, onError: (e) => toast.error(e instanceof Error && e.message.includes("no_energy") ? gameError(e) : upgradeErrorMessage(e)) });
 
   return (
-    <main className="relative mx-auto h-[calc(100dvh-4rem-var(--tg-safe-top,0px))] max-w-md overflow-hidden">
+    <main className="relative mx-auto h-[calc(100dvh-3.75rem-var(--tg-safe-top,0px))] max-w-md overflow-hidden">
       {/* Battle footage */}
       {clip ? (
-        <SegmentVideo key={clip} src={clip} poster={hero.image} className="absolute inset-0 size-full" />
+        <SegmentVideo key={clip} src={clip} poster={hero.image} className="absolute inset-x-0 bottom-0 top-36" />
       ) : (
-        <img src={hero.image} alt={hero.name} className="absolute inset-0 size-full object-cover" />
+        <img src={hero.image} alt={hero.name} className="absolute inset-x-0 bottom-0 top-36 h-[calc(100%-9rem)] w-full object-cover object-top" />
       )}
       <div className="battle-shade absolute inset-0" />
 
       {/* Storage header */}
-      <header className="glass absolute inset-x-3 top-3 z-10 rounded-[26px] p-4">
+      <header className="glass absolute inset-x-3 top-3 z-10 rounded-3xl px-4 py-3">
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
             <p className="text-xs text-muted-foreground">غنايم المعركة</p>
-            <p className="text-gold text-3xl font-extrabold tabular-nums">{formatAmount(pending)} <span className="text-sm">{COIN.symbol}</span></p>
+            <p className="text-gold text-2xl font-extrabold tabular-nums">{formatAmount(pending)} <span className="text-sm">{COIN.symbol}</span></p>
           </div>
           <Button type="button" disabled={collect.isPending || (miningEnabled && pending <= 0)} onClick={() => miningEnabled ? setCollectOpen(true) : setPassOpen(true)}
-            className="btn-cta h-auto shrink-0 rounded-2xl px-6 py-3 text-lg font-extrabold disabled:opacity-50">{miningEnabled ? "استلام" : "تفعيل التعدين"}</Button>
+            className="btn-cta h-11 shrink-0 rounded-2xl px-5 text-base font-extrabold disabled:opacity-50">{miningEnabled ? "استلام" : "تفعيل التعدين"}</Button>
         </div>
         <div className="mt-2 flex gap-4 text-xs text-muted-foreground">
           <span className="flex items-center gap-1"><AnimatedEmoji name="spark" className="size-4 text-accent" />{formatAmount(rate)}/س</span>
@@ -98,7 +98,7 @@ export function BattlePage() {
         <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
           <div className="bg-gold-bar h-full rounded-full transition-[width] duration-1000" style={{ width: `${fill * 100}%` }} />
         </div>
-        <div className="mt-3"><EnergyBar initData={initData} disabled={collect.isPending || adBusy} /></div>
+        <div className="mt-2.5"><EnergyBar initData={initData} disabled={collect.isPending || adBusy} /></div>
       </header>
 
       {/* Coin rewards remain visible without covering the battle with a counter. */}
@@ -109,10 +109,10 @@ export function BattlePage() {
         {full && <p className="glass mt-2 rounded-full px-3 py-1 text-xs text-destructive">البطل واقف — استلم عشان يكمل القتال</p>}
       </div>
 
-      <section className="absolute inset-x-4 bottom-24 z-10 flex items-center justify-center gap-3">
-        <button type="button" aria-label="صندوق المفاجآت" title="صندوق المفاجآت" onClick={() => setChestOpen(true)} className="glass flex items-center gap-2 rounded-2xl px-4 py-2.5 text-xs font-extrabold text-foreground transition-transform active:scale-95"><AnimatedEmoji name="crystal" className="size-4 text-accent" /><span>صندوق المفاجآت</span></button>
-        <Link to="/duels" aria-label="تحديات الأصدقاء" title="تحديات الأصدقاء" className="glass flex items-center gap-2 rounded-2xl px-4 py-2.5 text-xs font-extrabold text-foreground transition-transform active:scale-95"><AnimatedEmoji name="shields" className="size-4 text-accent" /><span>التحديات</span></Link>
-        <Link to="/heroes" aria-label="فريق الأبطال" title="فريق الأبطال" className="glass flex items-center gap-2 rounded-2xl px-4 py-2.5 text-xs font-extrabold text-foreground transition-transform active:scale-95"><AnimatedEmoji name="scout" className="size-4 text-accent" /><span>الأبطال</span></Link>
+      <section className="absolute inset-x-3 bottom-[calc(5.5rem+env(safe-area-inset-bottom))] z-10 grid grid-cols-3 gap-2">
+        <button type="button" aria-label="صندوق المفاجآت" title="صندوق المفاجآت" onClick={() => setChestOpen(true)} className="glass flex min-w-0 items-center justify-center gap-1.5 rounded-2xl px-2 py-3 text-xs font-extrabold text-foreground transition-transform active:scale-95"><AnimatedEmoji name="crystal" className="size-4 text-accent" /><span>صندوق المفاجآت</span></button>
+        <Link to="/duels" aria-label="تحديات الأصدقاء" title="تحديات الأصدقاء" className="glass flex min-w-0 items-center justify-center gap-1.5 rounded-2xl px-2 py-3 text-xs font-extrabold text-foreground transition-transform active:scale-95"><AnimatedEmoji name="shields" className="size-4 text-accent" /><span>التحديات</span></Link>
+        <Link to="/heroes" aria-label="فريق الأبطال" title="فريق الأبطال" className="glass flex min-w-0 items-center justify-center gap-1.5 rounded-2xl px-2 py-3 text-xs font-extrabold text-foreground transition-transform active:scale-95"><AnimatedEmoji name="scout" className="size-4 text-accent" /><span>الأبطال</span></Link>
       </section>
       <Dialog open={chestOpen} onOpenChange={setChestOpen}><DialogContent className="max-w-sm"><DialogTitle>صندوق المفاجآت</DialogTitle><DialogDescription>مكافأة كل 8 ساعات</DialogDescription><GrowthPanel mode="chest" /></DialogContent></Dialog>
       <Dialog open={passOpen} onOpenChange={setPassOpen}><DialogContent className="max-w-sm"><DialogTitle>تفعيل التعدين والتوثيق</DialogTitle><DialogDescription>تصريح التعدين · 0.05 TON</DialogDescription><MinePassCard initData={initData} variant="stacked" /></DialogContent></Dialog>

@@ -13,11 +13,11 @@ const ITEMS: readonly { to: string; label: string; emoji: EmojiName }[] = [
 export function BottomNav() {
   const path=useRouterState({select:s=>s.location.pathname});
   return (
-    <nav aria-label="التنقل الرئيسي" className="app-bottom-nav fixed inset-x-3 bottom-3 z-40 mx-auto flex max-w-md justify-around rounded-[26px] px-1.5 py-1.5">
+    <nav aria-label="التنقل الرئيسي" className="app-bottom-nav fixed inset-x-0 bottom-0 z-40 mx-auto flex max-w-md justify-around gap-1 px-2 pt-1.5 pb-[calc(0.375rem+env(safe-area-inset-bottom))]">
       {ITEMS.map((i) => {
         const active = path===i.to || (i.to==='/heroes' && ['/squads','/duels'].includes(path));
         return (
-          <Link key={i.to} to={i.to} aria-current={active ? 'page' : undefined} className={`flex h-13 flex-1 flex-col items-center justify-center gap-0.5 rounded-[20px] text-[11px] font-bold transition-all ${active ? 'bg-foreground/14 text-accent shadow-[inset_0_1px_0_oklch(1_0_0/0.25)]' : 'text-foreground/70 hover:text-foreground'}`}>
+          <Link key={i.to} to={i.to} aria-current={active ? 'page' : undefined} className={`flex h-13 flex-1 flex-col items-center justify-center gap-0.5 rounded-2xl text-[11px] font-bold transition-colors ${active ? 'bg-accent/15 text-accent' : 'text-muted-foreground hover:text-foreground'}`}>
             <AnimatedEmoji name={i.emoji} className={`size-5 ${active ? 'text-accent' : 'text-foreground/75'}`} />
             <span>{i.label}</span>
           </Link>
