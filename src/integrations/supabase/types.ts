@@ -5364,6 +5364,8 @@ export type Database = {
           ads: number
           created_at: string
           points: number
+          prize_gram: number
+          rank: number | null
           referrals: number
           squad_id: string
           updated_at: string
@@ -5373,6 +5375,8 @@ export type Database = {
           ads?: number
           created_at?: string
           points?: number
+          prize_gram?: number
+          rank?: number | null
           referrals?: number
           squad_id: string
           updated_at?: string
@@ -5382,6 +5386,8 @@ export type Database = {
           ads?: number
           created_at?: string
           points?: number
+          prize_gram?: number
+          rank?: number | null
           referrals?: number
           squad_id?: string
           updated_at?: string
@@ -5396,6 +5402,27 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      wall_squad_weeks: {
+        Row: {
+          created_at: string
+          prize_pool: number
+          settled_at: string
+          week: string
+        }
+        Insert: {
+          created_at?: string
+          prize_pool?: number
+          settled_at?: string
+          week: string
+        }
+        Update: {
+          created_at?: string
+          prize_pool?: number
+          settled_at?: string
+          week?: string
+        }
+        Relationships: []
       }
       wall_squads: {
         Row: {
@@ -6741,6 +6768,7 @@ export type Database = {
         Args: { _revenge?: number; _tg: number }
         Returns: Json
       }
+      wall_settle_squad_weeks: { Args: never; Returns: number }
       wall_squad_manage: {
         Args: {
           _action: string
