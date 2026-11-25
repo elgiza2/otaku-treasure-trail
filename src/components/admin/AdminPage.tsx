@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { getInitData, useTelegramInitData } from "@/lib/telegram";
+import { PartnerAdminPanel } from "./PartnerAdminPanel";
 import {
   adminDeleteTask, adminListTasks, adminMe, adminSaveTask, adminSetHelper, adminStats, type AdminRole,
 } from "@/lib/admin.functions";
@@ -27,6 +28,7 @@ export function AdminPage() {
   return (
     <Shell>
       {role === "owner" && <StatsPanel />}
+      {role === "owner" && <PartnerAdminPanel />}
       <TasksPanel />
     </Shell>
   );

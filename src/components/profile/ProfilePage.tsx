@@ -92,6 +92,7 @@ export function ProfilePage() {
         </div>
       </section>
       <section className="mt-6 border-t border-border pt-5">
+        <Button variant="outline" asChild className="mb-4 w-full"><Link to="/partners">قنوات الشركاء</Link></Button>
         <h2 className="mb-2 text-xl font-extrabold">الإعدادات</h2>
         <div className="flex items-center gap-3 border-b border-border py-4"><AnimatedEmoji name="globe" className="size-7 text-success" /><span className="flex-1 font-semibold">اللغة</span><select aria-label="اللغة" value={lang} onChange={(e) => setLang(e.target.value as Lang)} className="rounded-lg border border-border bg-card px-2 py-1 text-sm text-foreground">{LANGS.map((l) => <option data-no-tr key={l} value={l}>{LANG_NAMES[l]}</option>)}</select></div>
         <Button variant="ghost" asChild className="h-auto w-full justify-start gap-3 rounded-none border-b border-border px-0 py-4"><Link to="/"><AnimatedEmoji name="orbit" className="size-7 text-accent" /><span className="flex-1 text-start font-semibold">أعد مشاهدة القصة</span><span aria-hidden="true" className="text-muted-foreground">←</span></Link></Button>

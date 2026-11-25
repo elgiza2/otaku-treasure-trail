@@ -4890,6 +4890,54 @@ export type Database = {
           },
         ]
       }
+      wall_daily_reports: {
+        Row: {
+          adsgram_revenue_usd: number | null
+          adsgram_views: number
+          costs_usd: number | null
+          created_at: string
+          day: string
+          monetag_revenue_usd: number | null
+          monetag_views: number
+          new_channels: number
+          new_users: number
+          paid_ton: number
+          partner_earned_gram: number
+          partner_users: number
+          updated_at: string
+        }
+        Insert: {
+          adsgram_revenue_usd?: number | null
+          adsgram_views?: number
+          costs_usd?: number | null
+          created_at?: string
+          day: string
+          monetag_revenue_usd?: number | null
+          monetag_views?: number
+          new_channels?: number
+          new_users?: number
+          paid_ton?: number
+          partner_earned_gram?: number
+          partner_users?: number
+          updated_at?: string
+        }
+        Update: {
+          adsgram_revenue_usd?: number | null
+          adsgram_views?: number
+          costs_usd?: number | null
+          created_at?: string
+          day?: string
+          monetag_revenue_usd?: number | null
+          monetag_views?: number
+          new_channels?: number
+          new_users?: number
+          paid_ton?: number
+          partner_earned_gram?: number
+          partner_users?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       wall_energy: {
         Row: {
           created_at: string
@@ -5213,6 +5261,155 @@ export type Database = {
           tg_id?: number
         }
         Relationships: []
+      }
+      wall_partner_acquisitions: {
+        Row: {
+          channel_id: string
+          created_at: string
+          reward_gram: number
+          tg_id: number
+        }
+        Insert: {
+          channel_id: string
+          created_at?: string
+          reward_gram?: number
+          tg_id: number
+        }
+        Update: {
+          channel_id?: string
+          created_at?: string
+          reward_gram?: number
+          tg_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wall_partner_acquisitions_channel_id_fkey"
+            columns: ["channel_id"]
+            isOneToOne: false
+            referencedRelation: "wall_partner_channels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wall_partner_acquisitions_tg_id_fkey"
+            columns: ["tg_id"]
+            isOneToOne: true
+            referencedRelation: "wall_users"
+            referencedColumns: ["tg_id"]
+          },
+        ]
+      }
+      wall_partner_channels: {
+        Row: {
+          balance_gram: number
+          chat_id: number
+          created_at: string
+          earned_gram: number
+          id: string
+          joined_users: number
+          last_post_at: string | null
+          last_withdrawal_at: string | null
+          owner_tg: number
+          started_at: string
+          status: string
+          title: string
+          updated_at: string
+          username: string | null
+        }
+        Insert: {
+          balance_gram?: number
+          chat_id: number
+          created_at?: string
+          earned_gram?: number
+          id?: string
+          joined_users?: number
+          last_post_at?: string | null
+          last_withdrawal_at?: string | null
+          owner_tg: number
+          started_at?: string
+          status?: string
+          title: string
+          updated_at?: string
+          username?: string | null
+        }
+        Update: {
+          balance_gram?: number
+          chat_id?: number
+          created_at?: string
+          earned_gram?: number
+          id?: string
+          joined_users?: number
+          last_post_at?: string | null
+          last_withdrawal_at?: string | null
+          owner_tg?: number
+          started_at?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          username?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wall_partner_channels_owner_tg_fkey"
+            columns: ["owner_tg"]
+            isOneToOne: false
+            referencedRelation: "wall_users"
+            referencedColumns: ["tg_id"]
+          },
+        ]
+      }
+      wall_partner_withdrawals: {
+        Row: {
+          address: string
+          amount_gram: number
+          channel_id: string
+          created_at: string
+          id: string
+          owner_tg: number
+          reviewed_at: string | null
+          status: string
+          tx_hash: string | null
+          updated_at: string
+        }
+        Insert: {
+          address: string
+          amount_gram: number
+          channel_id: string
+          created_at?: string
+          id?: string
+          owner_tg: number
+          reviewed_at?: string | null
+          status?: string
+          tx_hash?: string | null
+          updated_at?: string
+        }
+        Update: {
+          address?: string
+          amount_gram?: number
+          channel_id?: string
+          created_at?: string
+          id?: string
+          owner_tg?: number
+          reviewed_at?: string | null
+          status?: string
+          tx_hash?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wall_partner_withdrawals_channel_id_fkey"
+            columns: ["channel_id"]
+            isOneToOne: false
+            referencedRelation: "wall_partner_channels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wall_partner_withdrawals_owner_tg_fkey"
+            columns: ["owner_tg"]
+            isOneToOne: false
+            referencedRelation: "wall_users"
+            referencedColumns: ["tg_id"]
+          },
+        ]
       }
       wall_payments: {
         Row: {
@@ -6778,6 +6975,10 @@ export type Database = {
         Args: { _revenge?: number; _tg: number }
         Returns: Json
       }
+      wall_generate_daily_report: {
+        Args: { _day?: string }
+        Returns: undefined
+      }
       wall_hero_cost: {
         Args: { _hero: number; _level: number }
         Returns: number
@@ -6830,6 +7031,26 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      wall_partner_overview: { Args: never; Returns: Json }
+      wall_partner_review_withdrawal: {
+        Args: { _id: string; _paid: boolean; _tx?: string }
+        Returns: undefined
+      }
+      wall_partner_upsert_user: {
+        Args: {
+          _channel?: string
+          _first: string
+          _photo: string
+          _ref: number
+          _tg: number
+          _username: string
+        }
+        Returns: undefined
+      }
+      wall_partner_withdraw: {
+        Args: { _address: string; _channel: string; _tg: number }
+        Returns: string
       }
       wall_raid_load: {
         Args: { _tg: number }

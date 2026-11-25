@@ -6,7 +6,7 @@ export type AdminRole = "owner" | "tasks";
 const auth = z.object({ initData: z.string().min(10).max(4096) });
 
 /** Resolves the caller's admin role from the verified Telegram username. Never trusts the browser. */
-async function requireAdmin(initData: string, need: AdminRole | "any") {
+export async function requireAdmin(initData: string, need: AdminRole | "any") {
   const { user, db } = await authPlayer(initData);
   const name = (user.username ?? "").toLowerCase();
   const { data } = await db.from("wall_admins" as never).select("role").eq("username", name).maybeSingle();

@@ -32,3 +32,6 @@ use the editor.
 - Keep game ad benefits atomic and idempotent in SQL, called only after verified Telegram authentication; retries must reuse the completed ad's request ID to avoid duplicate rewards.
 - Use shared game-model rules and GameAdButtons/EnergyBar controls for battle and raid rewards so both ad providers and energy behavior stay consistent.
 - Store squad scoring by UTC week and settle earned prizes in SQL; public board reads expose only squad aggregates, never member Telegram IDs.
+- Attribute channel acquisition only during first verified Telegram registration in an atomic SQL function; repeat visits and self-referrals must not pay.
+- Keep partner balances separate from game balances and reserve withdrawal funds transactionally; owner-only report reads and manual payment reviews must revalidate the server role.
+- Record actual ad income and costs separately from view counts in daily reports; missing monetary data stays unknown rather than estimating profit from views.

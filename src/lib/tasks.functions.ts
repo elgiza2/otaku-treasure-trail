@@ -5,6 +5,7 @@ import { z } from "zod";
 import type { Database } from "@/integrations/supabase/types";
 import type { PlayerDTO, ProgressDTO, TaskCategory, TaskDTO, TaskKind } from "./tasks-model";
 import { isChatMember, verifyInitData } from "./telegram.server";
+import { partnerSource } from "./partner-model";
 
 type TaskRow = Database["public"]["Tables"]["wall_tasks"]["Row"];
 
@@ -39,12 +40,14 @@ export async function authPlayer(initData: string) {
   const { user, startParam } = await verifyInitData(initData, botToken());
   const ref = startParam?.match(/^ref_(\d+)$/)?.[1];
   const db = await admin();
-  const { error } = await db.rpc("wall_upsert_user", {
+  const channel = partnerSource(startParam);
+  const { error } = await db.rpc("wall_partner_upsert_user", {
     _tg: user.id,
     _username: user.username ?? null,
     _first: user.first_name ?? "",
     _photo: user.photo_url ?? null,
     _ref: ref ? Number(ref) : null,
+    ...(channel ? { _channel: channel } : {}),
   } as never);
   if (error) throw new Error(error.message);
   if (user.language_code) await db.from("wall_users").update({ language_code: user.language_code } as never).eq("tg_id", user.id);
