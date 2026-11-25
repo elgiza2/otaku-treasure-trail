@@ -7,8 +7,9 @@
 - [x] Add tournament model, server functions, `/tournament` route & UI, and unit tests
 - [x] Wire dual Adsgram + Monetag cards on `/tasks`, tournament entry on `/tasks` & `/battle`, and GRAM balance on `/wallet`
 - [x] Verify build, tests, and browser render, then commit
-- [ ] Add unlimited ad wheel spins and rare GRAM prizes
+- [ ] Add unlimited ad wheel spins and rare 3 GRAM wheel prize
 - [ ] Add optional 2x battle collection through either ad network
 - [ ] Add regenerating battle/raid energy and ad refills
-- [ ] Add squads, invite links, weekly scoring and collective rewards
+- [ ] Fix new table RLS policies & FK indexes, and add 10 GRAM weekly squad league settlement
+- [ ] Add squads, invite links, weekly scoring and collective rewards (10 GRAM/week)
 - [ ] Test and verify the requested updates

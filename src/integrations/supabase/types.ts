@@ -4890,6 +4890,70 @@ export type Database = {
           },
         ]
       }
+      wall_energy: {
+        Row: {
+          created_at: string
+          energy: number
+          regenerated_at: string
+          tg_id: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          energy?: number
+          regenerated_at?: string
+          tg_id: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          energy?: number
+          regenerated_at?: string
+          tg_id?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wall_energy_tg_id_fkey"
+            columns: ["tg_id"]
+            isOneToOne: true
+            referencedRelation: "wall_users"
+            referencedColumns: ["tg_id"]
+          },
+        ]
+      }
+      wall_game_ad_claims: {
+        Row: {
+          benefit: string
+          created_at: string
+          request_id: string
+          result: Json
+          tg_id: number
+        }
+        Insert: {
+          benefit: string
+          created_at?: string
+          request_id: string
+          result?: Json
+          tg_id: number
+        }
+        Update: {
+          benefit?: string
+          created_at?: string
+          request_id?: string
+          result?: Json
+          tg_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wall_game_ad_claims_tg_id_fkey"
+            columns: ["tg_id"]
+            isOneToOne: false
+            referencedRelation: "wall_users"
+            referencedColumns: ["tg_id"]
+          },
+        ]
+      }
       wall_gift_claims: {
         Row: {
           created_at: string
@@ -5261,6 +5325,112 @@ export type Database = {
           victim?: number
         }
         Relationships: []
+      }
+      wall_squad_members: {
+        Row: {
+          created_at: string
+          squad_id: string
+          tg_id: number
+        }
+        Insert: {
+          created_at?: string
+          squad_id: string
+          tg_id: number
+        }
+        Update: {
+          created_at?: string
+          squad_id?: string
+          tg_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wall_squad_members_squad_id_fkey"
+            columns: ["squad_id"]
+            isOneToOne: false
+            referencedRelation: "wall_squads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wall_squad_members_tg_id_fkey"
+            columns: ["tg_id"]
+            isOneToOne: true
+            referencedRelation: "wall_users"
+            referencedColumns: ["tg_id"]
+          },
+        ]
+      }
+      wall_squad_scores: {
+        Row: {
+          ads: number
+          created_at: string
+          points: number
+          referrals: number
+          squad_id: string
+          updated_at: string
+          week: string
+        }
+        Insert: {
+          ads?: number
+          created_at?: string
+          points?: number
+          referrals?: number
+          squad_id: string
+          updated_at?: string
+          week: string
+        }
+        Update: {
+          ads?: number
+          created_at?: string
+          points?: number
+          referrals?: number
+          squad_id?: string
+          updated_at?: string
+          week?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wall_squad_scores_squad_id_fkey"
+            columns: ["squad_id"]
+            isOneToOne: false
+            referencedRelation: "wall_squads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wall_squads: {
+        Row: {
+          captain: number
+          created_at: string
+          emblem: string
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          captain: number
+          created_at?: string
+          emblem?: string
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          captain?: number
+          created_at?: string
+          emblem?: string
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wall_squads_captain_fkey"
+            columns: ["captain"]
+            isOneToOne: false
+            referencedRelation: "wall_users"
+            referencedColumns: ["tg_id"]
+          },
+        ]
       }
       wall_story_attempts: {
         Row: {
@@ -6464,8 +6634,39 @@ export type Database = {
         Returns: number
       }
       wall_daily_checkin: { Args: { _tg: number }; Returns: Json }
+      wall_energy_load: {
+        Args: { _tg: number }
+        Returns: {
+          created_at: string
+          energy: number
+          regenerated_at: string
+          tg_id: number
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "wall_energy"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      wall_energy_spend: { Args: { _tg: number }; Returns: undefined }
       wall_ensure_active_tournament: { Args: never; Returns: string }
       wall_ensure_heroes: { Args: { _tg: number }; Returns: undefined }
+      wall_game_ad: {
+        Args: {
+          _benefit: string
+          _provider: string
+          _request: string
+          _tg: number
+        }
+        Returns: Json
+      }
+      wall_game_collect: { Args: { _tg: number }; Returns: number }
+      wall_game_spin: {
+        Args: { _revenge?: number; _tg: number }
+        Returns: Json
+      }
       wall_hero_cost: {
         Args: { _hero: number; _level: number }
         Returns: number
@@ -6539,6 +6740,16 @@ export type Database = {
       wall_raid_spin: {
         Args: { _revenge?: number; _tg: number }
         Returns: Json
+      }
+      wall_squad_manage: {
+        Args: {
+          _action: string
+          _emblem?: string
+          _name?: string
+          _squad?: string
+          _tg: number
+        }
+        Returns: string
       }
       wall_start_task: {
         Args: { _task: string; _tg: number }
