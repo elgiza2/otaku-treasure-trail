@@ -6311,48 +6311,6 @@ export type Database = {
         }
         Relationships: []
       }
-      wall_user_task_orders: {
-        Row: {
-          created_at: string
-          max_claims: number
-          payment_id: string
-          tg_id: number
-          title: string
-          url: string
-        }
-        Insert: {
-          created_at?: string
-          max_claims?: number
-          payment_id: string
-          tg_id: number
-          title: string
-          url: string
-        }
-        Update: {
-          created_at?: string
-          max_claims?: number
-          payment_id?: string
-          tg_id?: number
-          title?: string
-          url?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "wall_user_task_orders_payment_id_fkey"
-            columns: ["payment_id"]
-            isOneToOne: true
-            referencedRelation: "wall_payments"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "wall_user_task_orders_tg_id_fkey"
-            columns: ["tg_id"]
-            isOneToOne: false
-            referencedRelation: "wall_users"
-            referencedColumns: ["tg_id"]
-          },
-        ]
-      }
       wall_users: {
         Row: {
           balance: number
@@ -7406,6 +7364,10 @@ export type Database = {
       }
       wall_partner_withdraw: {
         Args: { _address: string; _channel: string; _tg: number }
+        Returns: string
+      }
+      wall_publish_user_task: {
+        Args: { _payment_id: string; _tg: number; _title: string; _url: string }
         Returns: string
       }
       wall_raid_load: {
