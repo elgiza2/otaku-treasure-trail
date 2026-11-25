@@ -3,7 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 
 import type { Database } from "@/integrations/supabase/types";
-import type { PlayerDTO, ProgressDTO, TaskCategory, TaskDTO, TaskKind } from "./tasks-model";
+import { USER_TASK_PACK, validateUserTaskInput, type PlayerDTO, type ProgressDTO, type TaskCategory, type TaskDTO, type TaskKind } from "./tasks-model";
 import { isChatMember, verifyInitData } from "./telegram.server";
 import { partnerSource } from "./partner-model";
 
@@ -157,4 +157,45 @@ export const saveWallet = createServerFn({ method: "POST" })
     const { error } = await db.rpc('wall_growth_save_wallet', { _tg: user.id, _address: address });
     if (error) throw new Error(error.message);
     return { ok: true };
+  });
+
+/** Checks whether the player has a pending or paid-and-unused 1 TON user task slot. */
+export const getUserTaskSlot = createServerFn({ method: "POST" })
+  .inputValidator((d: unknown) => authInput.parse(d))
+  .handler(async ({ data }): Promise<{ pendingPaymentId: string | null; paidPaymentId: string | null }> => {
+    const { user, db } = await authPlayer(data.initData);
+    const [pending, paid] = await Promise.all([
+      db.from("wall_payments").select("id").eq("tg_id", user.id).eq("pack", USER_TASK_PACK).eq("status", "pending").order("created_at", { ascending: false }).limit(1).maybeSingle(),
+      db.from("wall_payments").select("id").eq("tg_id", user.id).eq("pack", USER_TASK_PACK).eq("status", "paid").order("paid_at", { ascending: false }).limit(10),
+    ]);
+    if (pending.error) throw new Error(pending.error.message);
+    if (paid.error) throw new Error(paid.error.message);
+    const paidIds = (paid.data ?? []).map((r) => r.id);
+    let paidPaymentId: string | null = null;
+    if (paidIds.length > 0) {
+      const { data: used, error: usedErr } = await db.from("wall_tasks").select("payment_id" as never).in("payment_id" as never, paidIds as never);
+      if (usedErr) throw new Error(usedErr.message);
+      const usedSet = new Set(((used ?? []) as { payment_id: string | null }[]).map((r) => r.payment_id));
+      paidPaymentId = paidIds.find((id) => !usedSet.has(id)) ?? null;
+    }
+    return { pendingPaymentId: pending.data?.id ?? null, paidPaymentId };
+  });
+
+/** Publishes a player's task (1,000 users limit) strictly after their 1 TON payment is verified. */
+export const publishUserTask = createServerFn({ method: "POST" })
+  .inputValidator((d: unknown) =>
+    authInput.extend({ paymentId: z.string().uuid(), title: z.string().max(120), url: z.string().max(500) }).parse(d),
+  )
+  .handler(async ({ data }) => {
+    const checked = validateUserTaskInput(data.title, data.url);
+    if ("error" in checked) throw new Error(checked.error);
+    const { user, db } = await authPlayer(data.initData);
+    const { data: taskId, error } = await db.rpc("wall_publish_user_task" as never, {
+      _tg: user.id,
+      _payment_id: data.paymentId,
+      _title: checked.title,
+      _url: checked.url,
+    } as never);
+    if (error) throw new Error(error.message);
+    return { taskId: String(taskId) };
   });

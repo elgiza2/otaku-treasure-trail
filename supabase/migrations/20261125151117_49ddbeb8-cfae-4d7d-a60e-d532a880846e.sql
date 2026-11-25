@@ -1,0 +1,2 @@
+REVOKE ALL ON FUNCTION public.wall_publish_user_task(bigint, uuid, text, text) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.wall_publish_user_task(bigint, uuid, text, text) TO service_role;

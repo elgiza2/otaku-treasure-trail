@@ -5,5 +5,6 @@
 - [x] Refresh UI components with soft clean glassmorphism and Apple-style spring animations
 - [x] Verify build, tests, and mobile + desktop screenshots with Playwright
 - [x] Register Telegram bot webhook to activate `/start` message
-- [ ] Build 1 TON user task flow on Tasks page (pay 1 TON first, then ask for task name + link only, 1,000 users limit)
-- [ ] Publish update announcement post to the Telegram channel
+- [x] Build 1 TON user task flow on Tasks page (pay 1 TON first, then ask for task name + link only, 1,000 users limit)
+- [x] Publish update announcement post to the Telegram channel
+- [ ] Ensure English is the default language and all new UI strings are cleanly translated for all user languages

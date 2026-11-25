@@ -9,6 +9,7 @@ import { NFT_MINT_TON, type MintedNft } from "./nft-model";
 import { findSpinPack } from "./raid-model";
 import { findStoryItem } from "./story-model";
 import { findMicroPack } from "./growth-model";
+import { USER_TASK_PACK, USER_TASK_TON } from "./tasks-model";
 
 const authInput = z.object({ initData: z.string().min(10).max(4096) });
 
@@ -21,6 +22,7 @@ export const createTonPayment = createServerFn({ method: "POST" })
     const micro = findMicroPack(data.pack);
     const pack = data.pack === "mine_pass" ? { id: "mine_pass", ton: MINE_PASS_TON, coins: 0 }
       : data.pack === "nft_mint" ? { id: "nft_mint", ton: NFT_MINT_TON, coins: 0 }
+      : data.pack === USER_TASK_PACK ? { id: USER_TASK_PACK, ton: USER_TASK_TON, coins: 0 }
       : micro ? { id: micro.id, ton: micro.ton, coins: 0 }
       : spinPack ? { id: data.pack, ton: spinPack.ton, coins: 0 }
       : data.pack === PLAYS_PACK.id ? { id: PLAYS_PACK.id, ton: PLAYS_PACK.ton, coins: 0 }
@@ -28,8 +30,8 @@ export const createTonPayment = createServerFn({ method: "POST" })
       : findPack(data.pack);
     if (!pack) throw new Error("bad_pack");
     const { user, db } = await authPlayer(data.initData);
-    if (micro) {
-      const pending = await db.from('wall_payments').select('id, amount_nano').eq('tg_id', user.id).eq('pack', micro.id).eq('status', 'pending').order('created_at', { ascending: false }).limit(1).maybeSingle();
+    if (micro || pack.id === USER_TASK_PACK) {
+      const pending = await db.from('wall_payments').select('id, amount_nano').eq('tg_id', user.id).eq('pack', pack.id).eq('status', 'pending').order('created_at', { ascending: false }).limit(1).maybeSingle();
       if (pending.error) throw new Error(pending.error.message);
       if (pending.data) return { id: pending.data.id, address: TREASURY_ADDRESS, amount: String(pending.data.amount_nano), payload: commentPayload(paymentComment(pending.data.id)) };
     }

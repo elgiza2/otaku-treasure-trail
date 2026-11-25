@@ -31,7 +31,23 @@ export type PlayerDTO = {
 };
 
 export const CHECKIN_DAYS = 7;
+export const USER_TASK_PACK = "user_task_1000";
+export const USER_TASK_TON = 1;
+export const USER_TASK_MAX_USERS = 1000;
 const HOUR = 3_600_000;
+
+export function validateUserTaskInput(title: string, url: string): { title: string; url: string } | { error: string } {
+  const cleanTitle = title.trim();
+  if (cleanTitle.length < 3 || cleanTitle.length > 80) return { error: "اكتب اسم المهمة من 3 إلى 80 حرف" };
+  const cleanUrl = url.trim();
+  try {
+    const parsed = new URL(cleanUrl);
+    if (parsed.protocol !== "https:") return { error: "الرابط لازم يبدأ بـ https://" };
+  } catch {
+    return { error: "اكتب رابط صحيح يبدأ بـ https://" };
+  }
+  return { title: cleanTitle, url: cleanUrl };
+}
 
 /** Day 1 pays 5, each following day one more, day 7 pays 11. */
 export function checkinReward(day: number): number {
@@ -105,6 +121,7 @@ export const CLAIM_ERRORS: Record<string, string> = {
   not_enough_referrals: "لسه محتاج أصدقاء أكتر",
   wallet_missing: "اربط محفظتك الأول",
   unauthorized: "افتح اللعبة من تيليجرام",
+  task_full: "اكتمل عدد المستخدمين لهذه المهمة",
 };
 
 export function claimErrorMessage(err: unknown): string {

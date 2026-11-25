@@ -7,6 +7,7 @@ import { BottomNav } from '@/components/BottomNav';
 import { GrowthPanel } from '@/components/growth/GrowthPanel';
 import hallImage from '@/assets/tasks/garrison-hall.jpg';
 import { AdTaskCard } from './AdTaskCard';
+import { AddUserTaskDialog } from './AddUserTaskDialog';
 import { TaskCard } from './TaskCard';
 import { useNow } from './use-now';
 import { getMyBoard, listTasks, claimTask, startTask } from '@/lib/tasks.functions';
@@ -61,6 +62,7 @@ export function TasksPage({ category }: { category: CategoryFilter }) {
       </header>
       <div className="space-y-6">
         <section aria-label="الإعلانات"><AdTaskCard busy={busyAd} watched={watched} onWatch={()=>void watch()}/></section>
+        <section aria-label="أضف مهمتك"><AddUserTaskDialog initData={initData}/></section>
         <section aria-labelledby="tasks-heading">
           <h2 id="tasks-heading" className="mb-3 flex items-center justify-between px-1 font-display text-base font-extrabold"><span>مهام الحامية</span><span className="text-xs font-semibold text-muted-foreground tabular-nums">{rows.length}</span></h2>
           <div className="space-y-3">{rows.map((task,i)=><TaskCard key={task.id} task={task} state={taskState(task,progress.get(task.id),player,now)} now={now} index={i} busy={busyTask===task.id} onAction={()=>void act(task)}/>)}</div>
