@@ -7,15 +7,16 @@
 - [x] Add tournament model, server functions, `/tournament` route & UI, and unit tests
 - [x] Wire dual Adsgram + Monetag cards on `/tasks`, tournament entry on `/tasks` & `/battle`, and GRAM balance on `/wallet`
 - [x] Verify build, tests, and browser render, then commit
-- [ ] Add unlimited ad wheel spins and rare 3 GRAM wheel prize
-- [ ] Add optional 2x battle collection through either ad network
-- [ ] Add regenerating battle/raid energy and ad refills
-- [ ] Fix new table RLS policies & FK indexes, and add 10 GRAM weekly squad league settlement
-- [ ] Add squads, invite links, weekly scoring and collective rewards (10 GRAM/week)
-- [ ] Test and verify the requested updates
-- [ ] Change GRAM competition to 7-day repeating cycles; keep squads weekly
-- [ ] Add channel partner onboarding, verified bot-admin registration and referral posting
-- [ ] Add 0.01 GRAM per unique new channel-referred user and withdrawals every 30 days from work start
-- [ ] Add two daily partner posts; activation waits for Telegram bot token
-- [ ] Add admin channel directory and daily revenue/ad/channel/user report
-- [ ] Research relevant marketing options after checking current app and links
+- [x] Add unlimited ad wheel spins and rare 3 GRAM wheel prize
+- [x] Add optional 2x battle collection through either ad network
+- [x] Add regenerating battle/raid energy and ad refills
+- [x] Fix new table RLS policies & FK indexes, and add 10 GRAM weekly squad league settlement
+- [x] Add squads, invite links, weekly scoring and collective rewards (10 GRAM/week)
+- [x] Run 153 tests, transaction-rolled-back SQL rule checks, and desktop/mobile public UI checks
+- [ ] Verify real rewarded ads, signed-in squad creation, partner withdrawal and owner report UI: blocked by missing Telegram bot token and a real Telegram session
+- [x] Change GRAM competition to 7-day repeating cycles; keep squads weekly
+- [ ] Add channel partner onboarding, verified bot-admin registration and referral posting: blocked by rejected Telegram bot-token setup
+- [x] Add 0.01 GRAM per unique new channel-referred user and owner-wide withdrawals every 30 days from work start
+- [ ] Add two daily partner posts: blocked by missing bot token and external scheduler activation
+- [x] Add admin channel directory, daily revenue/ad/channel/user report, CSV download and manual withdrawal review
+- [x] Research relevant marketing options after checking current app and links; saved research and next steps

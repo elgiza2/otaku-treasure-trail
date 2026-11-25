@@ -26,6 +26,7 @@ import {
 } from "@/lib/tournament-model";
 import { cn } from "@/lib/utils";
 import { TournamentHistoryView, TournamentLeadersView, TournamentPrizesView } from "./TournamentLeaderboard";
+import { useTranslationReady } from "@/i18n/DomTranslator";
 
 export const tournamentQuery = queryOptions({
   queryKey: ["wall-tournament"],
@@ -36,6 +37,7 @@ export const tournamentQuery = queryOptions({
 const GUEST_MSG = "افتح اللعبة من تيليجرام للمشاركة في المسابقة";
 
 export function TournamentPage() {
+  const translationReady = useTranslationReady();
   const qc = useQueryClient();
   const now = useNow(1000);
   const initData = useTelegramInitData();
@@ -112,7 +114,7 @@ export function TournamentPage() {
   }
 
   return (
-    <main className="relative mx-auto min-h-dvh w-full max-w-md overflow-x-hidden bg-background pb-28">
+    <main data-translation-pending={translationReady ? undefined : ""} className="relative mx-auto min-h-dvh w-full max-w-md overflow-x-hidden bg-background pb-28">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-[24rem] overflow-hidden" aria-hidden="true">
         <img src={hallImage} alt="" width={720} height={1271} className="size-full object-cover object-top" />
         <div className="hero-fade absolute inset-0" />

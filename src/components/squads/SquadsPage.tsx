@@ -14,9 +14,11 @@ import { formatAmount } from "@/lib/coin";
 import { formatCountdown } from "@/lib/tournament-model";
 import { shareLink, useTelegramInitData } from "@/lib/telegram";
 import { useNow } from "@/components/tasks/use-now";
+import { useTranslationReady } from "@/i18n/DomTranslator";
 
 export const squadsQuery = queryOptions({ queryKey: ["wall-squads"], queryFn: () => getSquadBoard(), refetchInterval: 30_000 });
 export function SquadsPage({ invite }: { invite: string | undefined }) {
+  const translationReady = useTranslationReady();
   const initData = useTelegramInitData();
   const qc = useQueryClient();
   const now = useNow(1000);
@@ -54,7 +56,7 @@ export function SquadsPage({ invite }: { invite: string | undefined }) {
       <div className="flex shrink-0 flex-col items-end gap-1">{squad.prize > 0 && <span dir="ltr" className="text-xs font-bold text-gold">{squad.prize} GRAM</span>}{squad.id === myTeam?.id ? <span className="text-xs text-success">تحالفك</span> : showJoin && <Button size="sm" variant="outline" disabled={busy || !!mine.data?.squadId || (!!initData && mine.isPending)} onClick={() => act("join", squad.id)}>انضم</Button>}</div>
     </article>;
   }
-  return <main className="relative mx-auto min-h-dvh max-w-md overflow-x-hidden bg-background pb-28">
+  return <main data-translation-pending={translationReady ? undefined : ""} className="relative mx-auto min-h-dvh max-w-md overflow-x-hidden bg-background pb-28">
     <div className="pointer-events-none absolute inset-x-0 top-0 h-80 overflow-hidden"><img src={hallImage} alt="" className="size-full object-cover object-top" /><div className="hero-fade absolute inset-0" /></div>
     <div className="relative px-4 pt-12">
       <header className="text-center"><Trophy className="mx-auto size-8 text-gold" /><h1 className="mt-2 font-display text-3xl font-extrabold">دوري التحالفات</h1><p className="mt-2 text-xl font-bold text-gold" dir="ltr">10 GRAM</p><p className="text-xs text-muted-foreground">جوائز أسبوعية للتحالفات الثلاثة الأولى</p><p className="mt-2 text-sm tabular-nums">{formatCountdown(Date.parse(board.endsAt), now)}</p></header>

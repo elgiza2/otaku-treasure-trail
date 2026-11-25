@@ -1,11 +1,17 @@
-import { useEffect, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { detectLang, dictVersion, loadDict, RTL, setActiveDict, subscribeDict, translateText } from "./index";
 
 /** Re-render when the player's dictionary arrives (for text translated in code, like the story). */
 export function useDictReady() { return useSyncExternalStore(subscribeDict, dictVersion, () => 0); }
+export function useTranslationReady() {
+  const [ready, setReady] = useState(false);
+  useEffect(() => setReady(true), []);
+  return ready;
+}
 
 // Translates rendered Arabic text in place (after hydration), so every screen follows the player's Telegram language.
 const ATTRS = ["placeholder", "title", "aria-label", "alt"];
+const SKIP = "[data-no-tr], [data-translation-pending]";
 export function DomTranslator() {
   useEffect(() => {
     const lang = detectLang();
@@ -19,14 +25,14 @@ export function DomTranslator() {
       if (dead) return;
       setActiveDict(dict);
       const text = (n: Text) => {
-        if (n.parentElement?.closest("[data-no-tr]")) return;
+        if (n.parentElement?.closest(SKIP)) return;
         const v = n.nodeValue ?? "";
         if (done.get(n) === v) return;
         const t = translateText(v, dict);
         if (t != null && t !== v) { done.set(n, t); n.nodeValue = t; }
       };
       const el = (e: Element) => {
-        if (e.closest("[data-no-tr]")) return;
+        if (e.closest(SKIP)) return;
         for (const a of ATTRS) { const v = e.getAttribute(a); if (v) { const t = translateText(v, dict); if (t) e.setAttribute(a, t); } }
       };
       const walk = (root: Node) => {
@@ -41,11 +47,11 @@ export function DomTranslator() {
       obs = new MutationObserver((ms) => {
         for (const m of ms) {
           if (m.type === "characterData") text(m.target as Text);
-          else if (m.type === "attributes") el(m.target as Element);
+          else if (m.type === "attributes") { if (m.attributeName === "data-translation-pending") walk(m.target); else el(m.target as Element); }
           else m.addedNodes.forEach(walk);
         }
       });
-      obs.observe(document.body, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ATTRS });
+      obs.observe(document.body, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: [...ATTRS, "data-translation-pending"] });
     });
     return () => { dead = true; obs?.disconnect(); };
   }, []);

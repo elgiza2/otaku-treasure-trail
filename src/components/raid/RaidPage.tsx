@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { KeyRound, Shield, Swords } from "lucide-react";
 import { toast } from "sonner";
@@ -35,6 +35,7 @@ function resultText(r: SpinResult): string {
 }
 
 export function RaidPage() {
+  const qc = useQueryClient();
   const initData = useTelegramInitData();
   const [angle, setAngle] = useState(0);
   const [spinning, setSpinning] = useState(false);
@@ -60,6 +61,8 @@ export function RaidPage() {
       setAngle((a) => a - (a % 360) + 360 * 5 + (360 - idx * 45));
       await new Promise((res) => setTimeout(res, 3300));
       setResult(r); haptic("success");
+      void qc.invalidateQueries({ queryKey: ["wall-energy"] });
+      void qc.invalidateQueries({ queryKey: ["wall-tournament-me"] });
       await q.refetch();
     } catch (e) { toast.error(e instanceof Error && e.message.includes("no_energy") ? gameError(e) : shopErrorMessage(e)); haptic("error"); }
     finally { setSpinning(false); }
