@@ -15,6 +15,8 @@ import { formatCountdown } from "@/lib/tournament-model";
 import { shareLink, useTelegramInitData } from "@/lib/telegram";
 import { useNow } from "@/components/tasks/use-now";
 import { useTranslationReady } from "@/i18n/DomTranslator";
+import { GrowthPanel } from '@/components/growth/GrowthPanel';
+import { VerifiedBadge } from '@/components/profile/MinePassCard';
 
 export const squadsQuery = queryOptions({ queryKey: ["wall-squads"], queryFn: () => getSquadBoard(), refetchInterval: 30_000 });
 export function SquadsPage({ invite }: { invite: string | undefined }) {
@@ -30,6 +32,7 @@ export function SquadsPage({ invite }: { invite: string | undefined }) {
   const [tab, setTab] = useState<"current" | "previous">("current");
   const [open, setOpen] = useState(false);
   const [leaveOpen, setLeaveOpen] = useState(false);
+  const [bossOpen,setBossOpen]=useState(false);
   const [name, setName] = useState("");
   const [emblem, setEmblem] = useState<"⚔️" | "🛡️" | "🔥" | "🐉">("⚔️");
   const [busy, setBusy] = useState(false);
@@ -67,6 +70,7 @@ export function SquadsPage({ invite }: { invite: string | undefined }) {
       {myTeam && <section className="mt-5 space-y-2"><h2 className="font-bold">تحالفك</h2>{teamRow(myTeam, false)}<div className="flex gap-2"><Button className="flex-1" onClick={() => inviteTeam(myTeam)}><Share2 /> دعوة الأصدقاء</Button><Button variant="outline" size="icon" aria-label="نسخ رابط الدعوة" onClick={() => copyTeam(myTeam)}><Copy /></Button><Button variant="ghost" size="icon" aria-label="الخروج من التحالف" disabled={busy} onClick={() => setLeaveOpen(true)}><LogOut /></Button></div></section>}
       {invited && invited.id !== myTeam?.id && <section className="mt-5 space-y-2"><h2 className="font-bold">دعوة للتحالف</h2>{teamRow(invited)}</section>}
       {!mine.data?.squadId && <Button className="mt-5 w-full" onClick={() => { if (!initData) toast("افتح اللعبة من تيليجرام عشان تنضم للتحالف"); else setOpen(true); }}><Plus /> إنشاء تحالف</Button>}
+      {myTeam && <><Button className="mt-4 w-full" variant="outline" onClick={()=>setBossOpen(true)}>زعيم التحالف الأسبوعي</Button><details className="mt-4 border-b border-border pb-3"><summary className="cursor-pointer text-sm font-bold">أعضاء التحالف</summary><div className="mt-3 divide-y divide-border">{mine.data?.members.map((member,index)=><div key={index} className="flex items-center gap-2 py-3 text-sm"><span className="min-w-0 flex-1 truncate">{member.name}</span>{member.verified && <VerifiedBadge />}</div>)}</div></details></>}
       <div className="mt-6 flex gap-2" role="tablist" aria-label="دوري التحالفات"><Button role="tab" aria-selected={tab === "current"} variant={tab === "current" ? "default" : "ghost"} onClick={() => setTab("current")}>الأسبوع الحالي</Button><Button role="tab" aria-selected={tab === "previous"} variant={tab === "previous" ? "default" : "ghost"} onClick={() => setTab("previous")}>الأسبوع السابق</Button></div>
       <label className="relative mt-3 block"><Search className="absolute start-3 top-3 size-4 text-muted-foreground" /><Input className="ps-9" aria-label="ابحث عن تحالف" placeholder="ابحث عن تحالف" value={search} onChange={(e) => setSearch(e.target.value)} /></label>
       <div className="mt-3 space-y-2">{rows.map((s) => teamRow(s, tab === "current"))}{rows.length === 0 && <p className="py-8 text-center text-sm text-muted-foreground">مفيش تحالفات هنا لسه</p>}</div>
@@ -74,5 +78,6 @@ export function SquadsPage({ invite }: { invite: string | undefined }) {
     <Dialog open={open} onOpenChange={(v) => { if (!busy) setOpen(v); }}><DialogContent className="max-w-sm"><DialogTitle>إنشاء تحالف</DialogTitle><DialogDescription>اسم التحالف</DialogDescription><Input aria-label="اسم التحالف" maxLength={32} minLength={3} value={name} onChange={(e) => setName(e.target.value)} /><div className="flex gap-2" role="group" aria-label="شعار التحالف">{(["⚔️", "🛡️", "🔥", "🐉"] as const).map((icon) => <Button key={icon} variant={emblem === icon ? "default" : "outline"} aria-pressed={emblem === icon} onClick={() => setEmblem(icon)}>{icon}</Button>)}</div><Button disabled={busy || name.trim().length < 3} onClick={() => act("create")}>{busy ? "جارٍ الإنشاء…" : "إنشاء تحالف"}</Button></DialogContent></Dialog>
     <Dialog open={leaveOpen} onOpenChange={setLeaveOpen}><DialogContent className="max-w-sm"><DialogTitle>الخروج من التحالف</DialogTitle><DialogDescription>تأكيد الخروج من التحالف؟</DialogDescription><Button variant="destructive" disabled={busy} onClick={() => act("leave")}>الخروج من التحالف</Button></DialogContent></Dialog>
     <BottomNav />
+    <Dialog open={bossOpen} onOpenChange={setBossOpen}><DialogContent className="max-h-[85dvh] max-w-sm overflow-y-auto"><DialogTitle>زعيم التحالف</DialogTitle><DialogDescription>معركة أسبوعية لأعضاء التحالف</DialogDescription><GrowthPanel mode="boss" /></DialogContent></Dialog>
   </main>;
 }

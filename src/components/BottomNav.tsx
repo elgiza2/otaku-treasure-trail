@@ -1,23 +1,21 @@
-import { Link } from "@tanstack/react-router";
-import { AnimatedEmoji } from "@/components/emoji/AnimatedEmoji";
-import type { EmojiName } from "@/components/emoji/emoji-registry";
+import { Link, useRouterState } from "@tanstack/react-router";
+import { ClipboardList, CircleDollarSign, Swords, UsersRound, Wallet } from 'lucide-react';
 
-const ITEMS: { to: "/tasks" | "/battle" | "/heroes" | "/raid" | "/wallet" | "/profile"; label: string; emoji: EmojiName }[] = [
-  { to: "/tasks", label: "المهام", emoji: "scout" },
-  { to: "/battle", label: "الحرب", emoji: "rocket" },
-  { to: "/heroes", label: "الأبطال", emoji: "shields" },
-  { to: "/raid", label: "الحكايات", emoji: "spark" },
-  { to: "/wallet", label: "المحفظة", emoji: "wallet" },
-  { to: "/profile", label: "الملف", emoji: "orbit" },
-];
+const ITEMS = [
+  { to: '/battle', label: 'الحرب', icon: Swords },
+  { to: '/heroes', label: 'الفريق', icon: UsersRound },
+  { to: '/tasks', label: 'المهام', icon: ClipboardList },
+  { to: '/raid', label: 'العجلة', icon: CircleDollarSign },
+  { to: '/wallet', label: 'المحفظة', icon: Wallet },
+] as const;
 
 export function BottomNav() {
+  const path=useRouterState({select:s=>s.location.pathname});
   return (
-    <nav className="nav-blur fixed inset-x-3 bottom-3 z-40 mx-auto flex max-w-md justify-around rounded-[26px] px-1.5 py-2">
+    <nav aria-label="التنقل الرئيسي" className="app-bottom-nav fixed inset-x-0 bottom-0 z-40 mx-auto flex max-w-md justify-around border-t border-border bg-card px-2 pt-2">
       {ITEMS.map((i) => (
-        <Link key={i.to} to={i.to} className="flex flex-1 flex-col items-center gap-0.5 rounded-2xl py-1.5 text-[0.62rem] text-muted-foreground"
-          activeProps={{ className: "bg-accent/15 text-foreground" }}>
-          <AnimatedEmoji name={i.emoji} className="size-6 text-accent" />
+        <Link key={i.to} to={i.to} aria-current={path===i.to || (i.to==='/heroes' && ['/squads','/duels'].includes(path)) ? 'page' : undefined} className={`flex h-14 flex-1 flex-col items-center justify-center gap-1 text-[11px] ${path===i.to || (i.to==='/heroes' && ['/squads','/duels'].includes(path)) ? 'text-accent' : 'text-muted-foreground'}`}>
+          <i.icon className="size-5" strokeWidth={1.8} />
           {i.label}
         </Link>
       ))}

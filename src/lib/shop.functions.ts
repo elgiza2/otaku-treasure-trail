@@ -8,6 +8,7 @@ import { MINE_PASS_TON } from "./mine-pass-model";
 import { NFT_MINT_TON, type MintedNft } from "./nft-model";
 import { findSpinPack } from "./raid-model";
 import { findStoryItem } from "./story-model";
+import { findMicroPack } from "./growth-model";
 
 const authInput = z.object({ initData: z.string().min(10).max(4096) });
 
@@ -15,14 +16,23 @@ const authInput = z.object({ initData: z.string().min(10).max(4096) });
 export const createTonPayment = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => authInput.extend({ pack: z.string().max(20) }).parse(d))
   .handler(async ({ data }) => {
+    const spinPack = findSpinPack(data.pack);
+    const storyItem = findStoryItem(data.pack);
+    const micro = findMicroPack(data.pack);
     const pack = data.pack === "mine_pass" ? { id: "mine_pass", ton: MINE_PASS_TON, coins: 0 }
       : data.pack === "nft_mint" ? { id: "nft_mint", ton: NFT_MINT_TON, coins: 0 }
-      : findSpinPack(data.pack) ? { id: data.pack, ton: findSpinPack(data.pack)!.ton, coins: 0 }
+      : micro ? { id: micro.id, ton: micro.ton, coins: 0 }
+      : spinPack ? { id: data.pack, ton: spinPack.ton, coins: 0 }
       : data.pack === PLAYS_PACK.id ? { id: PLAYS_PACK.id, ton: PLAYS_PACK.ton, coins: 0 }
-      : findStoryItem(data.pack) ? { id: data.pack, ton: findStoryItem(data.pack)!.ton, coins: 0 }
+      : storyItem ? { id: data.pack, ton: storyItem.ton, coins: 0 }
       : findPack(data.pack);
     if (!pack) throw new Error("bad_pack");
     const { user, db } = await authPlayer(data.initData);
+    if (micro) {
+      const pending = await db.from('wall_payments').select('id, amount_nano').eq('tg_id', user.id).eq('pack', micro.id).eq('status', 'pending').order('created_at', { ascending: false }).limit(1).maybeSingle();
+      if (pending.error) throw new Error(pending.error.message);
+      if (pending.data) return { id: pending.data.id, address: TREASURY_ADDRESS, amount: String(pending.data.amount_nano), payload: commentPayload(paymentComment(pending.data.id)) };
+    }
     if (pack.id === "nft_mint") {
       const stock = await db.rpc("wall_nft_remaining" as never);
       if (stock.error) throw new Error(stock.error.message);

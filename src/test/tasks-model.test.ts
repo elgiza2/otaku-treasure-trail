@@ -20,10 +20,11 @@ describe("daily check-in", () => {
     expect(checkinReward(1)).toBe(5);
     expect(checkinReward(7)).toBe(11);
   });
-  it("waits 24 hours between claims", () => {
-    const s = checkinState(3, iso(NOW - 23 * H), NOW);
+  it("allows one claim per UTC day", () => {
+    const s = checkinState(3, iso(NOW - H), NOW);
     expect(s.claimable).toBe(false);
-    expect(s.nextAt).toBe(NOW + H);
+    expect(s.nextAt).toBe(Date.UTC(2026, 10, 18));
+    expect(checkinState(3, iso(Date.UTC(2026, 10, 16, 23, 59)), Date.UTC(2026, 10, 17)).claimable).toBe(true);
   });
   it("continues the streak after 24 hours", () => {
     const s = checkinState(3, iso(NOW - 25 * H), NOW);

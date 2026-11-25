@@ -6,6 +6,7 @@ import {
   type TournamentLeaderDTO,
 } from "@/lib/tournament-model";
 import { cn } from "@/lib/utils";
+import { VerifiedBadge } from '@/components/profile/MinePassCard';
 
 const MEDALS = ["🥇", "🥈", "🥉"] as const;
 
@@ -54,7 +55,7 @@ export function TournamentLeadersView({
           >
             <span className="text-lg">{MEDALS[i] ?? `#${l.rank}`}</span>
             <LeaderAvatar src={l.photoUrl} name={l.name} size="mt-1 size-12" />
-            <p className="mt-2 w-full truncate text-xs font-bold text-foreground">{l.name}</p>
+            <div className="mt-2 flex w-full items-center justify-center gap-1"><p className="truncate text-xs font-bold text-foreground">{l.name}</p>{l.verified && <VerifiedBadge />}</div>
             <p className="mt-0.5 text-[0.7rem] font-extrabold tabular-nums text-accent" dir="ltr">
               {formatAmount(l.points)} pts
             </p>
@@ -80,7 +81,7 @@ export function TournamentLeadersView({
               </span>
               <LeaderAvatar src={l.photoUrl} name={l.name} size="size-9" />
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold text-foreground">{l.name}</p>
+                <div className="flex items-center gap-1"><p className="truncate text-sm font-semibold text-foreground">{l.name}</p>{l.verified && <VerifiedBadge />}</div>
                 <p className="text-[0.68rem] text-muted-foreground">
                   {l.adsCount} إعلان · {l.referralsCount} إحالة موثقة
                 </p>

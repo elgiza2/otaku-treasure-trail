@@ -151,7 +151,10 @@ export const saveWallet = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     const { user, db } = await authPlayer(data.initData);
-    const { error } = await db.from("wall_users").update({ wallet_address: data.address }).eq("tg_id", user.id);
+    const { Address } = await import('@ton/core');
+    let address: string;
+    try { address = Address.parse(data.address).toString({ bounceable: false }); } catch { throw new Error('bad_wallet'); }
+    const { error } = await db.rpc('wall_growth_save_wallet', { _tg: user.id, _address: address });
     if (error) throw new Error(error.message);
     return { ok: true };
   });

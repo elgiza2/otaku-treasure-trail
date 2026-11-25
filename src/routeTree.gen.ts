@@ -12,15 +12,18 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as R101RouteImport } from './routes/101'
 import { Route as BattleRouteImport } from './routes/battle'
+import { Route as DuelsRouteImport } from './routes/duels'
 import { Route as HeroesRouteImport } from './routes/heroes'
 import { Route as NftRouteImport } from './routes/nft'
 import { Route as PartnersRouteImport } from './routes/partners'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as RaidRouteImport } from './routes/raid'
 import { Route as SquadsRouteImport } from './routes/squads'
+import { Route as StoreRouteImport } from './routes/store'
 import { Route as TasksRouteImport } from './routes/tasks'
 import { Route as TournamentRouteImport } from './routes/tournament'
 import { Route as WalletRouteImport } from './routes/wallet'
+import { Route as ApiPublicStoryCoverRouteImport } from './routes/api/public/story-cover'
 import { Route as ApiPublicTonconnectManifestRouteImport } from './routes/api/public/tonconnect-manifest'
 import { Route as ApiPublicWalletIconRouteImport } from './routes/api/public/wallet-icon'
 import { Route as ApiPublicAdsgramRewardRouteImport } from './routes/api/public/adsgram/reward'
@@ -41,6 +44,11 @@ const R101Route = R101RouteImport.update({
 const BattleRoute = BattleRouteImport.update({
   id: '/battle',
   path: '/battle',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DuelsRoute = DuelsRouteImport.update({
+  id: '/duels',
+  path: '/duels',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HeroesRoute = HeroesRouteImport.update({
@@ -73,6 +81,11 @@ const SquadsRoute = SquadsRouteImport.update({
   path: '/squads',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StoreRoute = StoreRouteImport.update({
+  id: '/store',
+  path: '/store',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TasksRoute = TasksRouteImport.update({
   id: '/tasks',
   path: '/tasks',
@@ -86,6 +99,11 @@ const TournamentRoute = TournamentRouteImport.update({
 const WalletRoute = WalletRouteImport.update({
   id: '/wallet',
   path: '/wallet',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicStoryCoverRoute = ApiPublicStoryCoverRouteImport.update({
+  id: '/api/public/story-cover',
+  path: '/api/public/story-cover',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicTonconnectManifestRoute =
@@ -125,15 +143,18 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/101': typeof R101Route
   '/battle': typeof BattleRoute
+  '/duels': typeof DuelsRoute
   '/heroes': typeof HeroesRoute
   '/nft': typeof NftRoute
   '/partners': typeof PartnersRoute
   '/profile': typeof ProfileRoute
   '/raid': typeof RaidRoute
   '/squads': typeof SquadsRoute
+  '/store': typeof StoreRoute
   '/tasks': typeof TasksRoute
   '/tournament': typeof TournamentRoute
   '/wallet': typeof WalletRoute
+  '/api/public/story-cover': typeof ApiPublicStoryCoverRoute
   '/api/public/tonconnect-manifest': typeof ApiPublicTonconnectManifestRoute
   '/api/public/wallet-icon': typeof ApiPublicWalletIconRoute
   '/api/public/adsgram/reward': typeof ApiPublicAdsgramRewardRoute
@@ -145,15 +166,18 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/101': typeof R101Route
   '/battle': typeof BattleRoute
+  '/duels': typeof DuelsRoute
   '/heroes': typeof HeroesRoute
   '/nft': typeof NftRoute
   '/partners': typeof PartnersRoute
   '/profile': typeof ProfileRoute
   '/raid': typeof RaidRoute
   '/squads': typeof SquadsRoute
+  '/store': typeof StoreRoute
   '/tasks': typeof TasksRoute
   '/tournament': typeof TournamentRoute
   '/wallet': typeof WalletRoute
+  '/api/public/story-cover': typeof ApiPublicStoryCoverRoute
   '/api/public/tonconnect-manifest': typeof ApiPublicTonconnectManifestRoute
   '/api/public/wallet-icon': typeof ApiPublicWalletIconRoute
   '/api/public/adsgram/reward': typeof ApiPublicAdsgramRewardRoute
@@ -166,15 +190,18 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/101': typeof R101Route
   '/battle': typeof BattleRoute
+  '/duels': typeof DuelsRoute
   '/heroes': typeof HeroesRoute
   '/nft': typeof NftRoute
   '/partners': typeof PartnersRoute
   '/profile': typeof ProfileRoute
   '/raid': typeof RaidRoute
   '/squads': typeof SquadsRoute
+  '/store': typeof StoreRoute
   '/tasks': typeof TasksRoute
   '/tournament': typeof TournamentRoute
   '/wallet': typeof WalletRoute
+  '/api/public/story-cover': typeof ApiPublicStoryCoverRoute
   '/api/public/tonconnect-manifest': typeof ApiPublicTonconnectManifestRoute
   '/api/public/wallet-icon': typeof ApiPublicWalletIconRoute
   '/api/public/adsgram/reward': typeof ApiPublicAdsgramRewardRoute
@@ -188,15 +215,18 @@ export interface FileRouteTypes {
     | '/'
     | '/101'
     | '/battle'
+    | '/duels'
     | '/heroes'
     | '/nft'
     | '/partners'
     | '/profile'
     | '/raid'
     | '/squads'
+    | '/store'
     | '/tasks'
     | '/tournament'
     | '/wallet'
+    | '/api/public/story-cover'
     | '/api/public/tonconnect-manifest'
     | '/api/public/wallet-icon'
     | '/api/public/adsgram/reward'
@@ -208,15 +238,18 @@ export interface FileRouteTypes {
     | '/'
     | '/101'
     | '/battle'
+    | '/duels'
     | '/heroes'
     | '/nft'
     | '/partners'
     | '/profile'
     | '/raid'
     | '/squads'
+    | '/store'
     | '/tasks'
     | '/tournament'
     | '/wallet'
+    | '/api/public/story-cover'
     | '/api/public/tonconnect-manifest'
     | '/api/public/wallet-icon'
     | '/api/public/adsgram/reward'
@@ -228,15 +261,18 @@ export interface FileRouteTypes {
     | '/'
     | '/101'
     | '/battle'
+    | '/duels'
     | '/heroes'
     | '/nft'
     | '/partners'
     | '/profile'
     | '/raid'
     | '/squads'
+    | '/store'
     | '/tasks'
     | '/tournament'
     | '/wallet'
+    | '/api/public/story-cover'
     | '/api/public/tonconnect-manifest'
     | '/api/public/wallet-icon'
     | '/api/public/adsgram/reward'
@@ -249,15 +285,18 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   R101Route: typeof R101Route
   BattleRoute: typeof BattleRoute
+  DuelsRoute: typeof DuelsRoute
   HeroesRoute: typeof HeroesRoute
   NftRoute: typeof NftRoute
   PartnersRoute: typeof PartnersRoute
   ProfileRoute: typeof ProfileRoute
   RaidRoute: typeof RaidRoute
   SquadsRoute: typeof SquadsRoute
+  StoreRoute: typeof StoreRoute
   TasksRoute: typeof TasksRoute
   TournamentRoute: typeof TournamentRoute
   WalletRoute: typeof WalletRoute
+  ApiPublicStoryCoverRoute: typeof ApiPublicStoryCoverRoute
   ApiPublicTonconnectManifestRoute: typeof ApiPublicTonconnectManifestRoute
   ApiPublicWalletIconRoute: typeof ApiPublicWalletIconRoute
   ApiPublicAdsgramRewardRoute: typeof ApiPublicAdsgramRewardRoute
@@ -287,6 +326,13 @@ declare module '@tanstack/react-router' {
       path: '/battle'
       fullPath: '/battle'
       preLoaderRoute: typeof BattleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/duels': {
+      id: '/duels'
+      path: '/duels'
+      fullPath: '/duels'
+      preLoaderRoute: typeof DuelsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/heroes': {
@@ -331,6 +377,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SquadsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/store': {
+      id: '/store'
+      path: '/store'
+      fullPath: '/store'
+      preLoaderRoute: typeof StoreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tasks': {
       id: '/tasks'
       path: '/tasks'
@@ -350,6 +403,13 @@ declare module '@tanstack/react-router' {
       path: '/wallet'
       fullPath: '/wallet'
       preLoaderRoute: typeof WalletRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/story-cover': {
+      id: '/api/public/story-cover'
+      path: '/api/public/story-cover'
+      fullPath: '/api/public/story-cover'
+      preLoaderRoute: typeof ApiPublicStoryCoverRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/tonconnect-manifest': {
@@ -401,15 +461,18 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   R101Route: R101Route,
   BattleRoute: BattleRoute,
+  DuelsRoute: DuelsRoute,
   HeroesRoute: HeroesRoute,
   NftRoute: NftRoute,
   PartnersRoute: PartnersRoute,
   ProfileRoute: ProfileRoute,
   RaidRoute: RaidRoute,
   SquadsRoute: SquadsRoute,
+  StoreRoute: StoreRoute,
   TasksRoute: TasksRoute,
   TournamentRoute: TournamentRoute,
   WalletRoute: WalletRoute,
+  ApiPublicStoryCoverRoute: ApiPublicStoryCoverRoute,
   ApiPublicTonconnectManifestRoute: ApiPublicTonconnectManifestRoute,
   ApiPublicWalletIconRoute: ApiPublicWalletIconRoute,
   ApiPublicAdsgramRewardRoute: ApiPublicAdsgramRewardRoute,

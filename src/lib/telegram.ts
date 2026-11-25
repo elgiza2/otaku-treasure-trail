@@ -10,6 +10,7 @@ type WebApp = {
   expand?: () => void;
   openLink?: (url: string) => void;
   openTelegramLink?: (url: string) => void;
+  shareToStory?: (mediaUrl: string, params?: { text?: string; widget_link?: { url: string; name?: string } }) => void;
   HapticFeedback?: { notificationOccurred: (t: "success" | "error" | "warning") => void; impactOccurred: (s: string) => void };
 };
 
@@ -76,6 +77,15 @@ export function openExternal(url: string) {
 
 export function shareLink(url: string, text: string) {
   openExternal(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`);
+}
+
+export function shareGameStory(url: string) {
+  const tg = webApp();
+  if (!tg?.shareToStory || parseFloat(tg.version ?? '0') < 7.8) {
+    shareLink(url, 'انضم لمعركتي في منجم الأسوار!');
+    return;
+  }
+  tg.shareToStory(`${window.location.origin}/api/public/story-cover`, { text: `منجم الأسوار ⚔️ ${url}`, widget_link: { url, name: 'العب معايا' } });
 }
 
 export function haptic(type: "success" | "error") {

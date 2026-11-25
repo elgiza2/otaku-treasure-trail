@@ -1,299 +1,61 @@
-import { useEffect, useMemo, useState } from "react";
-import { useMutation, useQuery, useQueryClient, useSuspenseQuery, queryOptions } from "@tanstack/react-query";
-import { Link, useNavigate } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
-import { toast } from "sonner";
+import { useMemo, useState } from 'react';
+import { queryOptions, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import { useServerFn } from '@tanstack/react-start';
+import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import { BottomNav } from '@/components/BottomNav';
+import { GrowthPanel } from '@/components/growth/GrowthPanel';
+import { AdTaskCard } from './AdTaskCard';
+import { TaskCard } from './TaskCard';
+import { useNow } from './use-now';
+import { getMyBoard, listTasks, claimTask, startTask } from '@/lib/tasks.functions';
+import { claimAdReward } from '@/lib/shop.functions';
+import { claimErrorMessage, taskState, type TaskCategory, type TaskDTO } from '@/lib/tasks-model';
+import { useTelegramInitData, shareLink, openExternal } from '@/lib/telegram';
+import { referralLink } from '@/lib/coin';
+import { showAdsgramAd } from '@/lib/adsgram';
+import { showRewardedAd } from '@/lib/monetag';
+import type { AdProvider } from '@/lib/tournament-model';
 
-import hallImage from "@/assets/tasks/garrison-hall.jpg";
-import { AnimatedEmoji } from "@/components/emoji/AnimatedEmoji";
-import type { EmojiName } from "@/components/emoji/emoji-registry";
-import { showAdsgramAd } from "@/lib/adsgram";
-import { COIN, formatAmount, referralLink } from "@/lib/coin";
-import { useTelegramInitData, haptic, openExternal, shareLink } from "@/lib/telegram";
-import { showRewardedAd } from "@/lib/monetag";
-import { claimAdReward } from "@/lib/shop.functions";
-import { shopErrorMessage } from "@/lib/shop-model";
-import { TOURNAMENT_AD_POINTS, TOURNAMENT_PRIZE_POOL, type AdProvider } from "@/lib/tournament-model";
-import { claimCheckin, claimTask, getMyBoard, listTasks, saveWallet, startTask } from "@/lib/tasks.functions";
-import { claimErrorMessage, isAvailable, taskState, type TaskCategory, type TaskDTO } from "@/lib/tasks-model";
-import { cn } from "@/lib/utils";
-import { BottomNav } from "@/components/BottomNav";
-import { AdTaskCard } from "./AdTaskCard";
-import { CheckinCard } from "./CheckinCard";
-import { TaskCard } from "./TaskCard";
-import { useNow } from "./use-now";
-
-export const tasksQuery = queryOptions({ queryKey: ["wall-tasks"], queryFn: () => listTasks() });
-
-export type CategoryFilter = "all" | TaskCategory;
-
-const CATEGORIES: { id: CategoryFilter; label: string; emoji: EmojiName }[] = [
-  { id: "all", label: "الكل", emoji: "sparkle" },
-  { id: "onchain", label: "على السلسلة", emoji: "ton" },
-  { id: "game", label: "داخل الأسوار", emoji: "blocks" },
-  { id: "social", label: "اجتماعي", emoji: "globe" },
-  { id: "partners", label: "الشركاء", emoji: "shields" },
-];
-
-const GUEST_MSG = "افتح اللعبة من تيليجرام عشان تستلم المكافآت";
-
+export const tasksQuery = queryOptions({ queryKey: ['wall-tasks'], queryFn: () => listTasks() });
+export type CategoryFilter = 'all' | TaskCategory;
 export function TasksPage({ category }: { category: CategoryFilter }) {
-  const navigate = useNavigate({ from: "/tasks" });
-  const qc = useQueryClient();
-  const now = useNow(1000);
-  const initData = useTelegramInitData();
-  const [busyTask, setBusyTask] = useState<string | null>(null);
-
-  useEffect(() => {
-    const tg = (window as unknown as { Telegram?: { WebApp?: { ready?: () => void; expand?: () => void } } }).Telegram?.WebApp;
-    tg?.ready?.();
-    tg?.expand?.();
-  }, []);
-
-  const { data: tasks } = useSuspenseQuery(tasksQuery);
-  const fetchBoard = useServerFn(getMyBoard);
-  const board = useQuery({
-    queryKey: ["wall-board", initData],
-    queryFn: () => fetchBoard({ data: { initData } }),
-    enabled: initData.length > 0,
-  });
-  const player = board.data?.player ?? null;
-  const progress = useMemo(
-    () => new Map((board.data?.progress ?? []).map((p) => [p.taskId, p])),
-    [board.data?.progress],
-  );
-
-  const refresh = () => qc.invalidateQueries({ queryKey: ["wall-board"] });
-  const reward = (n: number) => {
-    haptic("success");
-    toast.success(`+${formatAmount(n)} ${COIN.symbol}`, { description: "اتضافت لرصيدك" });
-  };
-  const fail = (e: unknown) => {
-    haptic("error");
-    toast.error(claimErrorMessage(e));
-  };
-
-  const checkinFn = useServerFn(claimCheckin);
-  const checkin = useMutation({
-    mutationFn: () => checkinFn({ data: { initData } }),
-    onSuccess: (r) => {
-      reward(Number(r.reward));
-      void refresh();
-    },
-    onError: fail,
-  });
-
-  const startFn = useServerFn(startTask);
-  const claimFn = useServerFn(claimTask);
-  const start = useMutation({
-    mutationFn: (taskId: string) => startFn({ data: { initData, taskId } }),
-    onSuccess: () => void refresh(),
-    onError: fail,
-    onSettled: () => setBusyTask(null),
-  });
-  const claim = useMutation({
-    mutationFn: (taskId: string) => claimFn({ data: { initData, taskId } }),
-    onSuccess: (r) => {
-      reward(r.reward);
-      void refresh();
-    },
-    onError: fail,
-    onSettled: () => setBusyTask(null),
-  });
-
-  // Dual ads task (Adsgram + Monetag): unlimited, pays ANIME + tournament points.
-  const adFn = useServerFn(claimAdReward);
-  const [adsWatched, setAdsWatched] = useState(0);
-  const [busyAd, setBusyAd] = useState<AdProvider | null>(null);
-  const ad = useMutation({
-    mutationFn: async (provider: AdProvider) => {
-      setBusyAd(provider);
-      if (provider === "adsgram") await showAdsgramAd();
-      else await showRewardedAd();
-      return adFn({ data: { initData, provider } });
-    },
-    onSuccess: (r) => {
-      haptic("success");
-      toast.success(`+${formatAmount(r.amount)} ${COIN.symbol}`, { description: `و +${TOURNAMENT_AD_POINTS} نقاط مسابقة` });
-      setAdsWatched((n) => n + 1);
-      void refresh();
-      void qc.invalidateQueries({ queryKey: ["wall-tournament"] });
-      void qc.invalidateQueries({ queryKey: ["wall-tournament-me"] });
-    },
-    onError: (e) => {
-      haptic("error");
-      const msg = e instanceof Error ? e.message : "";
-      if (msg === "ad_unavailable") toast.error("مفيش إعلان متاح على الشبكة دي دلوقتي، جرّب الشبكة التانية");
-      else if (msg === "ad_skipped") toast.error("لازم تكمل مشاهدة الإعلان عشان تاخد المكافأة");
-      else toast.error(shopErrorMessage(e));
-    },
-    onSettled: () => setBusyAd(null),
-  });
-
-  // Save the TON wallet once the player connects it, so the wallet task unlocks.
-  const saveWalletFn = useServerFn(saveWallet);
-  useEffect(() => {
-    if (!initData || !player) return;
-    let unsub: (() => void) | undefined;
-    let alive = true;
-    void import("@/lib/ton-connect").then(async ({ getTonConnect }) => {
-      const { toUserFriendlyAddress } = await import("@tonconnect/ui");
-      const ui = await getTonConnect();
-      if (!alive) return;
-      const sync = async (raw?: string) => {
-        if (!raw) return;
-        const address = toUserFriendlyAddress(raw);
-        if (address === player.wallet) return;
-        await saveWalletFn({ data: { initData, address } }).catch(fail);
-        void refresh();
-      };
-      void sync(ui.account?.address);
-      unsub = ui.onStatusChange((w) => void sync(w?.account.address));
-    });
-    return () => {
-      alive = false;
-      unsub?.();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initData, player?.wallet, player?.tgId]);
-
-  const rows = useMemo(() => {
-    const t = now || Date.now();
-    return tasks
-      .map((task) => ({ task, state: taskState(task, progress.get(task.id), player, t) }))
-      .sort((a, b) => Number(!isAvailable(a.state)) - Number(!isAvailable(b.state)) || a.task.sort - b.task.sort);
-  }, [tasks, progress, player, now]);
-
-  const available = rows.filter((r) => isAvailable(r.state));
-  const shown = category === "all" ? rows : rows.filter((r) => r.task.category === category);
-
-  const act = async (task: TaskDTO) => {
-    if (!initData) return toast(GUEST_MSG);
-    const state = taskState(task, progress.get(task.id), player, Date.now());
-    if (state.type === "verify" || state.type === "ready") {
-      setBusyTask(task.id);
-      return claim.mutate(task.id);
-    }
-    if (state.type === "progress" || task.kind === "share") {
-      if (!player) return;
-      shareLink(referralLink(player.tgId), "انضم ليا خلف الأسوار وابدأ تعدين الذهب 🪙");
-      if (task.kind === "share") {
-        setBusyTask(task.id);
-        start.mutate(task.id);
-      }
-      return;
-    }
-    if (task.kind === "wallet") {
-      const { getTonConnect } = await import("@/lib/ton-connect");
-      const ui = await getTonConnect();
-      return ui.openModal();
-    }
-    if (task.url) openExternal(task.url);
+  const initData=useTelegramInitData(); const now=useNow(1000); const qc=useQueryClient();
+  const [tab,setTab]=useState<'daily'|'ads'|'friends'>(category==='game'?'friends':'daily');
+  const [busyTask,setBusyTask]=useState<string|null>(null);
+  const [busyAd,setBusyAd]=useState<AdProvider|null>(null); const [watched,setWatched]=useState(0);
+  const {data:tasks}=useSuspenseQuery(tasksQuery);
+  const load=useServerFn(getMyBoard); const start=useServerFn(startTask); const claim=useServerFn(claimTask); const ad=useServerFn(claimAdReward);
+  const board=useQuery({queryKey:['wall-board',initData],queryFn:()=>load({data:{initData}}),enabled:!!initData});
+  const player=board.data?.player??null;
+  const progress=useMemo(()=>new Map((board.data?.progress??[]).map(p=>[p.taskId,p])),[board.data?.progress]);
+  const rows=tasks.filter(t=>category==='all'||t.category===category);
+  async function act(task:TaskDTO) {
+    if(!initData){toast('افتح اللعبة من تيليجرام عشان تستلم المكافآت');return;}
+    const state=taskState(task,progress.get(task.id),player,now);
     setBusyTask(task.id);
-    start.mutate(task.id);
-  };
-
-  return (
-    <main className="relative mx-auto min-h-dvh w-full max-w-md overflow-x-hidden bg-background pb-28">
-      {/* Garrison hall backdrop with a flickering lantern */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[27rem] overflow-hidden">
-        <img src={hallImage} alt="" width={720} height={1271} className="h-full w-full object-cover object-top" />
-        <div className="lantern-glow animate-lantern absolute left-[2%] top-[2%] size-40 rounded-full" />
-        <div className="lantern-glow animate-lantern absolute left-[46%] top-[17%] size-24 rounded-full [animation-delay:1.1s]" />
-        <div className="hero-fade absolute inset-0" />
-      </div>
-
-      <div className="relative px-4 pt-[max(1.5rem,env(safe-area-inset-top))]">
-        <header className="animate-rise flex flex-col items-center pt-16 text-center">
-          <h1 className="animate-slam mt-1 font-display text-5xl font-extrabold text-gold drop-shadow-lg">المهام</h1>
-          <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-            {player ? (
-              <span className="glass flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold text-foreground">
-                رصيدك
-                <span dir="ltr" className="text-gold font-display font-extrabold">
-                  {formatAmount(player.balance)}
-                </span>
-              </span>
-            ) : null}
-          </div>
-        </header>
-
-        <div className="mt-6">
-          <CheckinCard
-            player={player}
-            now={now}
-            claiming={checkin.isPending}
-            onClaim={() => (initData ? checkin.mutate() : toast(GUEST_MSG))}
-          />
-        </div>
-
-        <div className="mt-3">
-          <Link to="/tournament" className="glass-card flex items-center gap-3 rounded-[1.5rem] p-3.5">
-            <span className="grid size-[3.25rem] shrink-0 place-items-center rounded-2xl">
-              <AnimatedEmoji name="sparkle" className="size-8 text-accent" />
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block truncate font-display text-base font-extrabold text-gold">مسابقة {TOURNAMENT_PRIZE_POOL} GRAM</span>
-              <span className="block text-xs text-muted-foreground">دورة كل أسبوع · إعلانات وإحالات موثقة</span>
-            </span>
-            <span className="btn-cta shrink-0 rounded-full px-4 py-2 font-display text-xs font-extrabold">شارك</span>
-          </Link>
-        </div>
-
-        <div className="mt-3">
-          <AdTaskCard
-            busyProvider={busyAd}
-            watched={adsWatched}
-            onWatch={(provider) => (initData ? ad.mutate(provider) : toast(GUEST_MSG))}
-          />
-        </div>
-
-        <nav aria-label="أقسام المهام" className="-mx-4 mt-5 overflow-x-auto px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          <div className="flex w-max gap-2">
-            {CATEGORIES.map((c) => {
-              const active = c.id === category;
-              return (
-                <button
-                  key={c.id}
-                  type="button"
-                  onClick={() => navigate({ search: c.id === "all" ? {} : { c: c.id }, replace: true })}
-                  className={cn(
-                    "flex h-11 items-center gap-2 rounded-full border pe-4 ps-2 text-sm font-semibold transition-colors",
-                    active
-                      ? "border-transparent btn-cta"
-                      : "glass text-muted-foreground",
-                  )}
-                >
-                  <span className="grid size-7 place-items-center">
-                    <AnimatedEmoji name={c.emoji} className={cn("size-5", active ? "text-primary-foreground" : "text-accent")} />
-                  </span>
-                  {c.label}
-                </button>
-              );
-            })}
-          </div>
-        </nav>
-
-        <section className="mt-4 flex flex-col gap-3">
-          {shown.map((r, i) => (
-            <TaskCard
-              key={r.task.id}
-              task={r.task}
-              state={r.state}
-              now={now}
-              index={i}
-              busy={busyTask === r.task.id}
-              onAction={() => void act(r.task)}
-            />
-          ))}
-          {shown.length === 0 && (
-            <p className="glass-card rounded-[1.5rem] p-6 text-center text-sm text-muted-foreground">
-              مفيش مهام هنا دلوقتي، ارجع قريب.
-            </p>
-          )}
-        </section>
-      </div>
-      <BottomNav />
-    </main>
-  );
+    try {
+      if(state.type==='ready'||state.type==='verify'){const r=await claim({data:{initData,taskId:task.id}});toast.success(`+${r.reward} ANIME`);}
+      else if(task.kind==='referral'||task.kind==='share'){if(player)shareLink(referralLink(player.tgId),'العب معايا في منجم الأسوار!');if(task.kind==='share')await start({data:{initData,taskId:task.id}});}
+      else if(task.kind==='wallet'){await(await import('@/lib/ton-connect')).getTonConnect().then(ui=>ui.openModal());}
+      else {if(task.url)openExternal(task.url);await start({data:{initData,taskId:task.id}});}
+      await qc.invalidateQueries({queryKey:['wall-board']});
+    }catch(e){toast.error(claimErrorMessage(e));}finally{setBusyTask(null);}
+  }
+  async function watch(provider:AdProvider){
+    if(!initData){toast('افتح اللعبة من تيليجرام عشان تستلم المكافآت');return;}
+    if(busyAd)return;setBusyAd(provider);
+    try{if(provider==='adsgram')await showAdsgramAd();else await showRewardedAd();const r=await ad({data:{initData,provider}});setWatched(n=>n+1);toast.success(`+${r.amount} ANIME · +10 نقاط`);await qc.invalidateQueries();}
+    catch(e){toast.error(e instanceof Error&&e.message.includes('ad_skipped')?'الإعلان ما اكتملش':'مفيش إعلان متاح، جرّب الشبكة التانية');}
+    finally{setBusyAd(null);}
+  }
+  return <main className="mx-auto min-h-dvh max-w-md px-4 pb-28 pt-6">
+    <h1 className="mb-5 text-2xl font-bold">المهام والمكافآت</h1>
+    <div role="tablist" aria-label="أقسام المكافآت" className="mb-6 grid grid-cols-3 gap-1 rounded-lg bg-muted p-1">{([{id:'daily',label:'اليومية'},{id:'ads',label:'الإعلانات'},{id:'friends',label:'الأصدقاء'}] as const).map(t=><Button key={t.id} role="tab" aria-selected={tab===t.id} variant={tab===t.id?'default':'ghost'} onClick={()=>setTab(t.id)}>{t.label}</Button>)}</div>
+    <div role="tabpanel">
+      {tab==='daily'&&<><GrowthPanel mode="daily"/><details className="mt-8 border-t border-border pt-4"><summary className="cursor-pointer text-sm font-bold">مهام الحامية · {rows.length}</summary><div className="mt-4 space-y-3">{rows.map((task,i)=><TaskCard key={task.id} task={task} state={taskState(task,progress.get(task.id),player,now)} now={now} index={i} busy={busyTask===task.id} onAction={()=>void act(task)}/>)}</div></details></>}
+      {tab==='ads'&&<><AdTaskCard busyProvider={busyAd} watched={watched} onWatch={p=>void watch(p)}/><p className="mt-4 text-center text-xs text-muted-foreground">بلا حدود · 15 ANIME + 10 نقاط لكل إعلان</p></>}
+      {tab==='friends'&&<GrowthPanel mode="referrals"/>}
+    </div><BottomNav/>
+  </main>;
 }

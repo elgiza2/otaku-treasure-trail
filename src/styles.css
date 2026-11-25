@@ -39,6 +39,7 @@
   --radius-4xl: calc(var(--radius) + 16px);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-gold: var(--gold);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
@@ -75,21 +76,22 @@
 }
 
 :root {
-  --radius: 1.25rem;
+  --radius: 0.5rem;
+  --gold: oklch(0.82 0.13 85);
   /* Attack-on-Titan mood: ash charcoal, stone, leather, olive cloak, ember gold */
-  --background: oklch(0.14 0.006 70);
+  --background: oklch(0.15 0.004 240);
   --foreground: oklch(0.95 0.012 85);
-  --card: oklch(0.2 0.01 70);
+  --card: oklch(0.21 0.005 240);
   --card-foreground: oklch(0.95 0.012 85);
   --popover: oklch(0.2 0.01 70);
   --popover-foreground: oklch(0.95 0.012 85);
-  --primary: oklch(0.93 0.03 85);
+  --primary: oklch(0.8 0.12 195);
   --primary-foreground: oklch(0.18 0.01 70);
   --secondary: oklch(0.36 0.05 125);
   --secondary-foreground: oklch(0.95 0.012 85);
   --muted: oklch(0.26 0.01 70);
   --muted-foreground: oklch(0.78 0.02 80);
-  --accent: oklch(0.78 0.13 75);
+  --accent: oklch(0.8 0.12 195);
   --accent-foreground: oklch(0.18 0.01 70);
   --destructive: oklch(0.55 0.17 28);
   --destructive-foreground: oklch(0.97 0.01 85);
@@ -250,10 +252,7 @@
   --color-success: var(--success);
 }
 @utility text-gold {
-  background: var(--gradient-gold);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--gold);
 }
 @utility bg-gold-bar {
   background: var(--gradient-bar);
@@ -474,3 +473,17 @@
 [dir="ltr"] :is(.lucide-chevron-left, .lucide-chevron-right, .lucide-arrow-left, .lucide-arrow-right):not(.rdp *) {
   transform: scaleX(-1);
 }
+
+/* Quiet player shell: game media stays immersive, information loses decorative chrome. */
+.app-toolbar { min-height: calc(4rem + var(--tg-safe-top, 0px)); padding-top: var(--tg-safe-top, 0px); }
+.app-bottom-nav { padding-bottom: max(0.5rem, env(safe-area-inset-bottom)); }
+.clean-player main { padding-top: var(--main-pt, 0px); }
+.clean-player :is(.glass,.glass-card,.wallet-surface,.profile-recruit) { background: var(--card); border-color: var(--border); box-shadow: none; border-radius: 8px; backdrop-filter: none; }
+.clean-player :is(section.glass,section.glass-card) { background: transparent; border-inline: 0; box-shadow: none; }
+.clean-player .btn-cta { background: var(--primary); color: var(--primary-foreground); box-shadow: none; border-radius: 8px; }
+.clean-player :is(.lantern-glow,.nft-star,.nft-orb) { display: none; }
+.clean-player :is(.animate-slam,.animate-rise) { animation: none; }
+.clean-player [role="tabpanel"] { animation: story-rise 0.2s ease-out; }
+.clean-player progress { border-radius: 999px; overflow: hidden; }
+.clean-player :is(h1,h2,h3) { letter-spacing: 0; }
+@media (prefers-reduced-motion:reduce) { .clean-player [role="tabpanel"] { animation: none; } }

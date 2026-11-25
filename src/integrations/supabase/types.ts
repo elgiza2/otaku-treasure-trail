@@ -4858,6 +4858,51 @@ export type Database = {
           },
         ]
       }
+      wall_boss_hits: {
+        Row: {
+          created_at: string
+          damage: number
+          id: string
+          squad_id: string
+          tg_id: number
+          updated_at: string
+          week: string
+        }
+        Insert: {
+          created_at?: string
+          damage: number
+          id?: string
+          squad_id: string
+          tg_id: number
+          updated_at?: string
+          week: string
+        }
+        Update: {
+          created_at?: string
+          damage?: number
+          id?: string
+          squad_id?: string
+          tg_id?: number
+          updated_at?: string
+          week?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wall_boss_hits_squad_id_week_fkey"
+            columns: ["squad_id", "week"]
+            isOneToOne: false
+            referencedRelation: "wall_squad_bosses"
+            referencedColumns: ["squad_id", "week"]
+          },
+          {
+            foreignKeyName: "wall_boss_hits_tg_id_fkey"
+            columns: ["tg_id"]
+            isOneToOne: false
+            referencedRelation: "wall_users"
+            referencedColumns: ["tg_id"]
+          },
+        ]
+      }
       wall_checkins: {
         Row: {
           created_at: string
@@ -4970,6 +5015,67 @@ export type Database = {
           },
         ]
       }
+      wall_friend_duels: {
+        Row: {
+          avenged: boolean
+          challenger: number
+          created_at: string
+          expires_at: string
+          id: string
+          opponent: number | null
+          stake: number
+          status: string
+          updated_at: string
+          winner: number | null
+        }
+        Insert: {
+          avenged?: boolean
+          challenger: number
+          created_at?: string
+          expires_at?: string
+          id?: string
+          opponent?: number | null
+          stake?: number
+          status?: string
+          updated_at?: string
+          winner?: number | null
+        }
+        Update: {
+          avenged?: boolean
+          challenger?: number
+          created_at?: string
+          expires_at?: string
+          id?: string
+          opponent?: number | null
+          stake?: number
+          status?: string
+          updated_at?: string
+          winner?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wall_friend_duels_challenger_fkey"
+            columns: ["challenger"]
+            isOneToOne: false
+            referencedRelation: "wall_users"
+            referencedColumns: ["tg_id"]
+          },
+          {
+            foreignKeyName: "wall_friend_duels_opponent_fkey"
+            columns: ["opponent"]
+            isOneToOne: false
+            referencedRelation: "wall_users"
+            referencedColumns: ["tg_id"]
+          },
+          {
+            foreignKeyName: "wall_friend_duels_winner_fkey"
+            columns: ["winner"]
+            isOneToOne: false
+            referencedRelation: "wall_users"
+            referencedColumns: ["tg_id"]
+          },
+        ]
+      }
       wall_game_ad_claims: {
         Row: {
           benefit: string
@@ -5055,6 +5161,91 @@ export type Database = {
           id?: string
         }
         Relationships: []
+      }
+      wall_growth_claims: {
+        Row: {
+          created_at: string
+          kind: string
+          request_id: string
+          result: Json | null
+          tg_id: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          kind: string
+          request_id: string
+          result?: Json | null
+          tg_id: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          kind?: string
+          request_id?: string
+          result?: Json | null
+          tg_id?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wall_growth_claims_tg_id_fkey"
+            columns: ["tg_id"]
+            isOneToOne: false
+            referencedRelation: "wall_users"
+            referencedColumns: ["tg_id"]
+          },
+        ]
+      }
+      wall_growth_state: {
+        Row: {
+          boost_until: string | null
+          boss_strikes: number
+          chest_at: string | null
+          created_at: string
+          notifications: boolean
+          notified_at: string | null
+          protection_until: string | null
+          referral_milestones: number
+          tg_id: number
+          updated_at: string
+          wallet_rewarded: boolean
+        }
+        Insert: {
+          boost_until?: string | null
+          boss_strikes?: number
+          chest_at?: string | null
+          created_at?: string
+          notifications?: boolean
+          notified_at?: string | null
+          protection_until?: string | null
+          referral_milestones?: number
+          tg_id: number
+          updated_at?: string
+          wallet_rewarded?: boolean
+        }
+        Update: {
+          boost_until?: string | null
+          boss_strikes?: number
+          chest_at?: string | null
+          created_at?: string
+          notifications?: boolean
+          notified_at?: string | null
+          protection_until?: string | null
+          referral_milestones?: number
+          tg_id?: number
+          updated_at?: string
+          wallet_rewarded?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wall_growth_state_tg_id_fkey"
+            columns: ["tg_id"]
+            isOneToOne: true
+            referencedRelation: "wall_users"
+            referencedColumns: ["tg_id"]
+          },
+        ]
       }
       wall_hero_levels: {
         Row: {
@@ -5522,6 +5713,41 @@ export type Database = {
           victim?: number
         }
         Relationships: []
+      }
+      wall_squad_bosses: {
+        Row: {
+          created_at: string
+          defeated_at: string | null
+          hp: number
+          squad_id: string
+          updated_at: string
+          week: string
+        }
+        Insert: {
+          created_at?: string
+          defeated_at?: string | null
+          hp?: number
+          squad_id: string
+          updated_at?: string
+          week: string
+        }
+        Update: {
+          created_at?: string
+          defeated_at?: string | null
+          hp?: number
+          squad_id?: string
+          updated_at?: string
+          week?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wall_squad_bosses_squad_id_fkey"
+            columns: ["squad_id"]
+            isOneToOne: false
+            referencedRelation: "wall_squads"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       wall_squad_contributions: {
         Row: {
@@ -6979,6 +7205,24 @@ export type Database = {
         Args: { _day?: string }
         Returns: undefined
       }
+      wall_growth_action: {
+        Args: {
+          _action: string
+          _provider?: string
+          _request: string
+          _target?: string
+          _tg: number
+        }
+        Returns: Json
+      }
+      wall_growth_load: {
+        Args: { _invite?: string; _tg: number }
+        Returns: Json
+      }
+      wall_growth_save_wallet: {
+        Args: { _address: string; _tg: number }
+        Returns: Json
+      }
       wall_hero_cost: {
         Args: { _hero: number; _level: number }
         Returns: number
@@ -7073,6 +7317,7 @@ export type Database = {
         Args: { _revenge?: number; _tg: number }
         Returns: Json
       }
+      wall_referral_milestone: { Args: { _tg: number }; Returns: number }
       wall_settle_squad_weeks: { Args: never; Returns: number }
       wall_squad_board: { Args: never; Returns: Json }
       wall_squad_manage: {

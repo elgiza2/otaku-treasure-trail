@@ -51,9 +51,12 @@ export type CheckinState = {
 export function checkinState(streak: number, lastCheckinAt: string | null, now: number): CheckinState {
   if (!lastCheckinAt) return { claimable: true, nextDay: 1, doneDays: 0, nextAt: null };
   const last = new Date(lastCheckinAt).getTime();
-  if (now > last + 48 * HOUR) return { claimable: true, nextDay: 1, doneDays: 0, nextAt: null };
+  const day = 24 * HOUR;
+  const lastDay = Math.floor(last / day);
+  const today = Math.floor(now / day);
+  if (today > lastDay + 1) return { claimable: true, nextDay: 1, doneDays: 0, nextAt: null };
   const nextDay = (streak % CHECKIN_DAYS) + 1;
-  if (now < last + 24 * HOUR) return { claimable: false, nextDay, doneDays: streak, nextAt: last + 24 * HOUR };
+  if (today <= lastDay) return { claimable: false, nextDay, doneDays: streak, nextAt: (lastDay + 1) * day };
   return { claimable: true, nextDay, doneDays: nextDay === 1 ? 0 : streak, nextAt: null };
 }
 
@@ -107,5 +110,5 @@ export const CLAIM_ERRORS: Record<string, string> = {
 export function claimErrorMessage(err: unknown): string {
   const msg = err instanceof Error ? err.message : String(err);
   const key = Object.keys(CLAIM_ERRORS).find((k) => msg.includes(k));
-  return key ? CLAIM_ERRORS[key]! : "حصلت مشكلة، حاول تاني";
+  return (key ? CLAIM_ERRORS[key] : undefined) ?? "حصلت مشكلة، حاول تاني";
 }

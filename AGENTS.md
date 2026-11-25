@@ -36,3 +36,6 @@ use the editor.
 - Keep partner balances separate from game balances and reserve withdrawal funds transactionally; owner-only report reads and manual payment reviews must revalidate the server role.
 - Record actual ad income and costs separately from view counts in daily reports; missing monetary data stays unknown rather than estimating profit from views.
 - Merge expansion English fallback text below existing locale entries, leaving Arabic untranslated and preserving every existing language-specific translation.
+- Keep engagement state, duel escrow, referral milestones and paid boosts in transaction-locked SQL; verified TON settlement is the only path granting purchased packs, to prevent duplicate rewards.
+- Use AppFrame and five primary navigation destinations, with contextual team tabs and GrowthPanel sections; this keeps secondary features accessible without crowding each screen.
+- Story sharing uses a public image endpoint and grants no completion reward; Telegram opening the story editor is not proof of publication.

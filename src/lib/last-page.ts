@@ -1,7 +1,7 @@
 // Remembers the last app page so reopening the mini app returns there, not to the intro.
 // Saved both locally and in Telegram CloudStorage, because some Telegram apps wipe local storage between opens.
 const KEY = "wall_last_page";
-const PAGES = ["/tasks", "/battle", "/heroes", "/raid", "/wallet", "/profile"];
+const PAGES = ["/tasks", "/battle", "/heroes", "/raid", "/wallet", "/profile", "/squads", "/duels", "/store", "/partners", "/tournament"];
 
 type Cloud = { setItem(k: string, v: string): void; getItem(k: string, cb: (e: unknown, v?: string) => void): void };
 const cloud = (): Cloud | undefined => {

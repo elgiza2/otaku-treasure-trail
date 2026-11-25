@@ -48,6 +48,7 @@ export type TournamentLeaderDTO = {
   adsCount: number;
   referralsCount: number;
   prizeGram: number;
+  verified?: boolean;
 };
 
 export type TournamentRoundDTO = {

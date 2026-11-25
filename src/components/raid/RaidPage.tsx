@@ -9,11 +9,10 @@ import { AnimatedEmoji } from "@/components/emoji/AnimatedEmoji";
 import { BottomNav } from "@/components/BottomNav";
 import { COIN, formatAmount } from "@/lib/coin";
 import { getRaidState, spinRaid } from "@/lib/raid.functions";
-import { MAX_FREE_SPINS, SPIN_PACKS, VAULT_KEYS, WHEEL, type SpinResult } from "@/lib/raid-model";
-import { checkTonPayment, createTonPayment } from "@/lib/shop.functions";
+import { MAX_FREE_SPINS, VAULT_KEYS, WHEEL, type SpinResult } from "@/lib/raid-model";
+import { checkTonPayment } from "@/lib/shop.functions";
 import { shopErrorMessage } from "@/lib/shop-model";
 import { useTelegramInitData, haptic } from "@/lib/telegram";
-import { getTonConnect } from "@/lib/ton-connect";
 import { cn } from "@/lib/utils";
 import { StarField } from "@/components/nft/NftIntro";
 import { StoryGame } from "@/components/story/StoryGame";
@@ -22,6 +21,8 @@ import { GameAdButtons } from "@/components/game/GameAdButtons";
 import { EnergyBar } from "@/components/game/EnergyBar";
 import { gameError } from "@/lib/game-model";
 import { Link } from "@tanstack/react-router";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { GrowthPanel } from "@/components/growth/GrowthPanel";
 
 function resultText(r: SpinResult): string {
   switch (r.segment) {
@@ -41,11 +42,11 @@ export function RaidPage() {
   const [spinning, setSpinning] = useState(false);
   const [result, setResult] = useState<SpinResult | null>(null);
   const [busy, setBusy] = useState(false);
-  const [tab, setTab] = useState<"novel" | "riddle" | "raid">("novel");
+  const [packsOpen, setPacksOpen] = useState(false);
+  const [tab, setTab] = useState<"novel" | "riddle" | "raid">("raid");
 
   const stateFn = useServerFn(getRaidState);
   const spinFn = useServerFn(spinRaid);
-  const createFn = useServerFn(createTonPayment);
   const checkFn = useServerFn(checkTonPayment);
   const q = useQuery({ queryKey: ["wall-raid", initData], queryFn: () => stateFn({ data: { initData } }), enabled: !!initData, refetchInterval: 30_000 });
   const s = q.data;
@@ -72,35 +73,16 @@ export function RaidPage() {
     const r = await checkFn({ data: { initData, id } });
     if (r.paid) { toast.success("اتضافت اللفات!"); haptic("success"); await q.refetch(); }
   }
-  async function buy(pack: string) {
-    if (!initData) { toast("افتح اللعبة من تيليجرام عشان تشتري"); return; }
-    setBusy(true);
-    try {
-      const ui = await getTonConnect();
-      if (!ui.connected) { await ui.openModal(); toast("اربط محفظتك وبعدين اشتري"); return; }
-      const pay = await createFn({ data: { initData, pack } });
-      await ui.sendTransaction({ validUntil: Math.floor(Date.now() / 1000) + 600, messages: [{ address: pay.address, amount: pay.amount, payload: pay.payload }] });
-      toast("تم إرسال الدفعة، جارٍ تأكيدها…");
-      for (let i = 0; i < 12; i++) {
-        await new Promise((res) => setTimeout(res, 5000));
-        try { await confirm(pay.id); return; }
-        catch (e) { if (!(e instanceof Error && e.message.includes("not_found_yet"))) throw e; }
-      }
-      toast("التأكيد لسه موصلش؛ تقدر تتحقق تاني من غير ما تدفع");
-    } catch (e) { toast.error(shopErrorMessage(e)); }
-    finally { setBusy(false); }
-  }
-
   const spins = s?.spins ?? 0;
   const revengeable = (s?.attacks ?? []).filter((a) => !a.blocked && !a.avenged);
 
-  const tabs = [{ id: "novel", label: "الحكاية" }, { id: "riddle", label: "اللغز" }, { id: "raid", label: "الغارات" }] as const;
+  const tabs = [{ id: "novel", label: "الحكاية" }, { id: "riddle", label: "اللغز" }, { id: "raid", label: "العجلة" }] as const;
 
   return <main className={cn("nft-night relative mx-auto max-w-md overflow-hidden", tab === "novel" ? "h-dvh" : "min-h-dvh pb-28")}>
     <StarField />
     {tab === "novel" && <AnimeNovel initData={initData} />}
     <header className="relative z-20 flex items-center justify-between gap-2 px-4 pt-[max(1rem,env(safe-area-inset-top))]">
-      <h1 className="font-display text-xl font-extrabold">حكايات السور</h1>
+      <h1 className="font-display text-xl font-extrabold">العجلة</h1>
       <nav className="glass relative flex rounded-full p-1" aria-label="أقسام اللعبة">
         <span className="absolute inset-y-1 rounded-full bg-primary transition-all duration-300" style={{ width: "calc((100% - 0.5rem) / 3)", insetInlineStart: `calc(0.25rem + ${tabs.findIndex((t) => t.id === tab)} * (100% - 0.5rem) / 3)` }} />
         {tabs.map((t) => <button key={t.id} type="button" onClick={() => setTab(t.id)} className={cn("relative z-10 w-16 rounded-full py-1.5 text-xs font-extrabold transition-colors", tab === t.id ? "text-primary-foreground" : "text-foreground/70")}>{t.label}</button>)}
@@ -159,20 +141,9 @@ export function RaidPage() {
       </div>
     </section>}
 
-    {/* Buy spins */}
-    <section className="relative z-10 mt-6 px-4">
-      <h2 className="mb-2 font-display text-lg font-extrabold">لفات إضافية</h2>
-      <div className="grid grid-cols-3 gap-2">
-        {SPIN_PACKS.map((p) => <button key={p.id} disabled={busy} onClick={() => buy(p.id)} className="glass relative flex flex-col items-center gap-1 rounded-2xl p-3 disabled:opacity-60">
-          {p.tag && <span className="absolute -top-2 rounded-full bg-accent px-2 text-[0.6rem] font-bold text-accent-foreground">{p.tag}</span>}
-          <span className="font-display text-2xl font-extrabold">{p.spins}</span>
-          <span className="text-[0.7rem] text-foreground/70">لفة</span>
-          <span dir="ltr" className="text-sm font-extrabold text-accent">{p.ton} TON</span>
-        </button>)}
-      </div>
-      {s?.pendingId && <Button variant="outline" className="mt-2 w-full" disabled={busy} onClick={() => { setBusy(true); confirm(s.pendingId!).catch((e) => toast.error(shopErrorMessage(e))).finally(() => setBusy(false)); }}>تحقق من دفعة سابقة</Button>}
-    </section>
+    <section className="relative z-10 mt-5 px-4"><Button variant="outline" className="w-full" onClick={() => setPacksOpen(true)}>حزم اللفات والطاقة</Button>{s?.pendingId && <Button variant="ghost" className="mt-2 w-full" disabled={busy} onClick={() => { const id=s.pendingId; if(!id)return; setBusy(true);void confirm(id).catch(e=>toast.error(shopErrorMessage(e))).finally(()=>setBusy(false)); }}>تحقق من دفعة سابقة</Button>}</section>
     </div>}
+    <Dialog open={packsOpen} onOpenChange={setPacksOpen}><DialogContent className="max-h-[85dvh] max-w-sm overflow-y-auto"><DialogTitle>حزم سريعة</DialogTitle><DialogDescription>حزم صغيرة بالدفع عبر TON</DialogDescription><GrowthPanel mode="shop" /></DialogContent></Dialog>
     <BottomNav />
   </main>;
 }

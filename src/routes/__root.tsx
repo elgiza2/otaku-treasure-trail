@@ -14,6 +14,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { DomTranslator } from "@/i18n/DomTranslator";
 import { rememberPage } from "@/lib/last-page";
 import { requestBotWriteAccess, useTelegramInitData } from "@/lib/telegram";
+import { AppFrame } from '@/components/AppFrame';
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -142,7 +143,7 @@ type TgFull = {
   BackButton?: { show: () => void; hide: () => void; onClick: (cb: () => void) => void; offClick: (cb: () => void) => void };
 };
 // Main tabs hide Telegram's back button; every other page shows it.
-const TAB_PAGES = ["/", "/tasks", "/battle", "/heroes", "/raid", "/wallet", "/profile"];
+const TAB_PAGES = ["/", "/tasks", "/battle", "/heroes", "/raid", "/wallet"];
 
 function RootComponent() {
   const initData = useTelegramInitData();
@@ -181,7 +182,6 @@ function RootComponent() {
       tg.expand?.();
       try { tg.requestFullscreen?.(); } catch { /* older clients */ }
       tg.disableVerticalSwipes?.();
-      requestBotWriteAccess();
       const apply = () => {
         const a = tg.safeAreaInset?.top ?? 0;
         const b = tg.contentSafeAreaInset?.top ?? 0;
@@ -201,7 +201,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <AppFrame><Outlet /></AppFrame>
       <DomTranslator />
       <Toaster position="top-center" theme="dark" offset={14} gap={8} />
     </QueryClientProvider>

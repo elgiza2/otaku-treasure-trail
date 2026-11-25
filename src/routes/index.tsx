@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { lastPageAsync } from "@/lib/last-page";
 import { getInitData } from "@/lib/telegram";
 import { squadStartParam } from "@/lib/game-model";
+import { duelStartParam } from '@/lib/growth-model';
 
 import { StoryOnboarding } from "@/components/onboarding/StoryOnboarding";
 
@@ -24,6 +25,8 @@ function Index() {
   const navigate = useNavigate();
   const [checked, setChecked] = useState(false);
   useEffect(() => {
+    const duel = duelStartParam(getInitData());
+    if (duel) { void navigate({ to: '/duels', search: { invite: duel }, replace: true }); return; }
     const squad = squadStartParam(getInitData());
     if (squad) { void navigate({ to: "/squads", search: { invite: squad }, replace: true }); return; }
     let live = true;

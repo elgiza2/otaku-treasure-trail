@@ -39,7 +39,16 @@ export const getMySquad = createServerFn({ method: "POST" }).inputValidator((d: 
   if (settled.error) throw new Error(settled.error.message);
   const r = await db.from("wall_squad_members").select("squad_id").eq("tg_id", user.id).maybeSingle();
   if (r.error) throw new Error(r.error.message);
-  return { squadId: r.data?.squad_id ?? null };
+  const squadId=r.data?.squad_id ?? null;
+  if(!squadId) return { squadId, members: [] as {name:string;verified:boolean}[] };
+  const membership=await db.from('wall_squad_members').select('tg_id').eq('squad_id',squadId).limit(100);
+  if(membership.error)throw new Error(membership.error.message);
+  const ids=membership.data.map(m=>m.tg_id);
+  if(ids.length===0)return {squadId,members:[] as {name:string;verified:boolean}[]};
+  const [users,passes]=await Promise.all([db.from('wall_users').select('tg_id,first_name').in('tg_id',ids),db.from('wall_mine_passes').select('tg_id').in('tg_id',ids)]);
+  if(users.error||passes.error)throw new Error('load_failed');
+  const verified=new Set(passes.data.map(p=>p.tg_id));
+  return { squadId, members: users.data.map(u=>({name:u.first_name,verified:verified.has(u.tg_id)})) };
 });
 export const manageSquad = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => auth.extend({ action: z.enum(["create", "join", "leave"]), squadId: z.string().uuid().optional(), name: z.string().trim().min(3).max(32).optional(), emblem: z.enum(["⚔️", "🛡️", "🔥", "🐉"]).optional() }).parse(d))

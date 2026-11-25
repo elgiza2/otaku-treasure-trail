@@ -16,6 +16,7 @@ import { totalRate, TOTAL_MAX } from "@/lib/heroes-model";
 import { getMyProfile } from "@/lib/profile.functions";
 import { useTelegramInitData, shareLink } from "@/lib/telegram";
 import { MinePassCard, VerifiedBadge } from "./MinePassCard";
+import { GrowthPanel } from '@/components/growth/GrowthPanel';
 
 export function ProfilePage() {
   const [lang, setLangState] = useState<Lang>("ar");
@@ -51,7 +52,7 @@ export function ProfilePage() {
       <header className="animate-rise text-center">
         <p className="text-sm font-semibold text-foreground/80">الملف الشخصي</p>
         <div className="relative mx-auto mt-7 size-28">
-          <img src={p?.photo_url || avatar} onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = avatar; }} alt="صورة اللاعب" width={112} height={112} className="size-full rounded-full border-[3px] border-accent object-cover object-top shadow-lg" />
+          <img src={p?.photo_url || avatar} onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = avatar; }} alt="صورة اللاعب" width={112} height={112} className={`size-full rounded-full border-[3px] object-cover object-top ${board.data?.minePass ? 'border-gold' : 'border-border'}`} />
           <span className="absolute -bottom-2 start-1/2 -translate-x-[-50%] whitespace-nowrap rounded-full border-2 border-background bg-accent px-3 py-1 text-xs font-bold text-accent-foreground">المستوى {total ?? "—"}</span>
         </div>
         <h1 className="mt-6 flex flex-wrap items-center justify-center gap-2 break-words text-3xl font-extrabold">{p?.first_name || p?.username || "جندي الحامية"}{board.data?.minePass && <VerifiedBadge />}</h1>
@@ -94,6 +95,7 @@ export function ProfilePage() {
       <section className="mt-6 border-t border-border pt-5">
         <Button variant="outline" asChild className="mb-4 w-full"><Link to="/partners">قنوات الشركاء</Link></Button>
         <h2 className="mb-2 text-xl font-extrabold">الإعدادات</h2>
+        <GrowthPanel mode="settings" />
         <div className="flex items-center gap-3 border-b border-border py-4"><AnimatedEmoji name="globe" className="size-7 text-success" /><span className="flex-1 font-semibold">اللغة</span><select aria-label="اللغة" value={lang} onChange={(e) => setLang(e.target.value as Lang)} className="rounded-lg border border-border bg-card px-2 py-1 text-sm text-foreground">{LANGS.map((l) => <option data-no-tr key={l} value={l}>{LANG_NAMES[l]}</option>)}</select></div>
         <Button variant="ghost" asChild className="h-auto w-full justify-start gap-3 rounded-none border-b border-border px-0 py-4"><Link to="/"><AnimatedEmoji name="orbit" className="size-7 text-accent" /><span className="flex-1 text-start font-semibold">أعد مشاهدة القصة</span><span aria-hidden="true" className="text-muted-foreground">←</span></Link></Button>
       </section>

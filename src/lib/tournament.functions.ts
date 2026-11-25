@@ -27,6 +27,7 @@ type UserLite = {
   first_name: string;
   username: string | null;
   photo_url: string | null;
+  verified?: boolean;
 };
 
 function mapLeaders(entries: EntryRow[], usersById: Map<number, UserLite>, settled: boolean): TournamentLeaderDTO[] {
@@ -39,6 +40,7 @@ function mapLeaders(entries: EntryRow[], usersById: Map<number, UserLite>, settl
       name: u?.first_name || u?.username || `لاعب #${String(e.tg_id).slice(-4)}`,
       username: u?.username ?? null,
       photoUrl: u?.photo_url ?? null,
+      verified: u?.verified ?? false,
       points: Number(e.points),
       adsCount: Number(e.ads_count),
       referralsCount: Number(e.referrals_count),
@@ -107,7 +109,10 @@ export const getTournamentBoard = createServerFn({ method: "GET" }).handler(asyn
       .from("wall_users")
       .select("tg_id, first_name, username, photo_url")
       .in("tg_id", [...allTgIds]);
-    for (const u of (users ?? []) as UserLite[]) usersById.set(Number(u.tg_id), u);
+    const passes=await db.from('wall_mine_passes').select('tg_id').in('tg_id',[...allTgIds]);
+    if(passes.error)throw new Error(passes.error.message);
+    const verifiedIds=new Set((passes.data??[]).map(p=>Number(p.tg_id)));
+    for (const u of (users ?? []) as UserLite[]) usersById.set(Number(u.tg_id), {...u,verified:verifiedIds.has(Number(u.tg_id))});
   }
 
   const r = roundRes.data as { id: string; round_number: number; starts_at: string; ends_at: string; prize_pool: number };
