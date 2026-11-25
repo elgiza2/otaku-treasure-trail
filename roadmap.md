@@ -7,6 +7,7 @@
 - [x] Simplify all player pages into five main tabs and contextual panels
 - [x] Finish channel registration and twice-daily publishing code; activation waits for bot token
 - [x] Test growth rules, translations and clean navigation; real Telegram/payment/webhook checks wait for bot token
+- [ ] Upgrade visual design to a rich, polished dark-anime gold aesthetic (glass surfaces, depth, artwork headers, refined 5-tab nav) while keeping pages uncluttered
 
 - [x] Database schema for 3-day GRAM tournament, dual ad providers, and 0.05 TON referral verification
 - [x] Remove all ad limits/cooldowns from `wall_ad_reward_v2` (unlimited ads, no gap)

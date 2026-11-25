@@ -20,7 +20,9 @@ export function EnergyBar({ initData, disabled = false }: { initData: string; di
   const [open,setOpen]=useState(false);
   return <div className="space-y-2">
     <div className="flex items-center justify-between text-xs"><span className="flex items-center gap-1"><Zap className="size-4 text-accent" /> الطاقة</span><span dir="ltr" className="tabular-nums">{energy.value ?? "—"}/{ENERGY_MAX}</span></div>
-    <progress className="h-1.5 w-full accent-primary" max={ENERGY_MAX} value={energy.value ?? 0} aria-label="الطاقة" />
+    <div role="progressbar" aria-label="الطاقة" aria-valuemin={0} aria-valuemax={ENERGY_MAX} aria-valuenow={energy.value ?? 0} className="h-2 w-full overflow-hidden rounded-full bg-background/60">
+      <div className="bg-gold-bar h-full rounded-full transition-[width] duration-500" style={{ width: `${Math.min(100, ((energy.value ?? 0) / ENERGY_MAX) * 100)}%` }} />
+    </div>
     {energy.isError && <p role="alert" className="text-xs text-destructive">تعذّر تحميل الطاقة</p>}
     {energy.value !== null && energy.value < ENERGY_MAX && <Button variant="link" size="sm" className="h-6 px-0 text-xs" disabled={disabled} onClick={()=>setOpen(true)}>شحن الطاقة</Button>}
     <Dialog open={open} onOpenChange={setOpen}><DialogContent className="max-w-sm"><DialogTitle>شحن الطاقة</DialogTitle><DialogDescription>شحن كامل بإعلان · الطاقة بتتجدد تلقائياً</DialogDescription><GameAdButtons initData={initData} benefit="energy" disabled={disabled} onReward={()=>setOpen(false)} /></DialogContent></Dialog>

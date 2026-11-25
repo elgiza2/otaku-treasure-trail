@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { BottomNav } from '@/components/BottomNav';
 import { GrowthPanel } from '@/components/growth/GrowthPanel';
+import hallImage from '@/assets/tasks/garrison-hall.jpg';
 import { AdTaskCard } from './AdTaskCard';
 import { TaskCard } from './TaskCard';
 import { useNow } from './use-now';
@@ -51,13 +52,32 @@ export function TasksPage({ category }: { category: CategoryFilter }) {
     catch(e){toast.error(e instanceof Error&&e.message.includes('ad_skipped')?'الإعلان ما اكتملش':'مفيش إعلان متاح، جرّب الشبكة التانية');}
     finally{setBusyAd(null);}
   }
-  return <main data-translation-pending={translationReady?undefined:''} className="mx-auto min-h-dvh max-w-md px-4 pb-28 pt-6">
-    <h1 className="mb-5 text-2xl font-bold">المهام والمكافآت</h1>
-    <div role="tablist" aria-label="أقسام المكافآت" className="mb-6 grid grid-cols-3 gap-1 rounded-lg bg-muted p-1">{([{id:'daily',label:'اليومية'},{id:'ads',label:'الإعلانات'},{id:'friends',label:'الأصدقاء'}] as const).map(t=><Button key={t.id} role="tab" aria-selected={tab===t.id} variant={tab===t.id?'default':'ghost'} onClick={()=>setTab(t.id)}>{t.label}</Button>)}</div>
-    <div role="tabpanel">
-      {tab==='daily'&&<><GrowthPanel mode="daily"/><details className="mt-8 border-t border-border pt-4"><summary className="cursor-pointer text-sm font-bold">مهام الحامية · {rows.length}</summary><div className="mt-4 space-y-3">{rows.map((task,i)=><TaskCard key={task.id} task={task} state={taskState(task,progress.get(task.id),player,now)} now={now} index={i} busy={busyTask===task.id} onAction={()=>void act(task)}/>)}</div></details></>}
-      {tab==='ads'&&<><AdTaskCard busyProvider={busyAd} watched={watched} onWatch={p=>void watch(p)}/><p className="mt-4 text-center text-xs text-muted-foreground">بلا حدود · 15 ANIME + 10 نقاط لكل إعلان</p></>}
-      {tab==='friends'&&<GrowthPanel mode="referrals"/>}
-    </div><BottomNav/>
+  return <main data-translation-pending={translationReady?undefined:''} className="relative mx-auto min-h-dvh max-w-md overflow-x-hidden bg-background pb-28">
+    <div className="pointer-events-none absolute inset-x-0 top-0 h-72 overflow-hidden" aria-hidden="true">
+      <img src={hallImage} alt="" className="size-full object-cover object-top" />
+      <div className="hero-fade absolute inset-0" />
+    </div>
+    <div className="relative px-4 pt-6">
+      <header className="mb-5 text-center">
+        <h1 className="font-display text-3xl font-extrabold text-gold drop-shadow-sm">المهام والمكافآت</h1>
+      </header>
+      <div role="tablist" aria-label="أقسام المكافآت" className="glass mb-5 grid grid-cols-3 gap-1 rounded-2xl p-1">
+        {([{id:'daily',label:'اليومية'},{id:'ads',label:'الإعلانات'},{id:'friends',label:'الأصدقاء'}] as const).map(t=>(
+          <button key={t.id} type="button" role="tab" aria-selected={tab===t.id} onClick={()=>setTab(t.id)} className={`rounded-xl py-2.5 text-xs font-extrabold transition-all ${tab===t.id ? 'btn-cta' : 'text-muted-foreground hover:text-foreground'}`}>{t.label}</button>
+        ))}
+      </div>
+      <div role="tabpanel">
+        {tab==='daily'&&<>
+          <GrowthPanel mode="daily"/>
+          <details className="glass-card mt-5 rounded-3xl p-4">
+            <summary className="flex cursor-pointer list-none items-center justify-between font-display text-sm font-extrabold"><span>مهام الحامية · {rows.length}</span><span className="text-xs font-semibold text-accent">عرض</span></summary>
+            <div className="mt-4 space-y-3">{rows.map((task,i)=><TaskCard key={task.id} task={task} state={taskState(task,progress.get(task.id),player,now)} now={now} index={i} busy={busyTask===task.id} onAction={()=>void act(task)}/>)}</div>
+          </details>
+        </>}
+        {tab==='ads'&&<><AdTaskCard busyProvider={busyAd} watched={watched} onWatch={p=>void watch(p)}/><p className="mt-4 text-center text-xs text-muted-foreground">بلا حدود · 15 ANIME + 10 نقاط لكل إعلان</p></>}
+        {tab==='friends'&&<GrowthPanel mode="referrals"/>}
+      </div>
+    </div>
+    <BottomNav/>
   </main>;
 }

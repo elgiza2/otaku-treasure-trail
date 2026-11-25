@@ -92,61 +92,121 @@ export function GrowthPanel({ mode, invite }: { mode: GrowthMode; invite?: strin
     } catch (e) { toast.error(shopErrorMessage(e)); }
     finally { setBusy(false); }
   }
-  const ads = (action: GrowthAction, target?: string) => <div className="grid grid-cols-2 gap-2"><Button variant="outline" disabled={busy} onClick={() => act(action, 'adsgram', target)}>Adsgram</Button><Button variant="outline" disabled={busy} onClick={() => act(action, 'monetag', target)}>Monetag</Button></div>;
-  const stateNotice = <>{!initData && <p className="py-3 text-sm text-muted-foreground">افتح اللعبة من تيليجرام عشان تستلم المكافآت</p>}{!!initData && q.isPending && <p role="status" className="flex items-center gap-2 py-3 text-sm text-muted-foreground"><Loader2 className="size-4 animate-spin" /> جارٍ التحميل…</p>}{q.isError && <div role="alert" className="flex items-center justify-between py-3"><span className="text-sm text-destructive">تعذّر تحميل المكافآت</span><Button variant="ghost" size="icon" aria-label="إعادة المحاولة" onClick={() => q.refetch()}><RotateCw /></Button></div>}</>;
+  const ads = (action: GrowthAction, target?: string) => <div className="grid grid-cols-2 gap-2.5"><Button variant="outline" className="h-11 rounded-2xl border-accent/30 bg-card/70 font-bold hover:bg-accent/15" disabled={busy} onClick={() => act(action, 'adsgram', target)}>Adsgram</Button><Button variant="outline" className="h-11 rounded-2xl border-accent/30 bg-card/70 font-bold hover:bg-accent/15" disabled={busy} onClick={() => act(action, 'monetag', target)}>Monetag</Button></div>;
+  const stateNotice = <>{!initData && <p className="glass rounded-2xl px-4 py-2.5 text-center text-xs font-medium text-muted-foreground">افتح اللعبة من تيليجرام عشان تستلم المكافآت</p>}{!!initData && q.isPending && <p role="status" className="flex items-center justify-center gap-2 py-3 text-xs text-muted-foreground"><Loader2 className="size-4 animate-spin text-accent" /> جارٍ التحميل…</p>}{q.isError && <div role="alert" className="glass flex items-center justify-between rounded-2xl px-4 py-2.5"><span className="text-xs text-destructive">تعذّر تحميل المكافآت</span><Button variant="ghost" size="icon" aria-label="إعادة المحاولة" onClick={() => q.refetch()}><RotateCw className="size-4" /></Button></div>}</>;
   const streak = checkinState(s?.streak ?? 0, s?.lastCheckinAt ?? null, now);
   const ready = chestReady(s?.chestAt ?? null, now);
+  const refProgress = (s?.referrals ?? 0) % 100;
 
   return <section data-translation-pending={translationReady?undefined:''} className="space-y-4" aria-busy={busy}>
     {stateNotice}
-    {retry.current && <Button variant="outline" className="w-full" disabled={busy} onClick={() => { const p=retry.current; if(p) void act(p.action,p.provider,p.target); }}><RotateCw /> استلام مكافأة الإعلان السابق</Button>}
-    {mode === 'daily' && <>
-      <div className="flex items-center justify-between"><h2 className="flex items-center gap-2 text-lg font-bold"><Flame className="size-5 text-accent" /> سلسلة 7 أيام</h2><span className="text-xs text-muted-foreground">{s?.streak ?? 0} / 7</span></div>
-      <div className="grid grid-cols-7 gap-1.5">{Array.from({length:7},(_,i)=>i+1).map(day => <div key={day} className={`flex min-h-24 flex-col items-center justify-center gap-1 rounded-lg border text-center ${day<=streak.doneDays ? 'border-success/40 bg-success/10' : day===streak.nextDay ? 'border-accent bg-accent/10' : 'border-border bg-card'}`}><span className="text-[10px] text-muted-foreground">يوم {day}</span>{day<=streak.doneDays ? <Check className="size-4 text-success" /> : day===7 ? <Ticket className="size-4 text-accent" /> : <Zap className="size-4 text-accent" />}<span className="text-xs font-bold">+{4+day}</span><span className="text-[10px] text-muted-foreground">⚡{dailyExtras(day).energy}</span></div>)}</div>
-      <p className="text-xs text-muted-foreground">اليوم السابع: 11 ANIME + 35 طاقة + لفة إضافية</p>
-      <Button className="h-12 w-full" disabled={busy || (!!s && !streak.claimable)} onClick={() => act('daily')}><Gift />{s && !streak.claimable ? 'استلمت مكافأة اليوم' : 'استلم مكافأة اليوم'}</Button>
-    </>}
-    {mode === 'chest' && <>
-      <img src={chestArt} alt="خزينة منجم الأسوار" className="aspect-[16/7] w-full rounded-lg object-cover" />
-      <h2 className="text-lg font-bold">صندوق المفاجآت</h2>
-      <p className="text-sm text-muted-foreground">15–50 ANIME · صندوق كل 8 ساعات</p>
-      {!ready && s?.chestAt ? <p className="py-4 text-center tabular-nums text-accent">{formatCountdown(Date.parse(s.chestAt)+CHEST_INTERVAL_MS,now)}</p> : <><Button className="h-12 w-full" disabled={busy} onClick={()=>act('chest')}><Gift /> افتح مجاناً</Button><p className="text-center text-xs text-muted-foreground">أو ضاعف جائزة الصندوق بإعلان</p>{ads('chest_ad')}</>}
-    </>}
-    {mode === 'referrals' && <>
-      <div className="flex items-center justify-between border-b border-border pb-4"><div><h2 className="text-lg font-bold">مكافآت الأصدقاء</h2><p className="mt-1 text-xs text-muted-foreground">1 GRAM لكل 100 صديق موثق</p></div><span className="text-2xl font-bold text-accent">{s?.referrals ?? 0}</span></div>
-      <progress aria-label="تقدم الإحالات الموثقة" max={100} value={(s?.referrals ?? 0)%100} className="h-2 w-full accent-accent" />
-      <div className="flex justify-between text-xs text-muted-foreground"><span>{(s?.referrals ?? 0)%100} / 100</span><span dir="ltr">{s?.milestones ?? 0} GRAM</span></div>
-      <p className="text-xs text-muted-foreground">توثيق كل صديق بـ0.05 TON · المكافأة بتضاف تلقائياً</p>
-      <Button className="h-12 w-full" onClick={()=>s ? shareLink(referralLink(s.tgId),'العب معايا في منجم الأسوار!') : toast('افتح اللعبة من تيليجرام')}><Share2 /> ادعُ أصدقاءك</Button>
-      <Button variant="outline" className="w-full" onClick={()=>s ? shareGameStory(referralLink(s.tgId)) : toast('افتح اللعبة من تيليجرام')}><Share2 /> شارك الستوري</Button>
-      <Link to="/tournament" className="flex items-center justify-between border-t border-border pt-4 text-sm"><span>المسابقة الأسبوعية · 350 GRAM</span><ChevronLeft className="size-4 text-accent" /></Link>
-    </>}
-    {mode === 'boss' && <>
-      <img src={bossArt} alt="زعيم التحالف الأسبوعي" className="aspect-[16/8] w-full rounded-lg object-cover object-top" />
-      <h2 className="text-lg font-bold">زعيم التحالف</h2>
-      {!s?.squadId ? <Button asChild variant="outline" className="w-full"><Link to="/squads">انضم لتحالف</Link></Button> : <>
-        <div className="flex justify-between text-sm"><span>صحة الزعيم</span><b className="text-destructive">{formatAmount(s.bossHp)} / {formatAmount(BOSS_HP)}</b></div><progress className="h-2 w-full accent-destructive" max={BOSS_HP} value={s.bossHp} aria-label="صحة الزعيم" />
-        <p className="text-xs text-muted-foreground">هزيمة الزعيم: 1,000 نقطة للتحالف · يتجدد أسبوعياً</p>
-        <p className="text-xs tabular-nums text-muted-foreground">{formatCountdown(Date.parse(s.bossEndsAt),now)}</p>
-        {s.bossHp>0 ? <><Button className="h-12 w-full" disabled={busy} onClick={()=>act('boss')}><Swords /> هجوم · 20 طاقة</Button><p className="text-center text-xs text-muted-foreground">ضربة حرجة بإعلان · 500 ضرر</p>{ads('boss_ad')}<Button className="w-full" variant="outline" disabled={busy || s.bossStrikes<1} onClick={()=>act('boss_paid')}>ضربة قوية · {s.bossStrikes} تذاكر</Button><Button asChild variant="link" className="w-full"><Link to="/store">تذكرة ضربة بـ0.05 TON</Link></Button></> : <p className="py-4 text-center font-bold text-success">الزعيم اتهزم!</p>}
+    {retry.current && <Button variant="outline" className="h-11 w-full rounded-2xl border-accent/40" disabled={busy} onClick={() => { const p=retry.current; if(p) void act(p.action,p.provider,p.target); }}><RotateCw className="size-4" /> استلام مكافأة الإعلان السابق</Button>}
+    {mode === 'daily' && <div className="glass-card space-y-4 rounded-[1.75rem] p-4">
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2.5">
+          <span className="grid size-10 place-items-center rounded-2xl bg-accent/15 text-accent"><Flame className="size-5" /></span>
+          <div><h2 className="font-display text-base font-extrabold">سلسلة 7 أيام</h2><p className="text-[11px] text-muted-foreground">اليوم السابع: 11 ANIME + 35 طاقة + لفة إضافية</p></div>
+        </div>
+        <span className="shrink-0 rounded-full border border-accent/30 bg-accent/10 px-2.5 py-1 text-xs font-extrabold text-gold" dir="ltr">{s?.streak ?? 0} / 7</span>
+      </div>
+      <div className="h-1.5 overflow-hidden rounded-full bg-background/60">
+        <div className="bg-gold-bar h-full rounded-full transition-[width] duration-500" style={{ width: `${(streak.doneDays / 7) * 100}%` }} />
+      </div>
+      <div className="grid grid-cols-4 grid-rows-2 gap-2">
+        {[1,2,3,4,5,6].map(day => {
+          const done = day <= streak.doneDays;
+          const active = day === streak.nextDay && streak.claimable;
+          return <div key={day} className={`flex flex-col items-center justify-center gap-1 rounded-2xl border py-2.5 text-center transition-colors ${done ? 'border-success/50 bg-success/10' : active ? 'border-accent/80 bg-accent/15 shadow-[0_0_20px_-8px_oklch(0.8_0.14_78/0.6)]' : 'border-border bg-background/35'}`}>
+            <span className={`text-[10px] font-semibold ${done ? 'text-success' : 'text-muted-foreground'}`}>يوم {day}</span>
+            {done ? <Check className="size-4 text-success" /> : <Zap className="size-4 text-accent" />}
+            <span dir="ltr" className="font-display text-sm font-extrabold">+{4+day}</span>
+            <span className="text-[10px] text-muted-foreground">⚡{dailyExtras(day).energy}</span>
+          </div>;
+        })}
+        <div className={`col-start-4 row-span-2 row-start-1 flex flex-col items-center justify-center gap-1.5 rounded-2xl border p-2 text-center ${7 <= streak.doneDays ? 'border-success/50 bg-success/10' : streak.nextDay === 7 && streak.claimable ? 'surface-gold border-accent' : 'surface-gold'}`}>
+          <span className="text-[10px] font-bold text-accent">يوم 7</span>
+          <Ticket className="size-6 text-accent" />
+          <span dir="ltr" className="font-display text-lg font-extrabold text-gold">+11</span>
+          <span className="text-[10px] font-semibold text-foreground/80">⚡35</span>
+        </div>
+      </div>
+      <Button className="btn-cta h-12 w-full rounded-2xl font-display text-base font-extrabold" disabled={busy || (!!s && !streak.claimable)} onClick={() => act('daily')}><Gift className="size-5" />{s && !streak.claimable ? 'استلمت مكافأة اليوم' : 'استلم مكافأة اليوم'}</Button>
+    </div>}
+    {mode === 'chest' && <div className="space-y-4">
+      <div className="relative overflow-hidden rounded-2xl border border-accent/25">
+        <img src={chestArt} alt="خزينة منجم الأسوار" className="aspect-[16/8] w-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
+        <div className="absolute inset-x-3 bottom-3 flex items-end justify-between">
+          <div><h2 className="font-display text-lg font-extrabold text-gold">صندوق المفاجآت</h2><p className="text-xs text-foreground/85">15–50 ANIME · صندوق كل 8 ساعات</p></div>
+        </div>
+      </div>
+      {!ready && s?.chestAt ? <p className="glass rounded-2xl py-4 text-center font-display text-lg font-extrabold tabular-nums text-accent">{formatCountdown(Date.parse(s.chestAt)+CHEST_INTERVAL_MS,now)}</p> : <><Button className="btn-cta h-12 w-full rounded-2xl font-display text-base font-extrabold" disabled={busy} onClick={()=>act('chest')}><Gift className="size-5" /> افتح مجاناً</Button><p className="text-center text-xs text-muted-foreground">أو ضاعف جائزة الصندوق بإعلان</p>{ads('chest_ad')}</>}
+    </div>}
+    {mode === 'referrals' && <div className="space-y-4">
+      <div className="surface-gold space-y-4 rounded-[1.75rem] p-5">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <h2 className="font-display text-lg font-extrabold text-gold">مكافآت الأصدقاء</h2>
+            <p className="mt-1 text-xs text-foreground/80">1 GRAM لكل 100 صديق موثق</p>
+          </div>
+          <span className="rounded-2xl bg-background/50 px-3.5 py-2 font-display text-2xl font-extrabold tabular-nums text-gold" dir="ltr">{s?.referrals ?? 0}</span>
+        </div>
+        <div>
+          <div role="progressbar" aria-label="تقدم الإحالات الموثقة" aria-valuemin={0} aria-valuemax={100} aria-valuenow={refProgress} className="h-2.5 w-full overflow-hidden rounded-full bg-background/60">
+            <div className="bg-gold-bar h-full rounded-full transition-[width] duration-500" style={{ width: `${refProgress}%` }} />
+          </div>
+          <div className="mt-2 flex justify-between text-xs font-semibold text-foreground/80"><span dir="ltr">{refProgress} / 100</span><span className="text-gold" dir="ltr">{s?.milestones ?? 0} GRAM</span></div>
+        </div>
+        <p className="text-xs text-muted-foreground">توثيق كل صديق بـ0.05 TON · المكافأة بتضاف تلقائياً</p>
+        {s?.verified && <p className="inline-flex items-center gap-1.5 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-xs font-bold text-gold"><BadgeCheck className="size-4" /> حساب موثق</p>}
+        <div className="grid grid-cols-1 gap-2 pt-1">
+          <Button className="btn-cta h-12 w-full rounded-2xl font-display text-base font-extrabold" onClick={()=>s ? shareLink(referralLink(s.tgId),'العب معايا في منجم الأسوار!') : toast('افتح اللعبة من تيليجرام')}><Share2 className="size-4" /> ادعُ أصدقاءك</Button>
+          <Button variant="outline" className="h-11 w-full rounded-2xl border-accent/30 bg-background/40 font-bold" onClick={()=>s ? shareGameStory(referralLink(s.tgId)) : toast('افتح اللعبة من تيليجرام')}><Share2 className="size-4 text-accent" /> شارك الستوري</Button>
+        </div>
+      </div>
+      <Link to="/tournament" className="glass-card flex items-center justify-between rounded-3xl p-4 transition-transform active:scale-[0.99]">
+        <span className="font-display text-sm font-extrabold text-gold">المسابقة الأسبوعية · 350 GRAM</span>
+        <ChevronLeft className="size-5 text-accent" />
+      </Link>
+    </div>}
+    {mode === 'boss' && <div className="space-y-4">
+      <div className="relative overflow-hidden rounded-2xl border border-destructive/40">
+        <img src={bossArt} alt="زعيم التحالف الأسبوعي" className="aspect-[16/8] w-full object-cover object-top" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/35 to-transparent" />
+        <div className="absolute inset-x-3 bottom-3 flex items-center justify-between">
+          <h2 className="font-display text-lg font-extrabold">زعيم التحالف</h2>
+          {s && <span className="rounded-full bg-background/70 px-2.5 py-1 text-[11px] font-bold tabular-nums text-accent">{formatCountdown(Date.parse(s.bossEndsAt),now)}</span>}
+        </div>
+      </div>
+      {!s?.squadId ? <Button asChild variant="outline" className="h-12 w-full rounded-2xl"><Link to="/squads">انضم لتحالف</Link></Button> : <>
+        <div className="glass-card space-y-2 rounded-2xl p-3.5">
+          <div className="flex justify-between text-xs font-bold"><span>صحة الزعيم</span><b className="tabular-nums text-destructive" dir="ltr">{formatAmount(s.bossHp)} / {formatAmount(BOSS_HP)}</b></div>
+          <div role="progressbar" aria-label="صحة الزعيم" aria-valuemin={0} aria-valuemax={BOSS_HP} aria-valuenow={s.bossHp} className="h-2.5 w-full overflow-hidden rounded-full bg-background/60">
+            <div className="h-full rounded-full bg-destructive transition-[width] duration-500" style={{ width: `${(s.bossHp / BOSS_HP) * 100}%` }} />
+          </div>
+          <p className="text-[11px] text-muted-foreground">هزيمة الزعيم: 1,000 نقطة للتحالف · يتجدد أسبوعياً</p>
+        </div>
+        {s.bossHp>0 ? <div className="space-y-2.5"><Button className="btn-cta h-12 w-full rounded-2xl font-display text-base font-extrabold" disabled={busy} onClick={()=>act('boss')}><Swords className="size-5" /> هجوم · 20 طاقة</Button><p className="text-center text-xs text-muted-foreground">ضربة حرجة بإعلان · 500 ضرر</p>{ads('boss_ad')}<Button className="h-11 w-full rounded-2xl border-accent/30" variant="outline" disabled={busy || s.bossStrikes<1} onClick={()=>act('boss_paid')}>ضربة قوية · {s.bossStrikes} تذاكر</Button><Button asChild variant="link" className="w-full text-accent"><Link to="/store">تذكرة ضربة بـ0.05 TON</Link></Button></div> : <p className="glass rounded-2xl py-4 text-center font-display text-base font-extrabold text-success">الزعيم اتهزم!</p>}
       </>}
-    </>}
-    {mode === 'duels' && <>
-      <p className="text-sm text-muted-foreground">تحدي 20 ANIME لكل لاعب · الفائز يستلم 40 ANIME · فرص الفوز متساوية</p>
-      {s?.invite && s.invite.status==='pending' && Date.parse(s.invite.expiresAt)>now && !s.invite.mine && <div className="space-y-3 border-y border-accent/30 py-4"><p className="font-bold">تحدي من {s.invite.name}</p><Button className="w-full" disabled={busy} onClick={()=>act('duel_accept',undefined,s.invite?.id)}>اقبل التحدي · 20 ANIME</Button></div>}
-      {s?.invite && (s.invite.status!=='pending' || Date.parse(s.invite.expiresAt)<=now) && <p className="text-sm text-muted-foreground">التحدي انتهى أو اتلعب بالفعل</p>}
-      <Button className="h-12 w-full" disabled={busy} onClick={()=>act('duel_create')}><Swords /> تحدى صديق</Button>
-      {lastDuel && <Button className="w-full" variant="outline" onClick={()=>shareLink(duelLink(lastDuel),'تحدي منجم الأسوار ⚔️')}><Share2 /> ابعت رابط التحدي</Button>}
-      {(s?.duels ?? []).map(d=><article key={d.id} className="space-y-3 rounded-lg border border-border bg-card p-4"><div className="flex justify-between"><p className="font-bold">{d.name || 'تحدي الأصدقاء'}</p><span className="text-xs text-muted-foreground">{d.status==='pending'?'في انتظار صديق':d.status==='cancelled'?'اتلغى ورجع رصيدك':d.won?'فوز':'خسارة'}</span></div>{d.status==='pending' && <><p className="text-xs tabular-nums text-muted-foreground">{formatCountdown(Date.parse(d.expiresAt),now)}</p><div className="flex gap-2"><Button variant="outline" className="flex-1" onClick={()=>shareLink(duelLink(d.id),'تحدي منجم الأسوار')}><Share2 /> مشاركة</Button><Button variant="ghost" disabled={busy} onClick={()=>act('duel_cancel',undefined,d.id)}>إلغاء</Button></div></>}{d.status==='settled' && !d.won && !d.avenged && <><p className="text-xs text-muted-foreground">انتقام بإعلان · استرجع 10 ANIME</p>{ads('duel_revenge',d.id)}</>}</article>)}
-    </>}
-    {mode === 'shop' && <>
-      {s?.boostUntil && Date.parse(s.boostUntil)>now && <p className="text-sm text-success">مضاعف التعدين نشط · {formatCountdown(Date.parse(s.boostUntil),now)}</p>}
-      {s?.protectionUntil && Date.parse(s.protectionUntil)>now && <p className="text-sm text-success">الحماية نشطة · {formatCountdown(Date.parse(s.protectionUntil),now)}</p>}
-      <div className="divide-y divide-border">{MICRO_PACKS.map(p=>{const Icon=p.icon==='energy'?Zap:p.icon==='spins'?Ticket:p.icon==='shield'?Shield:p.icon==='boost'?Flame:Swords;return <div key={p.id} className="flex items-center gap-3 py-4"><span className="grid size-11 shrink-0 place-items-center rounded-lg bg-accent/10 text-accent"><Icon className="size-5" /></span><div className="min-w-0 flex-1"><h2 className="font-bold">{p.label}</h2><p className="mt-1 text-xs text-muted-foreground">{p.detail}</p></div><Button variant="outline" className="shrink-0" disabled={busy} onClick={()=>buy(p.id)}><span dir="ltr">{p.ton} TON</span></Button></div>})}</div>
-      {(payments.data ?? []).map(p=><div key={p.id} className="flex items-center justify-between gap-2 border-t border-border py-3"><span className="text-xs text-muted-foreground">{findMicroPack(p.pack)?.label} · دفعة معلقة</span><Button variant="outline" size="sm" disabled={busy} onClick={()=>confirm(p.id)}><RotateCw /> تحقق</Button></div>)}
-      <Button asChild variant="outline" className="w-full"><Link to="/wallet">المحفظة وباقي حزم العملات</Link></Button>
-    </>}
-    {mode === 'settings' && <div className="flex items-center justify-between border-y border-border py-4"><div><h2 className="flex items-center gap-2 font-bold"><Bell className="size-4 text-accent" /> تنبيهات اللعبة</h2><p className="mt-1 text-xs text-muted-foreground">امتلاء الطاقة والمسابقة الأسبوعية</p></div><Switch aria-label="تنبيهات اللعبة" checked={s?.notifications ?? false} disabled={busy || !s} onCheckedChange={v=>{if(v) requestBotWriteAccess();void act(v?'notify_on':'notify_off');}} /></div>}
-    {mode === 'referrals' && s?.verified && <p className="flex items-center gap-2 text-xs text-gold"><BadgeCheck className="size-4" /> حساب موثق</p>}
+    </div>}
+    {mode === 'duels' && <div className="space-y-4">
+      <div className="surface-gold space-y-3 rounded-[1.75rem] p-5 text-center">
+        <span className="mx-auto grid size-12 place-items-center rounded-2xl bg-accent/15 text-accent"><Swords className="size-6" /></span>
+        <p className="text-xs leading-relaxed text-foreground/85">تحدي 20 ANIME لكل لاعب · الفائز يستلم 40 ANIME · فرص الفوز متساوية</p>
+        <Button className="btn-cta h-12 w-full rounded-2xl font-display text-base font-extrabold" disabled={busy} onClick={()=>act('duel_create')}><Swords className="size-5" /> تحدى صديق</Button>
+        {lastDuel && <Button className="h-11 w-full rounded-2xl border-accent/30 bg-background/40" variant="outline" onClick={()=>shareLink(duelLink(lastDuel),'تحدي منجم الأسوار ⚔️')}><Share2 className="size-4 text-accent" /> ابعت رابط التحدي</Button>}
+      </div>
+      {s?.invite && s.invite.status==='pending' && Date.parse(s.invite.expiresAt)>now && !s.invite.mine && <div className="glass-card space-y-3 rounded-3xl border-accent/40 p-4"><p className="font-display font-extrabold text-gold">تحدي من {s.invite.name}</p><Button className="btn-cta h-11 w-full rounded-2xl font-bold" disabled={busy} onClick={()=>act('duel_accept',undefined,s.invite?.id)}>اقبل التحدي · 20 ANIME</Button></div>}
+      {s?.invite && (s.invite.status!=='pending' || Date.parse(s.invite.expiresAt)<=now) && <p className="glass rounded-2xl p-3 text-center text-xs text-muted-foreground">التحدي انتهى أو اتلعب بالفعل</p>}
+      {(s?.duels ?? []).map(d=><article key={d.id} className="glass-card space-y-3 rounded-3xl p-4"><div className="flex items-center justify-between gap-2"><p className="font-bold">{d.name || 'تحدي الأصدقاء'}</p><span className={`rounded-full px-2.5 py-0.5 text-[11px] font-bold ${d.status==='settled' && d.won ? 'bg-success/15 text-success' : d.status==='settled' ? 'bg-destructive/15 text-destructive' : 'bg-accent/15 text-accent'}`}>{d.status==='pending'?'في انتظار صديق':d.status==='cancelled'?'اتلغى ورجع رصيدك':d.won?'فوز':'خسارة'}</span></div>{d.status==='pending' && <><p className="text-xs tabular-nums text-muted-foreground">{formatCountdown(Date.parse(d.expiresAt),now)}</p><div className="flex gap-2"><Button variant="outline" className="h-10 flex-1 rounded-2xl border-accent/30" onClick={()=>shareLink(duelLink(d.id),'تحدي منجم الأسوار')}><Share2 className="size-4" /> مشاركة</Button><Button variant="ghost" className="h-10 rounded-2xl" disabled={busy} onClick={()=>act('duel_cancel',undefined,d.id)}>إلغاء</Button></div></>}{d.status==='settled' && !d.won && !d.avenged && <><p className="text-xs text-muted-foreground">انتقام بإعلان · استرجع 10 ANIME</p>{ads('duel_revenge',d.id)}</>}</article>)}
+    </div>}
+    {mode === 'shop' && <div className="space-y-3">
+      {s?.boostUntil && Date.parse(s.boostUntil)>now && <p className="glass rounded-2xl px-4 py-2.5 text-center text-xs font-bold text-success">مضاعف التعدين نشط · {formatCountdown(Date.parse(s.boostUntil),now)}</p>}
+      {s?.protectionUntil && Date.parse(s.protectionUntil)>now && <p className="glass rounded-2xl px-4 py-2.5 text-center text-xs font-bold text-success">الحماية نشطة · {formatCountdown(Date.parse(s.protectionUntil),now)}</p>}
+      <div className="space-y-2.5">{MICRO_PACKS.map(p=>{const Icon=p.icon==='energy'?Zap:p.icon==='spins'?Ticket:p.icon==='shield'?Shield:p.icon==='boost'?Flame:Swords;return <article key={p.id} className="glass-card flex items-center gap-3.5 rounded-3xl p-4"><span className="grid size-12 shrink-0 place-items-center rounded-2xl border border-accent/25 bg-accent/12 text-accent"><Icon className="size-5" /></span><div className="min-w-0 flex-1"><h2 className="font-display text-sm font-extrabold">{p.label}</h2><p className="mt-0.5 text-xs text-muted-foreground">{p.detail}</p></div><Button className="btn-cta h-10 shrink-0 rounded-2xl px-4 font-display text-xs font-extrabold" disabled={busy} onClick={()=>buy(p.id)}><span dir="ltr">{p.ton} TON</span></Button></article>})}</div>
+      {(payments.data ?? []).map(p=><div key={p.id} className="glass flex items-center justify-between gap-2 rounded-2xl px-4 py-3"><span className="text-xs text-muted-foreground">{findMicroPack(p.pack)?.label} · دفعة معلقة</span><Button variant="outline" size="sm" className="rounded-xl" disabled={busy} onClick={()=>confirm(p.id)}><RotateCw className="size-3.5" /> تحقق</Button></div>)}
+      <Button asChild variant="outline" className="glass h-12 w-full rounded-2xl border-border font-bold"><Link to="/wallet">المحفظة وباقي حزم العملات</Link></Button>
+    </div>}
+    {mode === 'settings' && <div className="glass-card flex items-center justify-between rounded-3xl p-4"><div className="flex items-center gap-3"><span className="grid size-10 place-items-center rounded-2xl bg-accent/15 text-accent"><Bell className="size-5" /></span><div><h2 className="font-bold">تنبيهات اللعبة</h2><p className="mt-0.5 text-xs text-muted-foreground">امتلاء الطاقة والمسابقة الأسبوعية</p></div></div><Switch aria-label="تنبيهات اللعبة" checked={s?.notifications ?? false} disabled={busy || !s} onCheckedChange={v=>{if(v) requestBotWriteAccess();void act(v?'notify_on':'notify_off');}} /></div>}
   </section>;
 }
