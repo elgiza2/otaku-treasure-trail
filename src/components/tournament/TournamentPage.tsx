@@ -1,18 +1,17 @@
 import { useState } from "react";
 import { queryOptions, useMutation, useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Clock, Copy, Loader2, Share2, ShieldCheck, Trophy } from "lucide-react";
+import { Clock, Copy, Loader2, Share2 } from "lucide-react";
 import { toast } from "sonner";
 
 import hallImage from "@/assets/tasks/garrison-hall.jpg";
 import { BottomNav } from "@/components/BottomNav";
 import { AnimatedEmoji } from "@/components/emoji/AnimatedEmoji";
-import { MinePassCard } from "@/components/profile/MinePassCard";
+import { MinePassCard, VerifiedBadge } from "@/components/profile/MinePassCard";
 import { useNow } from "@/components/tasks/use-now";
 import { Button } from "@/components/ui/button";
-import { showAdsgramAd } from "@/lib/adsgram";
 import { COIN, formatAmount, referralLink } from "@/lib/coin";
-import { showRewardedAd } from "@/lib/monetag";
+import { showDualAd } from "@/lib/dual-ad";
 import { claimAdReward } from "@/lib/shop.functions";
 import { AD_MIN_REWARD, shopErrorMessage } from "@/lib/shop-model";
 import { haptic, shareLink, useTelegramInitData } from "@/lib/telegram";
@@ -22,7 +21,6 @@ import {
   TOURNAMENT_AD_POINTS,
   TOURNAMENT_REFERRAL_POINTS,
   TOURNAMENT_VERIFY_TON,
-  type AdProvider,
 } from "@/lib/tournament-model";
 import { cn } from "@/lib/utils";
 import { TournamentHistoryView, TournamentLeadersView, TournamentPrizesView } from "./TournamentLeaderboard";
@@ -42,7 +40,6 @@ export function TournamentPage() {
   const now = useNow(1000);
   const initData = useTelegramInitData();
   const [tab, setTab] = useState<"leaders" | "prizes" | "history">("leaders");
-  const [busyProvider, setBusyProvider] = useState<AdProvider | null>(null);
 
   const { data: board } = useSuspenseQuery(tournamentQuery);
   const fetchMine = useServerFn(getMyTournamentStatus);
@@ -55,10 +52,8 @@ export function TournamentPage() {
 
   const adFn = useServerFn(claimAdReward);
   const watchAd = useMutation({
-    mutationFn: async (provider: AdProvider) => {
-      setBusyProvider(provider);
-      if (provider === "adsgram") await showAdsgramAd();
-      else await showRewardedAd();
+    mutationFn: async () => {
+      const provider = await showDualAd();
       return adFn({ data: { initData, provider } });
     },
     onSuccess: (r) => {
@@ -77,7 +72,6 @@ export function TournamentPage() {
       else if (msg === "ad_skipped") toast.error("لازم تكمل مشاهدة الإعلان عشان تاخد النقاط");
       else toast.error(shopErrorMessage(e));
     },
-    onSettled: () => setBusyProvider(null),
   });
 
   const link = me ? referralLink(me.tgId) : "";
@@ -105,12 +99,12 @@ export function TournamentPage() {
     shareLink(link, `انضم لمسابقة الـ ${board.round.prizePool} GRAM في منجم الأسوار ووثّق حسابك لنربح معاً!`);
   }
 
-  function triggerAd(provider: AdProvider) {
+  function triggerAd() {
     if (!initData) {
       toast(GUEST_MSG);
       return;
     }
-    watchAd.mutate(provider);
+    watchAd.mutate();
   }
 
   return (
@@ -123,7 +117,7 @@ export function TournamentPage() {
       <div className="relative px-4 pt-[max(1.5rem,env(safe-area-inset-top))]">
         <header className="flex flex-col items-center pt-10 text-center">
           <span className="glass inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold text-accent">
-            <Trophy className="size-3.5" /> الجولة #{board.round.roundNumber} · كل أسبوع
+            <AnimatedEmoji name="gem" className="size-4 text-accent" /> الجولة #{board.round.roundNumber} · كل أسبوع
           </span>
           <h1 className="mt-2 font-display text-4xl font-extrabold text-gold drop-shadow-lg">مسابقة GRAM</h1>
           <p className="mt-1 text-sm font-semibold text-foreground/85">
@@ -166,7 +160,7 @@ export function TournamentPage() {
             <div className="mt-3 flex items-center justify-between border-t border-foreground/15 pt-2.5 text-xs text-foreground/80">
               <span>{me.adsCount} إعلان · {me.referralsCount} إحالة موثقة</span>
               <span className="inline-flex items-center gap-1 font-semibold">
-                <ShieldCheck className={cn("size-3.5", me.isVerified ? "text-success" : "text-muted-foreground")} />
+                {me.isVerified ? <VerifiedBadge /> : <AnimatedEmoji name="shields" className="size-4 text-muted-foreground" />}
                 {me.isVerified ? "حسابك موثّق" : "غير موثّق"}
               </span>
             </div>
@@ -182,24 +176,15 @@ export function TournamentPage() {
           <p className="mt-1 text-xs text-muted-foreground">
             شبكتان شغالين مع بعض — كل إعلان يديك +{TOURNAMENT_AD_POINTS} نقاط و +{AD_MIN_REWARD} {COIN.symbol}
           </p>
-          <div className="mt-3 grid grid-cols-2 gap-2.5">
-            <Button
-              type="button"
-              disabled={watchAd.isPending}
-              onClick={() => triggerAd("adsgram")}
-              className="btn-cta h-12 rounded-2xl text-sm font-extrabold"
-            >
-              {busyProvider === "adsgram" ? <Loader2 className="size-4 animate-spin" /> : "إعلان Adsgram"}
-            </Button>
-            <Button
-              type="button"
-              disabled={watchAd.isPending}
-              onClick={() => triggerAd("monetag")}
-              className="btn-cta h-12 rounded-2xl text-sm font-extrabold"
-            >
-              {busyProvider === "monetag" ? <Loader2 className="size-4 animate-spin" /> : "إعلان Monetag"}
-            </Button>
-          </div>
+          <Button
+            type="button"
+            disabled={watchAd.isPending}
+            onClick={triggerAd}
+            className="btn-cta mt-3 h-12 w-full rounded-2xl font-display text-sm font-extrabold"
+          >
+            {watchAd.isPending ? <Loader2 className="size-4 animate-spin" /> : <AnimatedEmoji name="sparkle" className="size-5 text-primary-foreground" />}
+            <span>شاهد إعلان</span>
+          </Button>
         </section>
 
         {/* Verified Referral Action */}
@@ -217,7 +202,7 @@ export function TournamentPage() {
           </div>
           <div className="mt-3 flex gap-2">
             <Button type="button" onClick={inviteFriend} className="btn-cta h-11 flex-1 rounded-xl font-bold">
-              <Share2 className="size-4" /> مشاركة الرابط
+              <AnimatedEmoji name="rocket" className="size-4 text-primary-foreground" /> مشاركة الرابط
             </Button>
             <Button type="button" variant="outline" size="icon" onClick={copyRef} aria-label="نسخ رابط الدعوة" className="h-11 w-11 shrink-0 rounded-xl">
               <Copy className="size-4" />
@@ -233,7 +218,7 @@ export function TournamentPage() {
         )}
 
         {/* Tabs */}
-        <div role="tablist" aria-label="أقسام المسابقة" className="mt-5 grid grid-cols-3 gap-1 rounded-2xl bg-muted/50 p-1">
+        <div role="tablist" aria-label="أقسام المسابقة" className="glass mt-5 grid grid-cols-3 gap-1 rounded-2xl p-1">
           {(
             [
               ["leaders", `المتصدرون (${board.participantsCount})`],

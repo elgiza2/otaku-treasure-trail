@@ -78,55 +78,55 @@
 :root {
   --radius: 1.25rem;
   --gold: oklch(0.84 0.14 82);
-  /* Attack-on-Titan mood: ash charcoal, stone, leather, olive cloak, ember gold */
-  --background: oklch(0.13 0.008 68);
-  --foreground: oklch(0.95 0.012 85);
-  --card: oklch(0.19 0.012 68);
-  --card-foreground: oklch(0.95 0.012 85);
-  --popover: oklch(0.2 0.01 70);
-  --popover-foreground: oklch(0.95 0.012 85);
-  --primary: oklch(0.93 0.03 85);
-  --primary-foreground: oklch(0.18 0.01 70);
-  --secondary: oklch(0.36 0.05 125);
-  --secondary-foreground: oklch(0.95 0.012 85);
-  --muted: oklch(0.26 0.01 70);
-  --muted-foreground: oklch(0.78 0.02 80);
-  --accent: oklch(0.8 0.14 78);
-  --accent-foreground: oklch(0.18 0.01 70);
-  --destructive: oklch(0.55 0.17 28);
-  --destructive-foreground: oklch(0.97 0.01 85);
-  --border: oklch(1 0 0 / 12%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.78 0.13 75);
+  /* Clean obsidian-glass palette with luminous specular borders and warm gold accent */
+  --background: oklch(0.12 0.014 255);
+  --foreground: oklch(0.97 0.008 250);
+  --card: oklch(0.18 0.016 255);
+  --card-foreground: oklch(0.97 0.008 250);
+  --popover: oklch(0.17 0.016 255);
+  --popover-foreground: oklch(0.97 0.008 250);
+  --primary: oklch(0.96 0.02 85);
+  --primary-foreground: oklch(0.15 0.015 255);
+  --secondary: oklch(0.32 0.045 245);
+  --secondary-foreground: oklch(0.97 0.008 250);
+  --muted: oklch(0.24 0.016 255);
+  --muted-foreground: oklch(0.78 0.016 250);
+  --accent: oklch(0.84 0.14 80);
+  --accent-foreground: oklch(0.15 0.015 255);
+  --destructive: oklch(0.6 0.18 26);
+  --destructive-foreground: oklch(0.98 0.008 85);
+  --border: oklch(1 0 0 / 15%);
+  --input: oklch(1 0 0 / 18%);
+  --ring: oklch(0.84 0.14 80);
   --chart-1: oklch(0.78 0.13 75);
   --chart-2: oklch(0.45 0.06 125);
   --chart-3: oklch(0.5 0.07 55);
   --chart-4: oklch(0.6 0.01 70);
   --chart-5: oklch(0.55 0.17 28);
-  --sidebar: oklch(0.18 0.008 70);
-  --sidebar-foreground: oklch(0.95 0.012 85);
-  --sidebar-primary: oklch(0.78 0.13 75);
-  --sidebar-primary-foreground: oklch(0.18 0.01 70);
-  --sidebar-accent: oklch(0.26 0.01 70);
-  --sidebar-accent-foreground: oklch(0.95 0.012 85);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.78 0.13 75);
+  --sidebar: oklch(0.16 0.014 255);
+  --sidebar-foreground: oklch(0.97 0.008 250);
+  --sidebar-primary: oklch(0.84 0.14 80);
+  --sidebar-primary-foreground: oklch(0.15 0.015 255);
+  --sidebar-accent: oklch(0.24 0.016 255);
+  --sidebar-accent-foreground: oklch(0.97 0.008 250);
+  --sidebar-border: oklch(1 0 0 / 14%);
+  --sidebar-ring: oklch(0.84 0.14 80);
 
-  /* Glass + story tokens */
-  --glass-bg: oklch(0.22 0.01 70 / 0.42);
-  --glass-border: oklch(1 0 0 / 0.16);
-  --glass-highlight: oklch(1 0 0 / 0.22);
+  /* Luminous frosted glass tokens */
+  --glass-bg: linear-gradient(155deg, oklch(1 0 0 / 0.11), oklch(1 0 0 / 0.04));
+  --glass-border: oklch(1 0 0 / 0.18);
+  --glass-highlight: oklch(1 0 0 / 0.28);
   --story-fade: linear-gradient(
     to bottom,
-    oklch(0.14 0.006 70 / 0.55) 0%,
+    oklch(0.12 0.014 255 / 0.52) 0%,
     transparent 16%,
     transparent 50%,
-    oklch(0.14 0.006 70 / 0.9) 72%,
+    oklch(0.12 0.014 255 / 0.88) 72%,
     var(--background) 100%
   );
-  --gradient-cta: linear-gradient(180deg, oklch(0.97 0.02 85), oklch(0.86 0.05 80));
-  --shadow-cta: 0 12px 32px -8px oklch(0.78 0.13 75 / 0.45), inset 0 1px 0 oklch(1 0 0 / 0.9);
-  --shadow-glass: 0 20px 50px -20px oklch(0 0 0 / 0.7), inset 0 1px 0 var(--glass-highlight);
+  --gradient-cta: linear-gradient(180deg, oklch(0.98 0.025 88), oklch(0.86 0.09 80));
+  --shadow-cta: 0 12px 28px -10px oklch(0.84 0.14 80 / 0.48), inset 0 1px 0 oklch(1 0 0 / 0.92);
+  --shadow-glass: 0 18px 42px -18px oklch(0 0 0 / 0.55), inset 0 1px 0 var(--glass-highlight);
 }
 
 @layer base {
@@ -146,6 +146,11 @@
 
   body {
     background-color: var(--color-background);
+    background-image:
+      radial-gradient(60rem 36rem at 85% -8%, oklch(0.78 0.12 80 / 0.14), transparent 60%),
+      radial-gradient(50rem 34rem at 10% 35%, oklch(0.55 0.11 250 / 0.16), transparent 62%),
+      radial-gradient(44rem 30rem at 80% 95%, oklch(0.52 0.1 215 / 0.12), transparent 60%);
+    background-attachment: fixed;
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
@@ -157,8 +162,7 @@
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
   box-shadow: var(--shadow-glass);
-  backdrop-filter: blur(24px) saturate(160%);
-  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  backdrop-filter: blur(24px) saturate(180%);
 }
 
 @utility story-fade {
@@ -239,14 +243,14 @@
 :root {
   --gradient-gold: linear-gradient(180deg, oklch(0.95 0.08 90), oklch(0.76 0.14 72));
   --gradient-bar: linear-gradient(270deg, oklch(0.86 0.13 85), oklch(0.72 0.15 62));
-  --card-surface: linear-gradient(180deg, oklch(0.25 0.012 70 / 0.78), oklch(0.18 0.008 70 / 0.86));
+  --card-surface: linear-gradient(160deg, oklch(1 0 0 / 0.12), oklch(1 0 0 / 0.045));
   --tile-onchain: linear-gradient(160deg, oklch(0.52 0.09 240), oklch(0.32 0.06 245));
   --tile-game: linear-gradient(160deg, oklch(0.5 0.07 125), oklch(0.3 0.05 130));
   --tile-social: linear-gradient(160deg, oklch(0.56 0.08 55), oklch(0.34 0.06 45));
   --tile-partners: linear-gradient(160deg, oklch(0.55 0.13 32), oklch(0.33 0.09 28));
   --tile-gold: linear-gradient(160deg, oklch(0.8 0.13 80), oklch(0.58 0.12 62));
   --success: oklch(0.72 0.14 150);
-  --hero-fade: linear-gradient(to bottom, oklch(0.14 0.006 70 / 0.2) 0%, oklch(0.14 0.006 70 / 0.35) 45%, var(--background) 100%);
+  --hero-fade: linear-gradient(to bottom, oklch(0.12 0.014 255 / 0.18) 0%, oklch(0.12 0.014 255 / 0.42) 48%, var(--background) 100%);
 }
 @theme inline {
   --color-success: var(--success);
@@ -264,8 +268,7 @@
   background: var(--card-surface);
   border: 1px solid var(--glass-border);
   box-shadow: var(--shadow-glass);
-  backdrop-filter: blur(20px) saturate(150%);
-  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  backdrop-filter: blur(26px) saturate(180%);
 }
 @utility hero-fade {
   background: var(--hero-fade);
@@ -451,19 +454,17 @@
 
 /* Frosted bottom nav: content stays visible behind it. */
 .nav-blur {
-  background: color-mix(in oklab, var(--background) 35%, transparent);
-  -webkit-backdrop-filter: blur(18px) saturate(160%);
-  backdrop-filter: blur(18px) saturate(160%);
-  border: 1px solid color-mix(in oklab, var(--foreground) 12%, transparent);
+  background: linear-gradient(180deg, oklch(1 0 0 / 0.12), oklch(1 0 0 / 0.05));
+  backdrop-filter: blur(26px) saturate(185%);
+  border: 1px solid oklch(1 0 0 / 0.18);
 }
 
 /* Notifications: frosted pill with a coloured accent edge */
 .app-toast {
-  background: color-mix(in oklab, var(--card) 72%, transparent);
-  backdrop-filter: blur(18px) saturate(1.4);
-  -webkit-backdrop-filter: blur(18px) saturate(1.4);
-  border: 1px solid var(--border);
-  box-shadow: 0 12px 32px -12px oklch(0 0 0 / 0.7);
+  background: linear-gradient(155deg, oklch(0.2 0.02 255 / 0.72), oklch(0.14 0.015 255 / 0.78));
+  backdrop-filter: blur(24px) saturate(175%);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 14px 36px -12px oklch(0 0 0 / 0.65), inset 0 1px 0 oklch(1 0 0 / 0.22);
   --toast-accent: var(--accent);
 }
 .app-toast-success { --toast-accent: var(--success); }
@@ -477,26 +478,26 @@
   transform: scaleX(-1);
 }
 
-/* Polished dark-anime player shell: frosted obsidian surfaces, warm gold highlights, no clutter. */
+/* Clean frosted glassmorphic player shell */
 .app-toolbar {
   min-height: calc(3.75rem + var(--tg-safe-top, 0px));
   padding-top: var(--tg-safe-top, 0px);
-  background: linear-gradient(180deg, oklch(0.13 0.008 68 / 0.92), oklch(0.13 0.008 68 / 0.72));
-  backdrop-filter: blur(20px) saturate(150%);
-  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  background: linear-gradient(180deg, oklch(0.14 0.015 255 / 0.62), oklch(0.14 0.015 255 / 0.34));
+  border-bottom: 1px solid oklch(1 0 0 / 0.14);
+  backdrop-filter: blur(24px) saturate(180%);
 }
 .app-bottom-nav {
-  background: oklch(0.16 0.01 68 / 0.84);
-  border: 1px solid oklch(1 0 0 / 0.14);
-  box-shadow: 0 18px 40px -14px oklch(0 0 0 / 0.85), inset 0 1px 0 oklch(1 0 0 / 0.14);
-  backdrop-filter: blur(22px) saturate(160%);
-  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  background: linear-gradient(180deg, oklch(1 0 0 / 0.13), oklch(1 0 0 / 0.055));
+  border: 1px solid oklch(1 0 0 / 0.2);
+  box-shadow: 0 20px 48px -14px oklch(0 0 0 / 0.68), inset 0 1px 0 oklch(1 0 0 / 0.3);
+  backdrop-filter: blur(28px) saturate(190%);
 }
 .clean-player main { padding-top: var(--main-pt, 0px); }
 .surface-gold {
-  background: linear-gradient(155deg, oklch(0.28 0.05 78 / 0.55), oklch(0.18 0.012 68 / 0.92));
-  border: 1px solid oklch(0.8 0.14 78 / 0.32);
-  box-shadow: 0 18px 40px -22px oklch(0.8 0.14 78 / 0.35), inset 0 1px 0 oklch(1 0 0 / 0.16);
+  background: linear-gradient(155deg, oklch(0.84 0.13 82 / 0.2), oklch(1 0 0 / 0.06));
+  border: 1px solid oklch(0.86 0.12 82 / 0.32);
+  box-shadow: 0 18px 42px -20px oklch(0.84 0.14 80 / 0.36), inset 0 1px 0 oklch(1 0 0 / 0.28);
+  backdrop-filter: blur(26px) saturate(180%);
 }
 .clean-player [role="tabpanel"] { animation: story-rise 0.25s ease-out; }
 @media (prefers-reduced-motion:reduce) { .clean-player [role="tabpanel"] { animation: none; } }

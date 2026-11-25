@@ -3,19 +3,18 @@ import { Loader2 } from "lucide-react";
 import { AnimatedEmoji } from "@/components/emoji/AnimatedEmoji";
 import { AD_MIN_REWARD } from "@/lib/shop-model";
 import { COIN, formatAmount } from "@/lib/coin";
-import { TOURNAMENT_AD_POINTS, type AdProvider } from "@/lib/tournament-model";
+import { TOURNAMENT_AD_POINTS } from "@/lib/tournament-model";
 
 /** Always-open dual ad task (Adsgram + Monetag): unlimited ads, no cooldown, pays ANIME + tournament points. */
 export function AdTaskCard({
-  busyProvider,
+  busy,
   watched,
   onWatch,
 }: {
-  busyProvider: AdProvider | null;
+  busy: boolean;
   watched: number;
-  onWatch: (provider: AdProvider) => void;
+  onWatch: () => void;
 }) {
-  const busy = busyProvider !== null;
   return (
     <article className="glass-card animate-rise rounded-[1.5rem] p-3.5">
       <div className="flex items-center gap-3">
@@ -40,24 +39,15 @@ export function AdTaskCard({
           </div>
         </div>
       </div>
-      <div className="mt-3 grid grid-cols-2 gap-2">
-        <button
-          type="button"
-          onClick={() => onWatch("adsgram")}
-          disabled={busy}
-          className="btn-cta flex h-10 items-center justify-center rounded-full px-3 font-display text-xs font-bold transition-transform active:scale-95 disabled:opacity-70"
-        >
-          {busyProvider === "adsgram" ? <Loader2 className="size-4 animate-spin" /> : "Adsgram"}
-        </button>
-        <button
-          type="button"
-          onClick={() => onWatch("monetag")}
-          disabled={busy}
-          className="btn-cta flex h-10 items-center justify-center rounded-full px-3 font-display text-xs font-bold transition-transform active:scale-95 disabled:opacity-70"
-        >
-          {busyProvider === "monetag" ? <Loader2 className="size-4 animate-spin" /> : "Monetag"}
-        </button>
-      </div>
+      <button
+        type="button"
+        onClick={onWatch}
+        disabled={busy}
+        className="btn-cta mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-2xl px-4 font-display text-sm font-extrabold transition-transform active:scale-95 disabled:opacity-70"
+      >
+        {busy ? <Loader2 className="size-4 animate-spin" /> : <AnimatedEmoji name="sparkle" className="size-5 text-primary-foreground" />}
+        <span>شاهد إعلان</span>
+      </button>
     </article>
   );
 }

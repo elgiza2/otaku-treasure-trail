@@ -8,6 +8,11 @@
 - [x] Finish channel registration and twice-daily publishing code; activation waits for bot token
 - [x] Test growth rules, translations and clean navigation; real Telegram/payment/webhook checks wait for bot token
 - [x] Upgrade visual design to a rich, polished dark-anime gold aesthetic (glass surfaces, depth, artwork headers, refined 5-tab nav) while keeping pages uncluttered
+- [x] Use emojis from t.me/addemoji/creatoper and verified badge from t.me/addemoji/Des_Ch_9722f_by_TgEmodziBot across the app
+- [x] Save Telegram bot token securely in project secrets
+- [x] Upgrade UI to a clean glassmorphic aesthetic (fix backdrop-filter for production build, translucent frosted glass layers)
+- [x] Combine Adsgram and Monetag into a single watch-ad button with automatic alternation and fallback
+- [x] Audit and clean up translations across all locales so every new text is cleanly translated
 
 - [x] Database schema for 3-day GRAM tournament, dual ad providers, and 0.05 TON referral verification
 - [x] Remove all ad limits/cooldowns from `wall_ad_reward_v2` (unlimited ads, no gap)

@@ -14,9 +14,7 @@ import { claimAdReward } from '@/lib/shop.functions';
 import { claimErrorMessage, taskState, type TaskCategory, type TaskDTO } from '@/lib/tasks-model';
 import { useTelegramInitData, shareLink, openExternal } from '@/lib/telegram';
 import { referralLink } from '@/lib/coin';
-import { showAdsgramAd } from '@/lib/adsgram';
-import { showRewardedAd } from '@/lib/monetag';
-import type { AdProvider } from '@/lib/tournament-model';
+import { showDualAd } from '@/lib/dual-ad';
 import { useTranslationReady } from '@/i18n/DomTranslator';
 
 export const tasksQuery = queryOptions({ queryKey: ['wall-tasks'], queryFn: () => listTasks() });
@@ -26,7 +24,7 @@ export function TasksPage({ category }: { category: CategoryFilter }) {
   const initData=useTelegramInitData(); const now=useNow(1000); const qc=useQueryClient();
   const [tab,setTab]=useState<'daily'|'ads'|'friends'>(category==='game'?'friends':'daily');
   const [busyTask,setBusyTask]=useState<string|null>(null);
-  const [busyAd,setBusyAd]=useState<AdProvider|null>(null); const [watched,setWatched]=useState(0);
+  const [busyAd,setBusyAd]=useState(false); const [watched,setWatched]=useState(0);
   const {data:tasks}=useSuspenseQuery(tasksQuery);
   const load=useServerFn(getMyBoard); const start=useServerFn(startTask); const claim=useServerFn(claimTask); const ad=useServerFn(claimAdReward);
   const board=useQuery({queryKey:['wall-board',initData],queryFn:()=>load({data:{initData}}),enabled:!!initData});
@@ -45,12 +43,12 @@ export function TasksPage({ category }: { category: CategoryFilter }) {
       await qc.invalidateQueries({queryKey:['wall-board']});
     }catch(e){toast.error(claimErrorMessage(e));}finally{setBusyTask(null);}
   }
-  async function watch(provider:AdProvider){
+  async function watch(){
     if(!initData){toast('افتح اللعبة من تيليجرام عشان تستلم المكافآت');return;}
-    if(busyAd)return;setBusyAd(provider);
-    try{if(provider==='adsgram')await showAdsgramAd();else await showRewardedAd();const r=await ad({data:{initData,provider}});setWatched(n=>n+1);toast.success(`+${r.amount} ANIME · +10 نقاط`);await qc.invalidateQueries();}
+    if(busyAd)return;setBusyAd(true);
+    try{const provider=await showDualAd();const r=await ad({data:{initData,provider}});setWatched(n=>n+1);toast.success(`+${r.amount} ANIME · +10 نقاط`);await qc.invalidateQueries();}
     catch(e){toast.error(e instanceof Error&&e.message.includes('ad_skipped')?'الإعلان ما اكتملش':'مفيش إعلان متاح، جرّب الشبكة التانية');}
-    finally{setBusyAd(null);}
+    finally{setBusyAd(false);}
   }
   return <main data-translation-pending={translationReady?undefined:''} className="relative mx-auto min-h-dvh max-w-md overflow-x-hidden bg-background pb-28">
     <div className="pointer-events-none absolute inset-x-0 top-0 h-72 overflow-hidden" aria-hidden="true">
@@ -74,7 +72,7 @@ export function TasksPage({ category }: { category: CategoryFilter }) {
             <div className="mt-4 space-y-3">{rows.map((task,i)=><TaskCard key={task.id} task={task} state={taskState(task,progress.get(task.id),player,now)} now={now} index={i} busy={busyTask===task.id} onAction={()=>void act(task)}/>)}</div>
           </details>
         </>}
-        {tab==='ads'&&<><AdTaskCard busyProvider={busyAd} watched={watched} onWatch={p=>void watch(p)}/><p className="mt-4 text-center text-xs text-muted-foreground">بلا حدود · 15 ANIME + 10 نقاط لكل إعلان</p></>}
+        {tab==='ads'&&<><AdTaskCard busy={busyAd} watched={watched} onWatch={()=>void watch()}/><p className="mt-4 text-center text-xs text-muted-foreground">بلا حدود · 15 ANIME + 10 نقاط لكل إعلان</p></>}
         {tab==='friends'&&<GrowthPanel mode="referrals"/>}
       </div>
     </div>

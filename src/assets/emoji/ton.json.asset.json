@@ -1,11 +1,11 @@
 {
   "version": 1,
-  "asset_id": "3158970d-61c6-497d-a9f5-943f65807859",
-  "project_id": "6e2ad960-0f0b-4984-a135-5b1908a114f2",
-  "url": "/__l5e/assets-v1/3158970d-61c6-497d-a9f5-943f65807859/ton.json",
-  "r2_key": "a/v1/6e2ad960-0f0b-4984-a135-5b1908a114f2/3158970d-61c6-497d-a9f5-943f65807859/ton.json",
+  "asset_id": "707cbb8c-a996-4c2a-abb5-65a13170796d",
+  "project_id": "40d2a7ff-2b47-4003-bbd4-214d489281ae",
+  "url": "/__l5e/assets-v1/707cbb8c-a996-4c2a-abb5-65a13170796d/ton.json",
+  "r2_key": "a/v1/40d2a7ff-2b47-4003-bbd4-214d489281ae/707cbb8c-a996-4c2a-abb5-65a13170796d/ton.json",
   "original_filename": "ton.json",
-  "size": 41517,
+  "size": 41405,
   "content_type": "application/json",
-  "created_at": "2026-11-17T08:42:04Z"
+  "created_at": "2026-11-25T14:00:53Z"
 }

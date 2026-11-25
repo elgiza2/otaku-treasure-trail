@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { KeyRound, Shield, Swords } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -97,7 +96,7 @@ export function RaidPage() {
       <p className="text-xs text-foreground/70">الخزينة الكبرى</p>
       <p dir="ltr" className="pass-number font-display text-4xl font-extrabold">{s ? formatAmount(s.pot) : "—"} <span className="text-lg">{COIN.symbol}</span></p>
       <div className="mt-2 flex items-center justify-center gap-2">
-        {Array.from({ length: VAULT_KEYS }, (_, i) => <KeyRound key={i} className={cn("size-6", i < (s?.keys ?? 0) ? "text-accent" : "text-foreground/25")} />)}
+        {Array.from({ length: VAULT_KEYS }, (_, i) => <AnimatedEmoji key={i} name="crystal" className={cn("size-6", i < (s?.keys ?? 0) ? "text-accent" : "opacity-30 text-foreground")} />)}
       </div>
       <p className="mt-1 text-[0.7rem] text-foreground/60">جمّع {VAULT_KEYS} مفاتيح من العجلة وافتح الخزينة، وتكسب 10% منها</p>
     </section>
@@ -117,7 +116,7 @@ export function RaidPage() {
     <section className="relative z-10 mt-5 space-y-2 px-5">
       {result && <p key={angle} className="raid-pop glass rounded-2xl p-3 text-center font-display font-extrabold">{resultText(result)}</p>}
       <div className="flex items-center justify-between text-sm">
-        <span className="flex items-center gap-1 text-foreground/80"><Shield className="size-4 text-accent" /> دروع: {s?.shields ?? 0}/3</span>
+        <span className="flex items-center gap-1.5 text-foreground/85"><AnimatedEmoji name="shields" className="size-4 text-accent" /> دروع: {s?.shields ?? 0}/3</span>
         <span className="text-foreground/80">لفات: <b className="text-accent">{spins}</b>{spins < MAX_FREE_SPINS && <span className="text-xs"> (+1 كل ساعة)</span>}</span>
       </div>
       <Button className="btn-cta h-14 w-full rounded-2xl text-xl font-extrabold" disabled={spinning || (!!initData && (q.isPending || spins <= 0))} onClick={() => spin()}>
@@ -126,7 +125,7 @@ export function RaidPage() {
       <p className="text-center text-xs text-muted-foreground">لفة إضافية بإعلان · بلا حد</p>
       <GameAdButtons initData={initData} benefit="spin" disabled={spinning || busy} />
       <div className="pt-3"><EnergyBar initData={initData} disabled={spinning || busy} /></div>
-      <Link to="/squads" className="flex items-center justify-center gap-2 py-3 font-bold text-accent"><Swords className="size-4" /> دوري التحالفات</Link>
+      <Link to="/squads" className="glass flex items-center justify-center gap-2 rounded-2xl py-3 font-bold text-accent"><AnimatedEmoji name="rocket" className="size-5 text-accent" /> دوري التحالفات</Link>
     </section>
 
     {/* Revenge */}
@@ -134,7 +133,7 @@ export function RaidPage() {
       <h2 className="mb-2 font-display text-lg font-extrabold">هجموا عليك!</h2>
       <div className="space-y-2">
         {revengeable.slice(0, 5).map((a) => <div key={a.id} className="glass flex items-center gap-3 rounded-2xl p-3">
-          <Swords className="size-6 shrink-0 text-destructive" />
+          <AnimatedEmoji name="shields" className="size-6 shrink-0 text-destructive" />
           <span className="min-w-0 flex-1 text-sm"><b>{a.attacker}</b> سرق منك {formatAmount(a.amount)}</span>
           <Button size="sm" variant="destructive" disabled={spinning || spins <= 0} onClick={() => spin(a.id)}>انتقم</Button>
         </div>)}

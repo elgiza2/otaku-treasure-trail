@@ -11,10 +11,8 @@ import passArt from "@/assets/mine-pass/mine-pass-art.jpg";
 import { createTonPayment, checkTonPayment } from "@/lib/shop.functions";
 import { shopErrorMessage } from "@/lib/shop-model";
 import { getTonConnect } from "@/lib/ton-connect";
-import { BadgeCheck } from 'lucide-react';
-
 export function VerifiedBadge() {
-  return <span aria-label="حساب موثق" title="حساب موثق بتصريح التعدين" className="inline-flex text-gold"><BadgeCheck className="size-5" /></span>;
+  return <span aria-label="حساب موثق" title="حساب موثق بتصريح التعدين" className="inline-flex align-middle"><AnimatedEmoji name="verified" keepColors className="size-5" /></span>;
 }
 
 export function MinePassCard({ initData, variant = "row" }: { initData: string; variant?: "row" | "stacked" }) {

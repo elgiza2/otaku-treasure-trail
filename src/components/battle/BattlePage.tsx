@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Clock, Zap, Gift, Swords, UsersRound } from "lucide-react";
+import { Clock } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 
+import { AnimatedEmoji } from "@/components/emoji/AnimatedEmoji";
 import { BottomNav } from "@/components/BottomNav";
 import { Button } from "@/components/ui/button";
 import { useNow } from "@/components/tasks/use-now";
@@ -91,7 +92,7 @@ export function BattlePage() {
             className="btn-cta h-auto shrink-0 rounded-2xl px-6 py-3 text-lg font-extrabold disabled:opacity-50">{miningEnabled ? "استلام" : "تفعيل التعدين"}</Button>
         </div>
         <div className="mt-2 flex gap-4 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1"><Zap className="size-3.5" />{formatAmount(rate)}/س</span>
+          <span className="flex items-center gap-1"><AnimatedEmoji name="spark" className="size-4 text-accent" />{formatAmount(rate)}/س</span>
           <span className="flex items-center gap-1"><Clock className="size-3.5" />{b && miningEnabled ? (full ? "المخزن مليان" : fmtLeft(b.minedAt + STORAGE_HOURS * 3_600_000 - now)) : "التعدين متوقف"}</span>
         </div>
         <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
@@ -109,9 +110,9 @@ export function BattlePage() {
       </div>
 
       <section className="absolute inset-x-4 bottom-24 z-10 flex items-center justify-center gap-3">
-        <button type="button" aria-label="صندوق المفاجآت" title="صندوق المفاجآت" onClick={() => setChestOpen(true)} className="glass flex items-center gap-2 rounded-2xl px-4 py-2.5 text-xs font-extrabold text-foreground transition-transform active:scale-95"><Gift className="size-4 text-accent" /><span>صندوق المفاجآت</span></button>
-        <Link to="/duels" aria-label="تحديات الأصدقاء" title="تحديات الأصدقاء" className="glass flex items-center gap-2 rounded-2xl px-4 py-2.5 text-xs font-extrabold text-foreground transition-transform active:scale-95"><Swords className="size-4 text-accent" /><span>التحديات</span></Link>
-        <Link to="/heroes" aria-label="فريق الأبطال" title="فريق الأبطال" className="glass flex items-center gap-2 rounded-2xl px-4 py-2.5 text-xs font-extrabold text-foreground transition-transform active:scale-95"><UsersRound className="size-4 text-accent" /><span>الأبطال</span></Link>
+        <button type="button" aria-label="صندوق المفاجآت" title="صندوق المفاجآت" onClick={() => setChestOpen(true)} className="glass flex items-center gap-2 rounded-2xl px-4 py-2.5 text-xs font-extrabold text-foreground transition-transform active:scale-95"><AnimatedEmoji name="crystal" className="size-4 text-accent" /><span>صندوق المفاجآت</span></button>
+        <Link to="/duels" aria-label="تحديات الأصدقاء" title="تحديات الأصدقاء" className="glass flex items-center gap-2 rounded-2xl px-4 py-2.5 text-xs font-extrabold text-foreground transition-transform active:scale-95"><AnimatedEmoji name="shields" className="size-4 text-accent" /><span>التحديات</span></Link>
+        <Link to="/heroes" aria-label="فريق الأبطال" title="فريق الأبطال" className="glass flex items-center gap-2 rounded-2xl px-4 py-2.5 text-xs font-extrabold text-foreground transition-transform active:scale-95"><AnimatedEmoji name="scout" className="size-4 text-accent" /><span>الأبطال</span></Link>
       </section>
       <Dialog open={chestOpen} onOpenChange={setChestOpen}><DialogContent className="max-w-sm"><DialogTitle>صندوق المفاجآت</DialogTitle><DialogDescription>مكافأة كل 8 ساعات</DialogDescription><GrowthPanel mode="chest" /></DialogContent></Dialog>
       <Dialog open={passOpen} onOpenChange={setPassOpen}><DialogContent className="max-w-sm"><DialogTitle>تفعيل التعدين والتوثيق</DialogTitle><DialogDescription>تصريح التعدين · 0.05 TON</DialogDescription><MinePassCard initData={initData} variant="stacked" /></DialogContent></Dialog>

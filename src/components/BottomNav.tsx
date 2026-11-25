@@ -1,12 +1,13 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { ClipboardList, CircleDollarSign, Swords, UsersRound, Wallet } from 'lucide-react';
+import { AnimatedEmoji } from "@/components/emoji/AnimatedEmoji";
+import type { EmojiName } from "@/components/emoji/emoji-registry";
 
-const ITEMS = [
-  { to: '/battle', label: 'الحرب', icon: Swords },
-  { to: '/heroes', label: 'الفريق', icon: UsersRound },
-  { to: '/tasks', label: 'المهام', icon: ClipboardList },
-  { to: '/raid', label: 'العجلة', icon: CircleDollarSign },
-  { to: '/wallet', label: 'المحفظة', icon: Wallet },
+const ITEMS: readonly { to: string; label: string; emoji: EmojiName }[] = [
+  { to: '/battle', label: 'الحرب', emoji: 'shields' },
+  { to: '/heroes', label: 'الفريق', emoji: 'scout' },
+  { to: '/tasks', label: 'المهام', emoji: 'sparkle' },
+  { to: '/raid', label: 'العجلة', emoji: 'orbit' },
+  { to: '/wallet', label: 'المحفظة', emoji: 'wallet' },
 ] as const;
 
 export function BottomNav() {
@@ -16,8 +17,8 @@ export function BottomNav() {
       {ITEMS.map((i) => {
         const active = path===i.to || (i.to==='/heroes' && ['/squads','/duels'].includes(path));
         return (
-          <Link key={i.to} to={i.to} aria-current={active ? 'page' : undefined} className={`flex h-13 flex-1 flex-col items-center justify-center gap-0.5 rounded-[20px] text-[11px] font-bold transition-all ${active ? 'bg-accent/18 text-accent shadow-[inset_0_1px_0_oklch(1_0_0/0.15)]' : 'text-muted-foreground hover:text-foreground'}`}>
-            <i.icon className="size-5" strokeWidth={active ? 2.2 : 1.75} />
+          <Link key={i.to} to={i.to} aria-current={active ? 'page' : undefined} className={`flex h-13 flex-1 flex-col items-center justify-center gap-0.5 rounded-[20px] text-[11px] font-bold transition-all ${active ? 'bg-foreground/14 text-accent shadow-[inset_0_1px_0_oklch(1_0_0/0.25)]' : 'text-foreground/70 hover:text-foreground'}`}>
+            <AnimatedEmoji name={i.emoji} className={`size-5 ${active ? 'text-accent' : 'text-foreground/75'}`} />
             <span>{i.label}</span>
           </Link>
         );

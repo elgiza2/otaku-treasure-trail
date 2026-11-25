@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Zap } from "lucide-react";
 import { useState } from 'react';
+import { AnimatedEmoji } from '@/components/emoji/AnimatedEmoji';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { getEnergy } from "@/lib/game.functions";
@@ -19,7 +19,7 @@ export function EnergyBar({ initData, disabled = false }: { initData: string; di
   const energy = useEnergy(initData);
   const [open,setOpen]=useState(false);
   return <div className="space-y-2">
-    <div className="flex items-center justify-between text-xs"><span className="flex items-center gap-1"><Zap className="size-4 text-accent" /> الطاقة</span><span dir="ltr" className="tabular-nums">{energy.value ?? "—"}/{ENERGY_MAX}</span></div>
+    <div className="flex items-center justify-between text-xs"><span className="flex items-center gap-1.5"><AnimatedEmoji name="spark" className="size-4 text-accent" /> الطاقة</span><span dir="ltr" className="tabular-nums">{energy.value ?? "—"}/{ENERGY_MAX}</span></div>
     <div role="progressbar" aria-label="الطاقة" aria-valuemin={0} aria-valuemax={ENERGY_MAX} aria-valuenow={energy.value ?? 0} className="h-2 w-full overflow-hidden rounded-full bg-background/60">
       <div className="bg-gold-bar h-full rounded-full transition-[width] duration-500" style={{ width: `${Math.min(100, ((energy.value ?? 0) / ENERGY_MAX) * 100)}%` }} />
     </div>
