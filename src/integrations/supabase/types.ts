@@ -6157,11 +6157,15 @@ export type Database = {
           active: boolean
           category: string
           chat_id: string | null
+          claims_done: number
           cooldown_hours: number | null
           created_at: string
+          creator_tg_id: number | null
           emoji: string
           id: string
           kind: string
+          max_claims: number | null
+          payment_id: string | null
           required: number
           reward: number
           sort: number
@@ -6173,11 +6177,15 @@ export type Database = {
           active?: boolean
           category?: string
           chat_id?: string | null
+          claims_done?: number
           cooldown_hours?: number | null
           created_at?: string
+          creator_tg_id?: number | null
           emoji?: string
           id?: string
           kind?: string
+          max_claims?: number | null
+          payment_id?: string | null
           required?: number
           reward?: number
           sort?: number
@@ -6189,11 +6197,15 @@ export type Database = {
           active?: boolean
           category?: string
           chat_id?: string | null
+          claims_done?: number
           cooldown_hours?: number | null
           created_at?: string
+          creator_tg_id?: number | null
           emoji?: string
           id?: string
           kind?: string
+          max_claims?: number | null
+          payment_id?: string | null
           required?: number
           reward?: number
           sort?: number
@@ -6201,7 +6213,22 @@ export type Database = {
           updated_at?: string
           url?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "wall_tasks_creator_tg_id_fkey"
+            columns: ["creator_tg_id"]
+            isOneToOne: false
+            referencedRelation: "wall_users"
+            referencedColumns: ["tg_id"]
+          },
+          {
+            foreignKeyName: "wall_tasks_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: true
+            referencedRelation: "wall_payments"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       wall_tournament_entries: {
         Row: {
@@ -6283,6 +6310,48 @@ export type Database = {
           status?: string
         }
         Relationships: []
+      }
+      wall_user_task_orders: {
+        Row: {
+          created_at: string
+          max_claims: number
+          payment_id: string
+          tg_id: number
+          title: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          max_claims?: number
+          payment_id: string
+          tg_id: number
+          title: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          max_claims?: number
+          payment_id?: string
+          tg_id?: number
+          title?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wall_user_task_orders_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: true
+            referencedRelation: "wall_payments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wall_user_task_orders_tg_id_fkey"
+            columns: ["tg_id"]
+            isOneToOne: false
+            referencedRelation: "wall_users"
+            referencedColumns: ["tg_id"]
+          },
+        ]
       }
       wall_users: {
         Row: {
