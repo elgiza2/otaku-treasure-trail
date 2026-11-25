@@ -16,6 +16,7 @@ import { Route as HeroesRouteImport } from './routes/heroes'
 import { Route as NftRouteImport } from './routes/nft'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as RaidRouteImport } from './routes/raid'
+import { Route as SquadsRouteImport } from './routes/squads'
 import { Route as TasksRouteImport } from './routes/tasks'
 import { Route as TournamentRouteImport } from './routes/tournament'
 import { Route as WalletRouteImport } from './routes/wallet'
@@ -59,6 +60,11 @@ const ProfileRoute = ProfileRouteImport.update({
 const RaidRoute = RaidRouteImport.update({
   id: '/raid',
   path: '/raid',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SquadsRoute = SquadsRouteImport.update({
+  id: '/squads',
+  path: '/squads',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TasksRoute = TasksRouteImport.update({
@@ -117,6 +123,7 @@ export interface FileRoutesByFullPath {
   '/nft': typeof NftRoute
   '/profile': typeof ProfileRoute
   '/raid': typeof RaidRoute
+  '/squads': typeof SquadsRoute
   '/tasks': typeof TasksRoute
   '/tournament': typeof TournamentRoute
   '/wallet': typeof WalletRoute
@@ -135,6 +142,7 @@ export interface FileRoutesByTo {
   '/nft': typeof NftRoute
   '/profile': typeof ProfileRoute
   '/raid': typeof RaidRoute
+  '/squads': typeof SquadsRoute
   '/tasks': typeof TasksRoute
   '/tournament': typeof TournamentRoute
   '/wallet': typeof WalletRoute
@@ -154,6 +162,7 @@ export interface FileRoutesById {
   '/nft': typeof NftRoute
   '/profile': typeof ProfileRoute
   '/raid': typeof RaidRoute
+  '/squads': typeof SquadsRoute
   '/tasks': typeof TasksRoute
   '/tournament': typeof TournamentRoute
   '/wallet': typeof WalletRoute
@@ -174,6 +183,7 @@ export interface FileRouteTypes {
     | '/nft'
     | '/profile'
     | '/raid'
+    | '/squads'
     | '/tasks'
     | '/tournament'
     | '/wallet'
@@ -192,6 +202,7 @@ export interface FileRouteTypes {
     | '/nft'
     | '/profile'
     | '/raid'
+    | '/squads'
     | '/tasks'
     | '/tournament'
     | '/wallet'
@@ -210,6 +221,7 @@ export interface FileRouteTypes {
     | '/nft'
     | '/profile'
     | '/raid'
+    | '/squads'
     | '/tasks'
     | '/tournament'
     | '/wallet'
@@ -229,6 +241,7 @@ export interface RootRouteChildren {
   NftRoute: typeof NftRoute
   ProfileRoute: typeof ProfileRoute
   RaidRoute: typeof RaidRoute
+  SquadsRoute: typeof SquadsRoute
   TasksRoute: typeof TasksRoute
   TournamentRoute: typeof TournamentRoute
   WalletRoute: typeof WalletRoute
@@ -289,6 +302,13 @@ declare module '@tanstack/react-router' {
       path: '/raid'
       fullPath: '/raid'
       preLoaderRoute: typeof RaidRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/squads': {
+      id: '/squads'
+      path: '/squads'
+      fullPath: '/squads'
+      preLoaderRoute: typeof SquadsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tasks': {
@@ -365,6 +385,7 @@ const rootRouteChildren: RootRouteChildren = {
   NftRoute: NftRoute,
   ProfileRoute: ProfileRoute,
   RaidRoute: RaidRoute,
+  SquadsRoute: SquadsRoute,
   TasksRoute: TasksRoute,
   TournamentRoute: TournamentRoute,
   WalletRoute: WalletRoute,

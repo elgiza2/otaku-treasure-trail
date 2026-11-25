@@ -13,4 +13,4 @@
 - [ ] Fix new table RLS policies & FK indexes, and add 10 GRAM weekly squad league settlement
 - [ ] Add squads, invite links, weekly scoring and collective rewards (10 GRAM/week)
 - [ ] Test and verify the requested updates
-- [ ] Adjust all competition timings after clarification: weekly duration or launch in one week
+- [ ] Change GRAM competition to 7-day repeating cycles; keep squads weekly

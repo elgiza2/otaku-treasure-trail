@@ -16,6 +16,10 @@ import { coinsPerTitan, isUnlocked, pendingCoins, STORAGE_HOURS, titansSlain, to
 import { useTelegramInitData, haptic } from "@/lib/telegram";
 import { SegmentVideo } from "./SegmentVideo";
 import { MinePassCard } from "@/components/profile/MinePassCard";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { GameAdButtons } from "@/components/game/GameAdButtons";
+import { EnergyBar } from "@/components/game/EnergyBar";
+import { gameError } from "@/lib/game-model";
 
 const fmtLeft = (ms: number) => {
   const m = Math.max(0, Math.ceil(ms / 60_000));
@@ -27,6 +31,8 @@ export function BattlePage() {
   const now = useNow(1000);
   const initData = useTelegramInitData();
   const [pops, setPops] = useState<number[]>([]);
+  const [collectOpen, setCollectOpen] = useState(false);
+  const [adBusy, setAdBusy] = useState(false);
 
   const fetchBoard = useServerFn(getHeroBoard);
   const board = useQuery({ queryKey: ["wall-heroes", initData], queryFn: () => fetchBoard({ data: { initData } }), enabled: !!initData });
@@ -61,7 +67,7 @@ export function BattlePage() {
   const refresh = () => qc.invalidateQueries({ queryKey: ["wall-heroes"] });
   const ok = (n: number) => { haptic("success"); toast.success(`+${formatAmount(n)} ${COIN.symbol}`); last.current = 0; void refresh(); };
   const collectFn = useServerFn(collectMining);
-  const collect = useMutation({ mutationFn: () => collectFn({ data: { initData } }), onSuccess: (r) => ok(r.amount), onError: (e) => toast.error(upgradeErrorMessage(e)) });
+  const collect = useMutation({ mutationFn: () => collectFn({ data: { initData } }), onSuccess: (r) => { ok(r.amount); setCollectOpen(false); void qc.invalidateQueries({ queryKey: ["wall-energy"] }); }, onError: (e) => toast.error(e instanceof Error && e.message.includes("no_energy") ? gameError(e) : upgradeErrorMessage(e)) });
 
   return (
     <main className="relative mx-auto h-dvh max-w-md overflow-hidden">
@@ -80,7 +86,7 @@ export function BattlePage() {
             <p className="text-xs text-muted-foreground">غنايم المعركة</p>
             <p className="text-gold text-3xl font-extrabold tabular-nums">{formatAmount(pending)} <span className="text-sm">{COIN.symbol}</span></p>
           </div>
-          <Button type="button" disabled={guest || collect.isPending || pending <= 0} onClick={() => collect.mutate()}
+          <Button type="button" disabled={guest || collect.isPending || pending <= 0} onClick={() => setCollectOpen(true)}
             className="btn-cta h-auto shrink-0 rounded-2xl px-6 py-3 text-lg font-extrabold disabled:opacity-50">استلام</Button>
         </div>
         <div className="mt-2 flex gap-4 text-xs text-muted-foreground">
@@ -90,6 +96,7 @@ export function BattlePage() {
         <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
           <div className="bg-gold-bar h-full rounded-full transition-[width] duration-1000" style={{ width: `${fill * 100}%` }} />
         </div>
+        <div className="mt-3"><EnergyBar initData={initData} disabled={collect.isPending || adBusy} /></div>
       </header>
 
       {/* Coin rewards remain visible without covering the battle with a counter. */}
@@ -102,11 +109,12 @@ export function BattlePage() {
 
       {/* Tournament + NFT entry + Mine Pass */}
       <section className="absolute inset-x-3 bottom-24 z-10 space-y-2">
+        <Link to="/squads" className="glass flex items-center justify-between rounded-2xl px-4 py-2 text-sm font-bold"><span>⚔️ دوري التحالفات</span><span className="text-gold">10 GRAM</span></Link>
         <Link to="/tournament" className="glass flex items-center gap-3 rounded-2xl px-4 py-3">
           <AnimatedEmoji name="sparkle" className="size-8 shrink-0 text-accent" />
           <span className="min-w-0 flex-1">
             <span className="block font-display text-base font-extrabold text-gold">مسابقة 350 GRAM</span>
-            <span className="block text-xs text-muted-foreground">كل 3 أيام · إعلانات وإحالات موثقة</span>
+            <span className="block text-xs text-muted-foreground">كل أسبوع · إعلانات وإحالات موثقة</span>
           </span>
           <span className="btn-cta shrink-0 rounded-xl px-4 py-2 text-sm font-extrabold">دخول</span>
         </Link>
@@ -121,6 +129,15 @@ export function BattlePage() {
         {!miningEnabled && <MinePassCard initData={initData} variant="stacked" />}
       </section>
 
+      <Dialog open={collectOpen} onOpenChange={(open) => { if (!adBusy && !collect.isPending) setCollectOpen(open); }}>
+        <DialogContent className="max-w-sm" onInteractOutside={(e) => { if (adBusy) e.preventDefault(); }} onEscapeKeyDown={(e) => { if (adBusy) e.preventDefault(); }}>
+          <DialogTitle>استلام غنيمة المعركة</DialogTitle>
+          <DialogDescription>{formatAmount(pending)} ANIME · استلام 1x أو مضاعفة 2x</DialogDescription>
+          <Button variant="outline" disabled={adBusy || collect.isPending} onClick={() => collect.mutate()}>استلام عادي 1x</Button>
+          <p className="text-center font-bold text-gold">مضاعفة الغنيمة 2x بإعلان</p>
+          <GameAdButtons initData={initData} benefit="double" disabled={collect.isPending} onBusyChange={setAdBusy} onReward={(amount) => { ok(amount); setCollectOpen(false); }} />
+        </DialogContent>
+      </Dialog>
       <BottomNav />
     </main>
   );

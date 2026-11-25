@@ -41,7 +41,7 @@ export const spinRaid = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => authInput.extend({ revenge: z.number().int().positive().optional() }).parse(d))
   .handler(async ({ data }): Promise<SpinResult> => {
     const { user, db } = await authPlayer(data.initData);
-    const r = await db.rpc("wall_raid_spin" as never, { _tg: user.id, _revenge: data.revenge ?? null } as never);
+    const r = await db.rpc("wall_game_spin", { _tg: user.id, ...(data.revenge ? { _revenge: data.revenge } : {}) });
     if (r.error) throw new Error(r.error.message);
     const j = r.data as unknown as { segment: SpinResult["segment"]; amount: number; blocked: boolean };
     return { segment: j.segment, amount: Number(j.amount), blocked: !!j.blocked };

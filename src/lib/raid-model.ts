@@ -16,7 +16,7 @@ export function findSpinPack(id: string) {
   return SPIN_PACKS.find((p) => p.id === id);
 }
 
-export type Segment = "coins" | "jackpot_coins" | "shield" | "raid" | "key" | "vault";
+export type Segment = "coins" | "jackpot_coins" | "shield" | "raid" | "key" | "vault" | "gram";
 export const WHEEL: { seg: Exclude<Segment, "vault">; label: string }[] = [
   { seg: "coins", label: "10" },
   { seg: "raid", label: "غارة" },
@@ -25,7 +25,7 @@ export const WHEEL: { seg: Exclude<Segment, "vault">; label: string }[] = [
   { seg: "jackpot_coins", label: "50" },
   { seg: "raid", label: "غارة" },
   { seg: "key", label: "مفتاح" },
-  { seg: "coins", label: "10" },
+  { seg: "gram", label: "3 GRAM" },
 ];
 
 /** Free spins regained since `at`: +1 per hour, never above the free cap. Paid spins above the cap are kept. */

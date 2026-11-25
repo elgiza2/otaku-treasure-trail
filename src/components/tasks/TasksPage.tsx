@@ -234,7 +234,7 @@ export function TasksPage({ category }: { category: CategoryFilter }) {
             </span>
             <span className="min-w-0 flex-1">
               <span className="block truncate font-display text-base font-extrabold text-gold">مسابقة {TOURNAMENT_PRIZE_POOL} GRAM</span>
-              <span className="block text-xs text-muted-foreground">دورة كل 3 أيام · إعلانات وإحالات موثقة</span>
+              <span className="block text-xs text-muted-foreground">دورة كل أسبوع · إعلانات وإحالات موثقة</span>
             </span>
             <span className="btn-cta shrink-0 rounded-full px-4 py-2 font-display text-xs font-extrabold">شارك</span>
           </Link>

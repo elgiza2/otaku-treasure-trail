@@ -7,9 +7,9 @@ export const Route = createFileRoute("/tournament")({
   head: () => ({
     meta: [
       { title: "مسابقة GRAM — منجم الأسوار" },
-      { name: "description", content: "تنافس كل 3 أيام على 350 GRAM بمشاهدة الإعلانات ودعوة الأصدقاء الموثقين." },
+      { name: "description", content: "تنافس كل أسبوع على 350 GRAM بمشاهدة الإعلانات ودعوة الأصدقاء الموثقين." },
       { property: "og:title", content: "مسابقة GRAM — منجم الأسوار" },
-      { property: "og:description", content: "دورة تنافسية كل 3 أيام بجوائز 350 GRAM لأفضل 20 لاعباً." },
+      { property: "og:description", content: "دورة تنافسية كل أسبوع بجوائز 350 GRAM لأفضل 20 لاعباً." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

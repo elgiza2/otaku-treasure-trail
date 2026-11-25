@@ -121,7 +121,7 @@ export function TournamentPage() {
       <div className="relative px-4 pt-[max(1.5rem,env(safe-area-inset-top))]">
         <header className="flex flex-col items-center pt-10 text-center">
           <span className="glass inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold text-accent">
-            <Trophy className="size-3.5" /> الجولة #{board.round.roundNumber} · كل 3 أيام
+            <Trophy className="size-3.5" /> الجولة #{board.round.roundNumber} · كل أسبوع
           </span>
           <h1 className="mt-2 font-display text-4xl font-extrabold text-gold drop-shadow-lg">مسابقة GRAM</h1>
           <p className="mt-1 text-sm font-semibold text-foreground/85">

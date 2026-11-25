@@ -52,7 +52,7 @@ export const collectMining = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => authInput.parse(d))
   .handler(async ({ data }) => {
     const { user, db } = await authPlayer(data.initData);
-    const { data: amt, error } = await db.rpc("wall_mining_claim", { _tg: user.id } as never);
+    const { data: amt, error } = await db.rpc("wall_game_collect", { _tg: user.id });
     if (error) throw new Error(error.message);
     return { amount: Number(amt) };
   });

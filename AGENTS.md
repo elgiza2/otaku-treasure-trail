@@ -28,3 +28,7 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+- Keep game ad benefits atomic and idempotent in SQL, called only after verified Telegram authentication; retries must reuse the completed ad's request ID to avoid duplicate rewards.
+- Use shared game-model rules and GameAdButtons/EnergyBar controls for battle and raid rewards so both ad providers and energy behavior stay consistent.
+- Store squad scoring by UTC week and settle earned prizes in SQL; public board reads expose only squad aggregates, never member Telegram IDs.

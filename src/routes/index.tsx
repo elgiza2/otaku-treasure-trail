@@ -1,6 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { lastPageAsync } from "@/lib/last-page";
+import { getInitData } from "@/lib/telegram";
+import { squadStartParam } from "@/lib/game-model";
 
 import { StoryOnboarding } from "@/components/onboarding/StoryOnboarding";
 
@@ -22,6 +24,8 @@ function Index() {
   const navigate = useNavigate();
   const [checked, setChecked] = useState(false);
   useEffect(() => {
+    const squad = squadStartParam(getInitData());
+    if (squad) { void navigate({ to: "/squads", search: { invite: squad }, replace: true }); return; }
     let live = true;
     lastPageAsync().then((p) => {
       if (!live) return;

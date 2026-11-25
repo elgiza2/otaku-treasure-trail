@@ -122,7 +122,7 @@ export function TournamentHistoryView({ pastRounds }: { pastRounds: PastRoundDTO
   if (pastRounds.length === 0) {
     return (
       <p className="glass-card rounded-3xl p-6 text-center text-sm text-muted-foreground">
-        هذه هي الجولة الأولى — ستظهر نتائج الجولات المنتهية هنا تلقائياً بعد انتهاء الـ 3 أيام.
+        هذه هي الجولة الأولى — ستظهر نتائج الجولات المنتهية هنا تلقائياً بعد انتهاء الأسبوع.
       </p>
     );
   }

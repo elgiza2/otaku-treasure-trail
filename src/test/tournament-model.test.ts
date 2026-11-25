@@ -10,9 +10,11 @@ import {
   TOURNAMENT_WINNERS_COUNT,
 } from "@/lib/tournament-model";
 
-describe("3-day GRAM tournament rules", () => {
-  it("uses 3-day cycles, 350 GRAM prize pool, +10/ad, +100/verified 0.05 TON referral", () => {
-    expect(TOURNAMENT_DURATION_DAYS).toBe(3);
+describe("weekly GRAM tournament rules", () => {
+  it("uses 7-day cycles", () => {
+    expect(TOURNAMENT_DURATION_DAYS).toBe(7);
+  });
+  it("keeps 350 GRAM prize pool, +10/ad, +100/verified 0.05 TON referral", () => {
     expect(TOURNAMENT_PRIZE_POOL).toBe(350);
     expect(TOURNAMENT_AD_POINTS).toBe(10);
     expect(TOURNAMENT_REFERRAL_POINTS).toBe(100);

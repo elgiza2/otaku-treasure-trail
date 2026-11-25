@@ -18,9 +18,14 @@ import { cn } from "@/lib/utils";
 import { StarField } from "@/components/nft/NftIntro";
 import { StoryGame } from "@/components/story/StoryGame";
 import { AnimeNovel } from "@/components/story/AnimeNovel";
+import { GameAdButtons } from "@/components/game/GameAdButtons";
+import { EnergyBar } from "@/components/game/EnergyBar";
+import { gameError } from "@/lib/game-model";
+import { Link } from "@tanstack/react-router";
 
 function resultText(r: SpinResult): string {
   switch (r.segment) {
+    case "gram": return `كسبت ${r.amount} GRAM!`;
     case "coins": case "jackpot_coins": return `كسبت ${formatAmount(r.amount)} ${COIN.symbol}`;
     case "shield": return r.amount > 0 ? `دروعك مليانة، خد ${formatAmount(r.amount)} بدالها` : "خدت درع يحمي سورك";
     case "key": return "خدت مفتاح للخزينة!";
@@ -49,14 +54,14 @@ export function RaidPage() {
     if (spinning) return;
     setSpinning(true); setResult(null);
     try {
-      const r = await spinFn({ data: { initData, revenge } });
+      const r = await spinFn({ data: { initData, ...(revenge ? { revenge } : {}) } });
       const seg = r.segment === "vault" ? "key" : r.segment;
       const idx = Math.max(0, WHEEL.findIndex((w) => w.seg === seg));
       setAngle((a) => a - (a % 360) + 360 * 5 + (360 - idx * 45));
       await new Promise((res) => setTimeout(res, 3300));
       setResult(r); haptic("success");
       await q.refetch();
-    } catch (e) { toast.error(shopErrorMessage(e)); haptic("error"); }
+    } catch (e) { toast.error(e instanceof Error && e.message.includes("no_energy") ? gameError(e) : shopErrorMessage(e)); haptic("error"); }
     finally { setSpinning(false); }
   }
 
@@ -133,6 +138,10 @@ export function RaidPage() {
       <Button className="btn-cta h-14 w-full rounded-2xl text-xl font-extrabold" disabled={spinning || (!!initData && (q.isPending || spins <= 0))} onClick={() => spin()}>
         {spinning ? "بتلف…" : spins <= 0 && s ? "خلصت اللفات" : "لُف"}
       </Button>
+      <p className="text-center text-xs text-muted-foreground">لفة إضافية بإعلان · بلا حد</p>
+      <GameAdButtons initData={initData} benefit="spin" disabled={spinning || busy} />
+      <div className="pt-3"><EnergyBar initData={initData} disabled={spinning || busy} /></div>
+      <Link to="/squads" className="flex items-center justify-center gap-2 py-3 font-bold text-accent"><Swords className="size-4" /> دوري التحالفات</Link>
     </section>
 
     {/* Revenge */}
