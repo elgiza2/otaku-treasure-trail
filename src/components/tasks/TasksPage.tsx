@@ -16,10 +16,12 @@ import { referralLink } from '@/lib/coin';
 import { showAdsgramAd } from '@/lib/adsgram';
 import { showRewardedAd } from '@/lib/monetag';
 import type { AdProvider } from '@/lib/tournament-model';
+import { useTranslationReady } from '@/i18n/DomTranslator';
 
 export const tasksQuery = queryOptions({ queryKey: ['wall-tasks'], queryFn: () => listTasks() });
 export type CategoryFilter = 'all' | TaskCategory;
 export function TasksPage({ category }: { category: CategoryFilter }) {
+  const translationReady=useTranslationReady();
   const initData=useTelegramInitData(); const now=useNow(1000); const qc=useQueryClient();
   const [tab,setTab]=useState<'daily'|'ads'|'friends'>(category==='game'?'friends':'daily');
   const [busyTask,setBusyTask]=useState<string|null>(null);
@@ -49,7 +51,7 @@ export function TasksPage({ category }: { category: CategoryFilter }) {
     catch(e){toast.error(e instanceof Error&&e.message.includes('ad_skipped')?'الإعلان ما اكتملش':'مفيش إعلان متاح، جرّب الشبكة التانية');}
     finally{setBusyAd(null);}
   }
-  return <main className="mx-auto min-h-dvh max-w-md px-4 pb-28 pt-6">
+  return <main data-translation-pending={translationReady?undefined:''} className="mx-auto min-h-dvh max-w-md px-4 pb-28 pt-6">
     <h1 className="mb-5 text-2xl font-bold">المهام والمكافآت</h1>
     <div role="tablist" aria-label="أقسام المكافآت" className="mb-6 grid grid-cols-3 gap-1 rounded-lg bg-muted p-1">{([{id:'daily',label:'اليومية'},{id:'ads',label:'الإعلانات'},{id:'friends',label:'الأصدقاء'}] as const).map(t=><Button key={t.id} role="tab" aria-selected={tab===t.id} variant={tab===t.id?'default':'ghost'} onClick={()=>setTab(t.id)}>{t.label}</Button>)}</div>
     <div role="tabpanel">

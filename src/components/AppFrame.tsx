@@ -10,8 +10,10 @@ import { energyNow } from '@/lib/game-model';
 import { useTelegramInitData } from '@/lib/telegram';
 import { useNow } from '@/components/tasks/use-now';
 import { formatAmount } from '@/lib/coin';
+import { useTranslationReady } from '@/i18n/DomTranslator';
 
 export function AppFrame({ children }: { children: ReactNode }) {
+  const translationReady=useTranslationReady();
   const path = useRouterState({ select: s => s.location.pathname });
   const initData = useTelegramInitData();
   const now = useNow(10_000);
@@ -23,7 +25,7 @@ export function AppFrame({ children }: { children: ReactNode }) {
   if (!visible) return children;
   const group = ['/heroes','/squads','/duels'].includes(path);
   return <div className="clean-player">
-    <header className="app-toolbar sticky top-0 z-30 mx-auto flex max-w-md items-center justify-between gap-3 border-b border-border bg-background px-4">
+    <header data-translation-pending={translationReady?undefined:''} className="app-toolbar sticky top-0 z-30 mx-auto flex max-w-md items-center justify-between gap-3 border-b border-border bg-background px-4">
       <Button asChild variant="ghost" size="icon" aria-label="الملف الشخصي" title="الملف الشخصي"><Link to="/profile"><UserRound className="size-5" /></Link></Button>
       <div className="flex min-w-0 items-center gap-4 text-sm font-semibold"><span className="flex items-center gap-1 text-accent"><Zap className="size-4" />{energy.data ? energyNow(energy.data,now) : '—'}</span><span className="truncate text-gold" dir="ltr">{player.data ? formatAmount(player.data.gram) : '—'} GRAM</span></div>
       <Button asChild variant="ghost" size="icon" aria-label="المتجر" title="المتجر"><Link to="/store"><Store className="size-5" /></Link></Button>

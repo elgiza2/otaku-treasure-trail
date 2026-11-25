@@ -20,9 +20,11 @@ import { requestBotWriteAccess, shareGameStory, shareLink, useTelegramInitData }
 import { useNow } from '@/components/tasks/use-now';
 import chestArt from '@/assets/onboarding/v3-2-mine.jpg';
 import bossArt from '@/assets/heroes/hero-1-rage.jpg';
+import { useTranslationReady } from '@/i18n/DomTranslator';
 
 export type GrowthMode = 'daily' | 'referrals' | 'chest' | 'boss' | 'duels' | 'shop' | 'settings';
 export function GrowthPanel({ mode, invite }: { mode: GrowthMode; invite?: string }) {
+  const translationReady=useTranslationReady();
   const initData = useTelegramInitData();
   const now = useNow(1000);
   const qc = useQueryClient();
@@ -43,7 +45,7 @@ export function GrowthPanel({ mode, invite }: { mode: GrowthMode; invite?: strin
     if (busy) return;
     setBusy(true);
     try {
-      let requestId = crypto.randomUUID();
+      let requestId: string = crypto.randomUUID();
       const pending = retry.current;
       if (pending) { action = pending.action; provider = pending.provider; target = pending.target; requestId = pending.id; }
       else if (provider) {
@@ -95,7 +97,7 @@ export function GrowthPanel({ mode, invite }: { mode: GrowthMode; invite?: strin
   const streak = checkinState(s?.streak ?? 0, s?.lastCheckinAt ?? null, now);
   const ready = chestReady(s?.chestAt ?? null, now);
 
-  return <section className="space-y-4" aria-busy={busy}>
+  return <section data-translation-pending={translationReady?undefined:''} className="space-y-4" aria-busy={busy}>
     {stateNotice}
     {retry.current && <Button variant="outline" className="w-full" disabled={busy} onClick={() => { const p=retry.current; if(p) void act(p.action,p.provider,p.target); }}><RotateCw /> استلام مكافأة الإعلان السابق</Button>}
     {mode === 'daily' && <>
