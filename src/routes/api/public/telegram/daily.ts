@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { POSTS } from "@/content/channel-posts";
 import { BATCH, cronSecret, currentSlot, DAILY_GIFT_COINS, slotMessage } from "@/lib/bot-daily.server";
+import { partnerLink } from "@/lib/partner-model";
 
 // Post pictures ship with the app; the scheduler fetches the bytes from its own origin and uploads them to Telegram.
 const POST_IMAGES = import.meta.glob("/src/assets/posts/*.jpg", { eager: true, query: "?url", import: "default" }) as Record<string, string>;
@@ -23,6 +24,8 @@ export const Route = createFileRoute("/api/public/telegram/daily")({
         if (!locked) return Response.json({ ok: true, skipped: "running" });
 
         const posted = await autoPost(db, token, new URL(request.url).origin);
+        const partnerPosts = await postPartnerChannels(db, token);
+        const smart = await sendSmartNotifications(db, token);
         const slot = currentSlot();
         let giftId: string | null = null;
         if (slot.hour === 8) {
@@ -52,7 +55,7 @@ export const Route = createFileRoute("/api/public/telegram/daily")({
           await new Promise((r) => setTimeout(r, 40));
         }
         await db.from("wall_jobs" as never).update({ locked_until: new Date().toISOString() } as never).eq("name", "daily");
-        return Response.json({ ok: true, posted, slot: slot.key, sent, blocked, remaining: (users?.length ?? 0) === BATCH });
+        return Response.json({ ok: true, posted, partnerPosts, smart, slot: slot.key, sent, blocked, remaining: (users?.length ?? 0) === BATCH });
       },
     },
   },
@@ -86,4 +89,55 @@ async function autoPost(db: any, token: string, origin: string): Promise<number 
   if (!res.ok) res = await send(next.buttons.map((r) => r.map(({ text, url }) => ({ text, url }))));
   if (!res.ok) { await db.from("wall_jobs").delete().eq("name", `post:${next.day}`); console.error("post failed", await res.text()); return null; }
   return next.day;
+}
+
+// Posts twice daily (09:00 and 21:00 UTC) to active partner channels using their referral links.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function postPartnerChannels(db: any, token: string): Promise<number> {
+  const now = new Date();
+  const hour = now.getUTCHours();
+  const slotHour = hour >= 21 ? "21" : hour >= 9 ? "09" : null;
+  if (!slotHour) return 0;
+  const slot = `${now.toISOString().slice(0, 10)}T${slotHour}`;
+  const { data: channels } = await db.from("wall_partner_channels").select("id, chat_id").eq("status", "active").limit(50);
+  let count = 0;
+  for (const ch of (channels ?? []) as { id: string; chat_id: number }[]) {
+    const { data: claimed } = await db.rpc("wall_partner_claim_post", { _channel: ch.id, _slot: slot });
+    if (!claimed) continue;
+    const link = partnerLink(ch.id);
+    const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: ch.chat_id, text: "⚔️ انضم لمنجم الأسوار وابدأ جمع العملات والمنافسة الأسبوعية على GRAM!", reply_markup: { inline_keyboard: [[{ text: "⚔️ العب الآن", url: link }]] } }),
+    });
+    if (res.ok) {
+      const body = (await res.json().catch(() => null)) as { result?: { message_id?: number } } | null;
+      await db.from("wall_partner_posts").update({ status: "sent", message_id: body?.result?.message_id ?? null }).eq("channel_id", ch.id).eq("slot", slot);
+      await db.from("wall_partner_channels").update({ last_post_at: new Date().toISOString() }).eq("id", ch.id);
+      count++;
+    } else {
+      await db.from("wall_partner_posts").update({ status: "failed" }).eq("channel_id", ch.id).eq("slot", slot);
+      if (res.status === 403 || res.status === 400) await db.from("wall_partner_channels").update({ status: "paused" }).eq("id", ch.id);
+    }
+    await new Promise((resolve) => setTimeout(resolve, 60));
+  }
+  return count;
+}
+
+// Sends opt-in smart reminders at most once per 24h for full energy or close tournament cutoff.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function sendSmartNotifications(db: any, token: string): Promise<number> {
+  const { data } = await db.rpc("wall_smart_notifications");
+  let sent = 0;
+  for (const item of ((data ?? []) as { tgId: number; energyFull: boolean; adsNeeded: number | null }[])) {
+    const text = item.adsNeeded ? `🏆 باقيلك ${item.adsNeeded} إعلانات وتدخل قائمة الفائزين بـ GRAM!` : "⚡ طاقتك اتملت بالكامل — ارجع للمعركة دلوقتي!";
+    const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: item.tgId, text, reply_markup: { inline_keyboard: [[{ text: "⚔️ افتح اللعبة", url: "https://t.me/Mixsaabot?startapp" }]] } }),
+    });
+    if (res.status === 429) break;
+    if (res.status === 403 || res.status === 400) await db.from("wall_users").update({ bot_blocked: true }).eq("tg_id", item.tgId);
+    else { await db.from("wall_growth_state").update({ notified_at: new Date().toISOString() }).eq("tg_id", item.tgId); sent++; }
+    await new Promise((resolve) => setTimeout(resolve, 40));
+  }
+  return sent;
 }

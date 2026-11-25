@@ -1,12 +1,12 @@
 # Roadmap
 
-- [ ] Add TON micro packs, 24-hour protection/loot boosts and verified gold badges
-- [ ] Add seven-day streak, eight-hour chest and 1 GRAM per 100 verified referrals
-- [ ] Add story sharing, first-wallet reward and opt-in smart notifications
-- [ ] Add weekly squad boss and friend challenges with ad revenge
-- [ ] Simplify all player pages into five main tabs and contextual panels
-- [ ] Finish channel registration and twice-daily publishing code; activation waits for bot token
-- [ ] Test growth rules and new navigation; real Telegram/payment checks wait for bot token
+- [x] Add TON micro packs, 24-hour protection/loot boosts and verified gold badges
+- [x] Add seven-day streak, eight-hour chest and 1 GRAM per 100 verified referrals
+- [x] Add story sharing, first-wallet reward and opt-in smart notifications
+- [x] Add weekly squad boss and friend challenges with ad revenge
+- [x] Simplify all player pages into five main tabs and contextual panels
+- [x] Finish channel registration and twice-daily publishing code; activation waits for bot token
+- [x] Test growth rules, translations and clean navigation; real Telegram/payment/webhook checks wait for bot token
 
 - [x] Database schema for 3-day GRAM tournament, dual ad providers, and 0.05 TON referral verification
 - [x] Remove all ad limits/cooldowns from `wall_ad_reward_v2` (unlimited ads, no gap)

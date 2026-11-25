@@ -5548,6 +5548,41 @@ export type Database = {
           },
         ]
       }
+      wall_partner_posts: {
+        Row: {
+          channel_id: string
+          created_at: string
+          message_id: number | null
+          slot: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          channel_id: string
+          created_at?: string
+          message_id?: number | null
+          slot: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          channel_id?: string
+          created_at?: string
+          message_id?: number | null
+          slot?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wall_partner_posts_channel_id_fkey"
+            columns: ["channel_id"]
+            isOneToOne: false
+            referencedRelation: "wall_partner_channels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       wall_partner_withdrawals: {
         Row: {
           address: string
@@ -7276,7 +7311,15 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      wall_partner_claim_post: {
+        Args: { _channel: string; _slot: string }
+        Returns: boolean
+      }
       wall_partner_overview: { Args: never; Returns: Json }
+      wall_partner_register: {
+        Args: { _chat: number; _tg: number; _title: string; _username?: string }
+        Returns: string
+      }
       wall_partner_review_withdrawal: {
         Args: { _id: string; _paid: boolean; _tx?: string }
         Returns: undefined
@@ -7319,6 +7362,7 @@ export type Database = {
       }
       wall_referral_milestone: { Args: { _tg: number }; Returns: number }
       wall_settle_squad_weeks: { Args: never; Returns: number }
+      wall_smart_notifications: { Args: never; Returns: Json }
       wall_squad_board: { Args: never; Returns: Json }
       wall_squad_manage: {
         Args: {

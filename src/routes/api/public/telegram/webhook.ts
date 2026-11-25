@@ -55,7 +55,23 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
         }
         const update = (await request.json().catch(() => null)) as {
           message?: { chat?: { id?: number; type?: string }; text?: string; write_access_allowed?: object; from?: { id?: number; first_name?: string; language_code?: string } };
+          my_chat_member?: { chat?: { id?: number; type?: string; title?: string; username?: string }; from?: { id?: number }; new_chat_member?: { status?: string; can_post_messages?: boolean } };
         } | null;
+        const member = update?.my_chat_member;
+        if (member?.chat?.type === "channel" && member.chat.id && member.from?.id) {
+          const { supabaseAdmin: db } = await import("@/integrations/supabase/client.server");
+          if (member.new_chat_member?.status === "administrator" && member.new_chat_member.can_post_messages) {
+            const res = await fetch(`https://api.telegram.org/bot${token}/getChatAdministrators?chat_id=${member.chat.id}`);
+            const json = res.ok ? ((await res.json().catch(() => null)) as { result?: { user?: { id?: number } }[] } | null) : null;
+            const isAdmin = (json?.result ?? []).some((a) => a.user?.id === member.from?.id);
+            if (isAdmin) {
+              await db.rpc("wall_partner_register", { _tg: member.from.id, _chat: member.chat.id, _title: member.chat.title ?? "Channel", ...(member.chat.username ? { _username: member.chat.username } : {}) });
+            }
+          } else {
+            await db.from("wall_partner_channels").update({ status: "paused" }).eq("chat_id", member.chat.id);
+          }
+          return Response.json({ ok: true });
+        }
         const cb = (update as { callback_query?: { id: string; data?: string; from: { id: number; language_code?: string } } } | null)?.callback_query;
         if (cb?.data?.startsWith("gift:")) {
           const { supabaseAdmin: db } = await import("@/integrations/supabase/client.server");
