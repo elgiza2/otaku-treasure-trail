@@ -77,7 +77,7 @@ export function BattlePage() {
       {clip ? (
         <SegmentVideo key={clip} src={clip} poster={hero.image} className="absolute inset-x-0 bottom-0 top-36" />
       ) : (
-        <img src={hero.image} alt={hero.name} className="absolute inset-x-0 bottom-0 top-36 h-[calc(100%-9rem)] w-full object-cover object-top" />
+        <img src={hero.image} alt={hero.name} className="animate-breathe absolute inset-x-0 bottom-0 top-36 h-[calc(100%-9rem)] w-full object-cover object-top" />
       )}
       <div className="battle-shade absolute inset-0" />
 

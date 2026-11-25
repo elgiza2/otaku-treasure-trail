@@ -26,14 +26,14 @@ export function AppFrame({ children }: { children: ReactNode }) {
   const group = ['/heroes','/squads','/duels'].includes(path);
   return <div className="clean-player">
     <header data-translation-pending={translationReady?undefined:''} className="app-toolbar sticky top-0 z-30 mx-auto flex max-w-md items-center justify-between gap-2 px-3.5 py-2">
-      <Button asChild variant="ghost" size="icon" aria-label="الملف الشخصي" title="الملف الشخصي" className="glass size-10 rounded-full text-foreground hover:bg-foreground/10"><Link to="/profile"><AnimatedEmoji name="scout" className="size-5 text-foreground" /></Link></Button>
+      <Button asChild variant="ghost" size="icon" aria-label="الملف الشخصي" title="الملف الشخصي" className="glass apple-press size-10 rounded-full text-foreground hover:bg-foreground/10"><Link to="/profile"><AnimatedEmoji name="scout" className="size-5 text-foreground" /></Link></Button>
       <div className="flex min-w-0 items-center gap-2">
         <span className="glass flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold tabular-nums text-foreground"><AnimatedEmoji name="spark" className="size-4 text-accent" />{energy.data ? energyNow(energy.data,now) : '—'}</span>
         <span className="surface-gold flex min-w-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-extrabold tabular-nums text-gold" dir="ltr"><AnimatedEmoji name="gem" className="size-4 text-accent" /><span className="truncate">{player.data ? formatAmount(player.data.gram) : '—'} GRAM</span></span>
       </div>
-      <Button asChild variant="ghost" size="icon" aria-label="المتجر" title="المتجر" className="surface-gold size-10 rounded-full text-accent hover:bg-accent/20"><Link to="/store"><AnimatedEmoji name="crystal" className="size-5 text-accent" /></Link></Button>
+      <Button asChild variant="ghost" size="icon" aria-label="المتجر" title="المتجر" className="surface-gold apple-press size-10 rounded-full text-accent hover:bg-accent/20"><Link to="/store"><AnimatedEmoji name="crystal" className="size-5 text-accent" /></Link></Button>
     </header>
-    {group && <div className="mx-auto max-w-md px-4 pt-3"><nav className="glass grid grid-cols-3 gap-1 rounded-2xl p-1" aria-label="أقسام الفريق">{([{to:'/heroes',label:'الأبطال'},{to:'/squads',label:'التحالفات'},{to:'/duels',label:'التحديات'}] as const).map(t=><Link key={t.to} to={t.to} className={`rounded-xl py-2 text-center text-xs font-extrabold transition-colors ${path===t.to ? 'btn-cta' : 'text-muted-foreground hover:text-foreground'}`}>{t.label}</Link>)}</nav></div>}
+    {group && <div className="mx-auto max-w-md px-4 pt-3"><nav className="glass grid grid-cols-3 gap-1 rounded-2xl p-1" aria-label="أقسام الفريق">{([{to:'/heroes',label:'الأبطال'},{to:'/squads',label:'التحالفات'},{to:'/duels',label:'التحديات'}] as const).map(t=><Link key={t.to} to={t.to} className={`apple-press rounded-xl py-2 text-center text-xs font-extrabold transition-all duration-300 ease-[cubic-bezier(0.22,1.28,0.36,1)] ${path===t.to ? 'btn-cta' : 'text-muted-foreground hover:text-foreground'}`}>{t.label}</Link>)}</nav></div>}
     {children}
   </div>;
 }

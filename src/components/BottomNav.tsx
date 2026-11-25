@@ -17,8 +17,10 @@ export function BottomNav() {
       {ITEMS.map((i) => {
         const active = path===i.to || (i.to==='/heroes' && ['/squads','/duels'].includes(path));
         return (
-          <Link key={i.to} to={i.to} aria-current={active ? 'page' : undefined} className={`flex h-13 flex-1 flex-col items-center justify-center gap-0.5 rounded-2xl text-[11px] font-bold transition-colors ${active ? 'bg-accent/15 text-accent' : 'text-muted-foreground hover:text-foreground'}`}>
-            <AnimatedEmoji name={i.emoji} className={`size-5 ${active ? 'text-accent' : 'text-foreground/75'}`} />
+          <Link key={i.to} to={i.to} aria-current={active ? 'page' : undefined} className={`flex h-13 flex-1 flex-col items-center justify-center gap-0.5 rounded-2xl text-[11px] font-bold transition-all duration-300 ease-[cubic-bezier(0.22,1.28,0.36,1)] active:scale-90 ${active ? 'bg-primary/22 text-foreground shadow-[inset_0_1px_0_oklch(1_0_0/0.24)]' : 'text-muted-foreground hover:text-foreground'}`}>
+            <span className={`transition-transform duration-300 ease-[cubic-bezier(0.22,1.28,0.36,1)] ${active ? '-translate-y-0.5 scale-110' : ''}`}>
+              <AnimatedEmoji name={i.emoji} className={`size-5 ${active ? 'text-accent' : 'text-foreground/75'}`} />
+            </span>
             <span>{i.label}</span>
           </Link>
         );
