@@ -14,3 +14,7 @@
 - [ ] Add squads, invite links, weekly scoring and collective rewards (10 GRAM/week)
 - [ ] Test and verify the requested updates
 - [ ] Change GRAM competition to 7-day repeating cycles; keep squads weekly
+- [ ] Add channel partner onboarding, verified bot-admin registration and referral posting
+- [ ] Add channel acquisition tracking and partner earnings (rate/currency pending user answer)
+- [ ] Add admin channel directory and daily revenue/ad/channel/user report
+- [ ] Research relevant marketing options after checking current app and links

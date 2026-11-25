@@ -5326,6 +5326,48 @@ export type Database = {
         }
         Relationships: []
       }
+      wall_squad_contributions: {
+        Row: {
+          created_at: string
+          points: number
+          squad_id: string
+          tg_id: number
+          updated_at: string
+          week: string
+        }
+        Insert: {
+          created_at?: string
+          points?: number
+          squad_id: string
+          tg_id: number
+          updated_at?: string
+          week: string
+        }
+        Update: {
+          created_at?: string
+          points?: number
+          squad_id?: string
+          tg_id?: number
+          updated_at?: string
+          week?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wall_squad_contributions_squad_id_fkey"
+            columns: ["squad_id"]
+            isOneToOne: false
+            referencedRelation: "wall_squads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wall_squad_contributions_tg_id_fkey"
+            columns: ["tg_id"]
+            isOneToOne: false
+            referencedRelation: "wall_users"
+            referencedColumns: ["tg_id"]
+          },
+        ]
+      }
       wall_squad_members: {
         Row: {
           created_at: string
@@ -5354,6 +5396,45 @@ export type Database = {
             foreignKeyName: "wall_squad_members_tg_id_fkey"
             columns: ["tg_id"]
             isOneToOne: true
+            referencedRelation: "wall_users"
+            referencedColumns: ["tg_id"]
+          },
+        ]
+      }
+      wall_squad_payouts: {
+        Row: {
+          amount: number
+          created_at: string
+          squad_id: string
+          tg_id: number
+          week: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          squad_id: string
+          tg_id: number
+          week: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          squad_id?: string
+          tg_id?: number
+          week?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wall_squad_payouts_squad_id_fkey"
+            columns: ["squad_id"]
+            isOneToOne: false
+            referencedRelation: "wall_squads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wall_squad_payouts_tg_id_fkey"
+            columns: ["tg_id"]
+            isOneToOne: false
             referencedRelation: "wall_users"
             referencedColumns: ["tg_id"]
           },
@@ -5430,6 +5511,7 @@ export type Database = {
           created_at: string
           emblem: string
           id: string
+          member_count: number
           name: string
           updated_at: string
         }
@@ -5438,6 +5520,7 @@ export type Database = {
           created_at?: string
           emblem?: string
           id?: string
+          member_count?: number
           name: string
           updated_at?: string
         }
@@ -5446,6 +5529,7 @@ export type Database = {
           created_at?: string
           emblem?: string
           id?: string
+          member_count?: number
           name?: string
           updated_at?: string
         }
@@ -6769,6 +6853,7 @@ export type Database = {
         Returns: Json
       }
       wall_settle_squad_weeks: { Args: never; Returns: number }
+      wall_squad_board: { Args: never; Returns: Json }
       wall_squad_manage: {
         Args: {
           _action: string

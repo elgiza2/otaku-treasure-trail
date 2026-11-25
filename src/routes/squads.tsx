@@ -4,7 +4,10 @@ import { SquadsPage, squadsQuery } from "@/components/squads/SquadsPage";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/squads")({
-  validateSearch: (search) => ({ invite: z.string().uuid().optional().catch(undefined).parse(search["invite"]) }),
+  validateSearch: (search): { invite?: string } => {
+    const invite = z.string().uuid().optional().catch(undefined).parse(search["invite"]);
+    return invite ? { invite } : {};
+  },
   loader: ({ context }) => context.queryClient.ensureQueryData(squadsQuery),
   head: () => ({ meta: [
     { title: "دوري التحالفات — منجم الأسوار" },
