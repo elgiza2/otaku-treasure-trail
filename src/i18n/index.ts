@@ -1,5 +1,6 @@
 // App translation: Arabic is the source text; each locale file maps normalized Arabic text -> translation.
 // Numbers are replaced by {n} in keys so "5 لعبات" and "3 لعبات" share one entry.
+import gameFallback from "./game-fallback.json";
 export const LANGS = ["ar", "en", "ru", "es", "pt", "fr", "de", "tr", "id", "vi", "hi", "zh", "ko", "ja", "uk", "fa"] as const;
 export type Lang = (typeof LANGS)[number];
 export const RTL: Lang[] = ["ar", "fa"];
@@ -84,8 +85,9 @@ export function translateText(s: string, dict: Record<string, string>): string |
 
 const files = import.meta.glob<{ default: Record<string, string> }>("./locales/*.json");
 export async function loadDict(l: Lang): Promise<Record<string, string>> {
+  if (l === "ar") return {};
   const f = files[`./locales/${l}.json`];
-  return f ? (await f()).default : {};
+  return { ...gameFallback, ...(f ? (await f()).default : {}) };
 }
 
 // Shared dictionary for code that translates before inserting names (story lines, typewriter text).

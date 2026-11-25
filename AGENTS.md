@@ -35,3 +35,4 @@ use the editor.
 - Attribute channel acquisition only during first verified Telegram registration in an atomic SQL function; repeat visits and self-referrals must not pay.
 - Keep partner balances separate from game balances and reserve withdrawal funds transactionally; owner-only report reads and manual payment reviews must revalidate the server role.
 - Record actual ad income and costs separately from view counts in daily reports; missing monetary data stays unknown rather than estimating profit from views.
+- Merge expansion English fallback text below existing locale entries, leaving Arabic untranslated and preserving every existing language-specific translation.

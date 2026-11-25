@@ -8,6 +8,7 @@ import { SAGA, PATHS, BONDS } from "@/lib/saga";
 import { NFT_DESIGNS, RARITY_LABEL } from "@/lib/nft-model";
 import { HEROES } from "@/components/heroes/heroes-data";
 import { STORY_ITEMS } from "@/lib/story-model";
+import gameFallback from "@/i18n/game-fallback.json";
 
 const AR = /[\u0600-\u06FF]/;
 const SRC = path.resolve(__dirname, "..");
@@ -68,7 +69,7 @@ function builtStrings(dict: Record<string, string>): string[] {
 }
 
 const dicts = Object.fromEntries(LANGS.filter((l) => l !== "ar").map((l) =>
-  [l, JSON.parse(fs.readFileSync(path.join(SRC, `i18n/locales/${l}.json`), "utf8")) as Record<string, string>]));
+  [l, { ...gameFallback, ...JSON.parse(fs.readFileSync(path.join(SRC, `i18n/locales/${l}.json`), "utf8")) } as Record<string, string>]));
 const ALL = [...new Set([...sourceStrings(), ...dataStrings()])];
 
 describe("translations cover every Arabic text", () => {
