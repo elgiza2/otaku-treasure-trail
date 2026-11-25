@@ -175,7 +175,7 @@ export const getUserTaskSlot = createServerFn({ method: "POST" })
     if (paidIds.length > 0) {
       const { data: used, error: usedErr } = await db.from("wall_tasks").select("payment_id" as never).in("payment_id" as never, paidIds as never);
       if (usedErr) throw new Error(usedErr.message);
-      const usedSet = new Set(((used ?? []) as { payment_id: string | null }[]).map((r) => r.payment_id));
+      const usedSet = new Set(((used ?? []) as unknown as { payment_id: string | null }[]).map((r) => r.payment_id));
       paidPaymentId = paidIds.find((id) => !usedSet.has(id)) ?? null;
     }
     return { pendingPaymentId: pending.data?.id ?? null, paidPaymentId };

@@ -16,7 +16,7 @@ export function detectLang(): Lang {
   try { const s = localStorage.getItem(KEY); if (s && (LANGS as readonly string[]).includes(s)) return s as Lang; } catch { /* ignore */ }
   const w = globalThis as unknown as { Telegram?: { WebApp?: { initDataUnsafe?: { user?: { language_code?: string } } } } };
   const tg = w.Telegram?.WebApp?.initDataUnsafe?.user?.language_code;
-  return pickLang(tg ?? (typeof navigator !== "undefined" ? navigator.language : "ar"));
+  return pickLang(tg ?? (typeof navigator !== "undefined" ? navigator.language : "en"));
 }
 
 export function setLang(l: Lang) {
